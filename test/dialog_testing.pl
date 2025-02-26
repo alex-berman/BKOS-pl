@@ -2,6 +2,7 @@
 :- use_module(db).
 :- use_module(library(yaml)).
 :- use_module(isu_engine).
+:- ensure_loaded(isu_syntax).
 
 get_test(Name:Test, TestsPath) :-
     yaml_read(TestsPath, TestsDict),
@@ -16,7 +17,7 @@ run_test(Name:Test) :-
             member(FactStr, Test.facts),
             (
                 term_string(Fact, FactStr),
-                assert(fact(Fact))
+                assert(@Fact)
             ))
         ; true ),
     test_turns(Test.turns).
@@ -31,7 +32,7 @@ test_turns([TurnStr|TurnsTail]) :-
 test_turn("S") :-
     !,
     apply_rules_exhaustively,
-    assertion(\+ fact(utter(_))).
+    assertion(\+ @utter(_)).
 
 test_turn(TurnStr) :-
     atom_concat("S ", ExpectedSystemMoveAtom, TurnStr),
@@ -49,11 +50,11 @@ test_turn(TurnStr) :-
 test_system_turn(ExpectedSystemMoveAtom) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
     apply_rules_exhaustively,
-    assertion(fact(utter(_))),
-    fact(utter(ActualSystemMove)),
+    assertion(@utter(_)),
+    @utter(ActualSystemMove),
     assertion(ActualSystemMove = ExpectedSystemMove),
-    retract(fact(utter(_))).
+    retract(@utter(_)).
 
 test_user_turn(UserMoveAtom) :-
     atom_to_term(UserMoveAtom, UserMove, _),
-    assert(fact(heard(UserMove))).
+    assert(@heard(UserMove)).

@@ -1,3 +1,4 @@
-:- module(db, [fact/1]).
+:- module(db, ['@'/1]).
+:- ensure_loaded(isu_syntax).
 
-:- dynamic fact/1.
+:- dynamic '@'/1.
