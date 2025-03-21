@@ -328,3 +328,17 @@ previous_unresolvable_question_does_not_block_response_for_answerable_question:
   - S icm(understanding, negative)
   - U ask(boolean_question(extraverted(this_person)))
   - S confirm(extraverted(this_person))
+
+reject_unanswerable_explicit_why_question_concerning_fact:
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean, this_person))
+  - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
+  turns:
+  - S offer_help
+  - U ask(boolean_question(extraverted(this_person)))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask(why(?))
+  - S assert(not(high_value(danceability_mean, this_person)))
+  - U ask(why(not(high_value(danceability_mean, this_person))))
+  - S icm(acceptance, negative, lack_knowledge(why(not(high_value(danceability_mean, this_person)))))
