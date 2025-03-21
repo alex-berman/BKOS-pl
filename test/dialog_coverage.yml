@@ -342,3 +342,15 @@ reject_unanswerable_explicit_why_question_concerning_fact:
   - S assert(not(high_value(danceability_mean, this_person)))
   - U ask(why(not(high_value(danceability_mean, this_person))))
   - S icm(acceptance, negative, lack_knowledge(why(not(high_value(danceability_mean, this_person)))))
+
+reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean, this_person))
+  - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
+  turns:
+  - S offer_help
+  - U ask(boolean_question(extraverted(this_person)))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask(wh_question(support(song_score(_), not(extraverted(this_person)))))
+  - S icm(acceptance, negative, lack_knowledge(wh_question(support(song_score(_), not(extraverted(this_person))))))
