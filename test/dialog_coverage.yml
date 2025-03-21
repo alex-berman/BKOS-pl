@@ -352,5 +352,5 @@ reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
   - S offer_help
   - U ask(boolean_question(extraverted(this_person)))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(support(song_score(_), not(extraverted(this_person)))))
-  - S icm(acceptance, negative, lack_knowledge(wh_question(support(song_score(_), not(extraverted(this_person))))))
+  - U ask(wh_question(support(rating(_,_), not(extraverted(this_person)), _)))
+  - S icm(acceptance, negative, lack_knowledge(wh_question(support(rating(_,_), not(extraverted(this_person)), _))))
