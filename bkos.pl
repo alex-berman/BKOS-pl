@@ -32,6 +32,14 @@ integrate_continuation_request :: (
 		requested_continuation(question(Q))
 	]).
 
+reject_question_with_false_presupposition :: ([
+	non_integrated_goal(question(Q)),
+	$presupposes(Q, P),
+	$(P \== ?),
+	$(\+ compatible_with_facts(P))
+	] ->
+	next_system_move(icm(acceptance, negative, P))).
+
 integrate_underspecified_user_question :: ([
 	non_integrated_goal(question(LiteralQuestion)),
 	$resolve_underspecified_question(LiteralQuestion, ResolvedQuestion),
@@ -46,14 +54,6 @@ specify_continuation_request :: ([
 	$resolve_underspecified_question(LiteralQuestion, ResolvedQuestion)
 	]
 	-> requested_continuation(question(ResolvedQuestion))).
-
-reject_question_with_false_presupposition :: ([
-	non_integrated_goal(question(Q)),
-	$presupposes(Q, P),
-	$(P \== ?),
-	$(\+ compatible_with_facts(P))
-	] ->
-	next_system_move(icm(acceptance, negative, P))).
 
 integrate_other_user_goal :: ([
 	non_integrated_goal(question(Q)),
@@ -203,7 +203,13 @@ constative_content(hedge(Move), P) :-
 
 
 compatible_with_facts(P) :-
-	@P.
+	\+ (@Q, contradicts(Q, P)).
+
+
+contradicts(not(P), P).
+contradicts(P, not(P)).
+contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
+	contradicts(Q1, Q2).
 
 
 belief(P, none) :-
@@ -245,3 +251,5 @@ resolve_underspecified_question(boolean_question(supports(P, Q, ?)), boolean_que
 
 presupposes(why(P), P).
 presupposes(wh_question(P), P).
+presupposes(boolean_question(supports(P, _, _)), P).
+presupposes(boolean_question(supports(_, Q, _)), Q).
