@@ -354,3 +354,11 @@ reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
   - S disconfirm(not(extraverted(this_person)))
   - U ask(wh_question(support(rating(_,_), not(extraverted(this_person)), _)))
   - S icm(acceptance, negative, lack_knowledge(wh_question(support(rating(_,_), not(extraverted(this_person)), _))))
+
+answer_wh_question_regarding_support:
+  facts:
+  - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
+  turns:
+  - S offer_help
+  - U ask(wh_question(supports(_, not(extraverted(_)), _)))
+  - S assert(supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association))
