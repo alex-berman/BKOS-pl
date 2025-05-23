@@ -362,3 +362,19 @@ answer_wh_question_regarding_support:
   - S offer_help
   - U ask(wh_question(supports(_, not(extraverted(_)), _)))
   - S assert(supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association))
+
+chained_inference:
+  facts:
+  - not(likes_stimulating_environments(this_person))
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean, this_person))
+  - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
+  - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
+  turns:
+  - S offer_help
+  - U ask(boolean_question(likes_stimulating_environments(this_person)))
+  - S disconfirm(not(likes_stimulating_environments(this_person)))
+  - U ask(why(?))
+  - S assert(not(extraverted(this_person)))
+  - U ask(why(?))
+  - S assert(not(high_value(danceability_mean, this_person)))
