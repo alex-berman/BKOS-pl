@@ -118,7 +118,7 @@ emit_icm_for_no_additional_answer :: ([
 	]
 	-> next_system_move(icm(acceptance, negative, no_additional_answers(Q)))).
 
-respond_with_atomic_proposition :: ([
+respond_with_atomic_answer_move :: ([
 	agenda(respond(question(Q))),
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
 	$relevant_answer(Q, P),
