@@ -121,9 +121,12 @@ emit_icm_for_no_additional_answer :: ([
 respond_with_atomic_answer_move :: ([
 	agenda(respond(question(Q))),
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
-	$relevant_answer(Q, P),
-	$belief(P, Confidence),
-	$(\+ @requested_continuation(question(Q)) ; \+ @asserted(P)),
+	$findall((P, Confidence), (
+		relevant_answer(Q, P),
+		belief(P, Confidence),
+		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
+	), PsAndConfidences),
+	$select_answer(PsAndConfidences, P, Confidence),
 	$hedge_level(Confidence, Hedge),
 	$answer_move(Q, P, Hedge, Move)
 	] ->
@@ -170,9 +173,17 @@ relevant_answer(boolean_question(P), P).
 relevant_answer(boolean_question(P), not(P)).
 
 relevant_answer(why(Explanandum), Explanans) :-
-	@supports(Explanans, Explanandum, _).
+	supports_directly_or_indirectly(Explanans, Explanandum).
 
 relevant_answer(wh_question(P), P).
+
+
+supports_directly_or_indirectly(P, Q) :-
+	@supports(P, Q, _).
+
+supports_directly_or_indirectly(P, Q) :-
+	@supports(R, Q, _),
+	supports_directly_or_indirectly(P, R).
 
 
 answer_move(boolean_question(P), P, confirm(P)).
@@ -185,6 +196,20 @@ answer_move(wh_question(P), P, assert(P)).
 
 answer_move(wh_question(P), and(Conjuncts), assert(and(Conjuncts))) :-
 	\+ ( member(Conjunct, Conjuncts), \+ unifiable(Conjunct, P, _) ).
+
+
+select_answer(PsAndConfidences, P, Confidence) :-
+	findall((Rank, P, Confidence), (
+		member((P, Confidence), PsAndConfidences),
+		answer_rank(P, Rank)
+	), Candidates),
+	max_member((_Rank, P, Confidence), Candidates).
+
+
+answer_rank(P, Rank) :-
+	@answer_rank(P, Rank), !.
+
+answer_rank(_, 0).
 
 
 answer_move(Q, P, none, Move) :-

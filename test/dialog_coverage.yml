@@ -279,6 +279,7 @@ multiple_explanantia:
   - high_value(energy_mean, this_person)
   - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
   - supports(high_value(energy_mean, X), not(extraverted(X)), association)
+  - answer_rank(not(high_value(danceability_mean, this_person)), 1)
   turns:
   - S offer_help
   - U ask(boolean_question(extraverted(this_person)))
@@ -306,6 +307,7 @@ sub_dialog:
   - factor_considered(danceability_mean)
   - factor_considered(energy_mean)
   - answer_delivery_strategy(wh_question(factor_considered(_)), single_turn)
+  - answer_rank(not(high_value(danceability_mean, this_person)), 1)
   turns:
   - S offer_help
   - U ask(boolean_question(extraverted(this_person)))
@@ -370,6 +372,7 @@ chained_associative_inference:
   - not(high_value(danceability_mean, this_person))
   - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
   - supports(not(high_value(danceability_mean, X)), not(extraverted(X)), association)
+  - answer_rank(not(extraverted(this_person)), 1)
   turns:
   - S offer_help
   - U ask(boolean_question(likes_stimulating_environments(this_person)))
@@ -394,3 +397,20 @@ chained_inferences_of_different_types:
   - S assert(notable_risk_of_lung_disease(this_person))
   - U ask(why(?))
   - S assert(not(high_value(oxygen_saturation, this_person)))
+
+explain_chained_inference_via_rank:
+  facts:
+  - should_have_chest_xrayed(this_person)
+  - notable_risk_of_lung_disease(this_person)
+  - not(high_value(oxygen_saturation, this_person))
+  - supports(notable_risk_of_lung_disease(X), should_have_chest_xrayed(X), norm)
+  - supports(not(high_value(oxygen_saturation, X)), notable_risk_of_lung_disease(X), association)
+  - answer_rank(notable_risk_of_lung_disease(this_person), -1)
+  turns:
+  - S offer_help
+  - U ask(boolean_question(should_have_chest_xrayed(this_person)))
+  - S confirm(should_have_chest_xrayed(this_person))
+  - U ask(why(?))
+  - S assert(not(high_value(oxygen_saturation, this_person)))
+  - U ask(boolean_question(supports(not(high_value(oxygen_saturation, X)), notable_risk_of_lung_disease(X), ?)))
+  - S confirm(supports(not(high_value(oxygen_saturation, X)), notable_risk_of_lung_disease(X), association))
