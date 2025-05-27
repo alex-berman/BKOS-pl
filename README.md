@@ -29,5 +29,6 @@ Welcome to SWI-Prolog (...)
 ```
 
 This will execute the selected test until the trace point is encountered.
+
 # Contact
 For correspondence, contact alexander.berman@gu.se
