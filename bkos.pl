@@ -118,7 +118,7 @@ emit_icm_for_no_additional_answer :: ([
 	]
 	-> next_system_move(icm(acceptance, negative, no_additional_answers(Q)))).
 
-respond_increment :: ([
+respond_with_atomic_proposition :: ([
 	agenda(respond(question(Q))),
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
 	$relevant_answer(Q, P),
@@ -129,7 +129,7 @@ respond_increment :: ([
 	] ->
 	next_system_move(Move)).
 
-respond_single_turn :: ([
+respond_with_conjunction :: ([
 	agenda(respond(question(Q))),
 	answer_delivery_strategy(Q, single_turn),
 	$findall(P, (belief(P, _), relevant_answer(Q, P)), Ps),
