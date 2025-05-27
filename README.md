@@ -18,5 +18,16 @@ There is currently no interactive version of the system. However, [dialogue cove
 swipl -g run_tests -t halt test/test_bkos.pl
 ```
 
+# Debugging and tracing with coverage testing
+SWI Prolog's support for debugging and tracing can be useful when troubleshooting test failures. If we assume that the test named `confirmation_of_prediction` is failing and we want to understand why, we can, e.g. insert a `trace` invocation somethere in the code, and then run the test as follows:
+
+```
+$ swipl test/test_bkos.pl
+Welcome to SWI-Prolog (...)
+
+?- get_test(Test, 'test/dialog_coverage.yml'), Test=confirmation_of_prediction:_, run_test(Test).
+```
+
+This will execute the selected test until the trace point is encountered.
 # Contact
 For correspondence, contact alexander.berman@gu.se
