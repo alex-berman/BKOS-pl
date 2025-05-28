@@ -172,10 +172,22 @@ relevant_answer(boolean_question(P), P).
 
 relevant_answer(boolean_question(P), not(P)).
 
-relevant_answer(why(Explanandum), Explanans) :-
-	supports_directly_or_indirectly(Explanans, Explanandum).
+relevant_answer(why(Explanandum), Datum) :-
+	argumentative_strategy(Explanandum, datum),
+	supports_directly_or_indirectly(Datum, Explanandum).
+
+relevant_answer(why(Explanandum), supports(Antecedent, Consequent, How)) :-
+	argumentative_strategy(Explanandum, warrant),
+	@supports(Antecedent, Consequent, How),
+	unifiable(Consequent, Explanandum, _).
 
 relevant_answer(wh_question(P), P).
+
+
+argumentative_strategy(P, Strategy) :-
+	@argumentative_strategy(P, Strategy), !.
+
+argumentative_strategy(_, datum).
 
 
 supports_directly_or_indirectly(P, Q) :-

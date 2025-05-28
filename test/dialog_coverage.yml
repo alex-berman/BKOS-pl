@@ -14,7 +14,7 @@ disconfirmation_of_prediction:
   - U ask(boolean_question(extraverted(this_person)))
   - S disconfirm(not(extraverted(this_person)))
 
-enthymematic_explanation_triggered_by_implicit_why_question:
+datum_explanation_triggered_by_implicit_why_question:
   facts:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
@@ -26,7 +26,7 @@ enthymematic_explanation_triggered_by_implicit_why_question:
   - U ask(why(?))
   - S assert(not(high_value(danceability_mean(this_person))))
 
-enthymematic_explanation_triggered_by_negative_understanding:
+datum_explanation_triggered_by_negative_understanding:
   facts:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
@@ -80,7 +80,7 @@ negative_understanding_feedback_when_no_interpretation:
   - U none
   - S icm(understanding, negative)
 
-enthymematic_explanation_triggered_by_explicit_why_question_with_true_content:
+datum_explanation_triggered_by_explicit_why_question_with_true_content:
   facts:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
@@ -414,3 +414,16 @@ explain_chained_inference_via_rank:
   - S assert(not(high_value(oxygen_saturation, this_person)))
   - U ask(boolean_question(supports(not(high_value(oxygen_saturation, X)), notable_risk_of_lung_disease(X), ?)))
   - S confirm(supports(not(high_value(oxygen_saturation, X)), notable_risk_of_lung_disease(X), association))
+
+warrant_explanation_triggered_by_implicit_why_question:
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean(this_person)))
+  - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  - argumentative_strategy(not(extraverted(_)), warrant)
+  turns:
+  - S offer_help
+  - U ask(boolean_question(extraverted(this_person)))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask(why(?))
+  - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
