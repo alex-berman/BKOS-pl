@@ -246,7 +246,7 @@ user_question_about_factors_considered:
   turns:
   - S offer_help
   - U ask(wh_question(factor_considered(_)))
-  - S assert(and([factor_considered(danceability_mean), factor_considered(energy_mean)]))
+  - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
 
 acknowledge_user_assertions:
   turns:
@@ -315,7 +315,7 @@ sub_dialog:
   - U ask(why(?))
   - S assert(not(high_value(danceability_mean, this_person)))
   - U ask(wh_question(factor_considered(_)))
-  - S assert(and([factor_considered(danceability_mean), factor_considered(energy_mean)]))
+  - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
   - U request_continuation(ask(why(?)))
   - S assert(high_value(energy_mean, this_person))
   - U request_continuation(ask(why(?)))

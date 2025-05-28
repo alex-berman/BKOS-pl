@@ -136,7 +136,7 @@ respond_with_conjunction :: ([
 	agenda(respond(question(Q))),
 	answer_delivery_strategy(Q, single_turn),
 	$findall(P, (belief(P, _), relevant_answer(Q, P)), Ps),
-	$answer_move(Q, and(Ps), Move)
+	$answer_move(Q, Ps, Move)
 	] ->
 	next_system_move(Move)).
 
@@ -194,7 +194,7 @@ answer_move(why(_), P, assert(P)).
 
 answer_move(wh_question(P), P, assert(P)).
 
-answer_move(wh_question(P), and(Conjuncts), assert(and(Conjuncts))) :-
+answer_move(wh_question(P), Conjuncts, assert(Conjuncts)) :-
 	\+ ( member(Conjunct, Conjuncts), \+ unifiable(Conjunct, P, _) ).
 
 
