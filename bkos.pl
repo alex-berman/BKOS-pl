@@ -2,7 +2,6 @@
 :- ensure_loaded(isu_syntax).
 
 
-_ :: agenda(emit_move(offer_help)).
 _ :: qud([]).
 _ :: previous_system_move(none).
 
