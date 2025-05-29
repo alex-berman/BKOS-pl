@@ -20,8 +20,16 @@ run_test(Name:Test) :-
                 assert(@Fact)
             ))
         ; true ),
+    ( get_dict(agenda, Test, _) ->
+        forall(
+            member(AgendaItemStr, Test.agenda),
+            (
+                term_string(AgendaItem, AgendaItemStr),
+                assert(@agenda(AgendaItem))
+            ))
+        ; true ),
     test_turns(Test.turns).
-    
+
 test_turns([]) :- !.
 
 test_turns([TurnStr|TurnsTail]) :-

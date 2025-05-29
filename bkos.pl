@@ -2,9 +2,13 @@
 :- ensure_loaded(isu_syntax).
 
 
+% State intitialization
+
 _ :: qud([]).
 _ :: previous_system_move(none).
 
+
+% ISU rules
 
 clear_requested_continuation :: (requested_continuation(_) -> []).
 
@@ -139,6 +143,16 @@ respond_with_conjunction :: ([
 	] ->
 	next_system_move(Move)).
 
+respond_and_explain :: ([
+	agenda(respond_and_explain(Q)),
+	$relevant_answer(Q, P),
+	$belief(P, Confidence),
+	$hedge_level(Confidence, Hedge),
+	$answer_move(Q, P, Hedge, AnswerMove),
+	$supports_directly_or_indirectly(Datum, P)
+	] ->
+	next_system_move(infer(Datum, AnswerMove))).
+
 select_negative_understanding_when_move_integration_failed :: (
 	non_integrated_move(_) ->
 	next_system_move(icm(understanding, negative))).
@@ -162,6 +176,8 @@ utter_and_remember :: ([
 		previous_system_move(M)
 	]).
 
+
+% Helper relations
 
 relevant_answer(Q, not(P)) :-
 	nonvar(P),

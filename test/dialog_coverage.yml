@@ -389,3 +389,13 @@ warrant_explanation_triggered_by_implicit_why_question:
   - S disconfirm(not(extraverted(this_person)))
   - U ask(why(?))
   - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
+
+respond_and_explain_concurrently:
+  agenda:
+  - respond_and_explain(boolean_question(extraverted(this_person)))
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean(this_person)))
+  - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  turns:
+  - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
