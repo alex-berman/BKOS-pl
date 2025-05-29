@@ -90,6 +90,17 @@ integrate_user_negative_understanding_concerning_enthymeme :: ([
 		agenda(respond(question(wh_question(supports(E, P, How)))))
 	]).
 
+integrate_user_negative_understanding_concerning_inference :: ([
+	non_integrated_move(icm(understanding, negative)),
+	^previous_system_move(infer(E, Move)),
+	qud([why(P)|Qs]),
+	$answer_move(_, P, Move)
+	] ->
+	[
+		qud([wh_question(supports(E, P, How)), P, Qs]),
+		agenda(respond(question(wh_question(supports(E, P, How)))))
+	]).
+
 integrate_user_positive_acceptance :: (
 	non_integrated_move(icm(acceptance, positive)) ->
 	[]).
@@ -149,9 +160,12 @@ respond_and_explain :: ([
 	$belief(P, Confidence),
 	$hedge_level(Confidence, Hedge),
 	$answer_move(Q, P, Hedge, AnswerMove),
-	$supports_directly_or_indirectly(Datum, P)
-	] ->
-	next_system_move(infer(Datum, AnswerMove))).
+	$supports_directly_or_indirectly(Datum, P),
+	qud(Qs)
+	] -> [
+		qud([why(P)|Qs]),
+		next_system_move(infer(Datum, AnswerMove))
+	]).
 
 select_negative_understanding_when_move_integration_failed :: (
 	non_integrated_move(_) ->

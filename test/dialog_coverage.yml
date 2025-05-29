@@ -399,3 +399,15 @@ respond_and_explain_concurrently:
   - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
   turns:
   - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
+
+assert_warrant_in_response_to_negative_understanding_for_inference:
+  agenda:
+  - respond_and_explain(boolean_question(extraverted(this_person)))
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean(this_person)))
+  - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  turns:
+  - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
+  - U icm(understanding, negative)
+  - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
