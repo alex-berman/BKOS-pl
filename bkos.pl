@@ -243,7 +243,13 @@ select_answer(PsAndConfidences, P, Confidence) :-
 		member((P, Confidence), PsAndConfidences),
 		answer_rank(P, Rank)
 	), Candidates),
-	max_member((_Rank, P, Confidence), Candidates).
+	min_member((_Rank, P, Confidence), Candidates).
+
+
+answer_rank(P, Rank) :-
+	@rank(P, Rank), !.
+
+answer_rank(_, 0).
 
 
 question_and_answer_match_wrt_argumentative_strategy(Q, P) :-
@@ -265,12 +271,6 @@ answer_matches_argumenative_strategy(P, claim_then_datum) :-
 	P \= supports(_, _, _).
 
 answer_matches_argumenative_strategy(supports(_, _, _), claim_then_warrant).
-
-
-answer_rank(P, Rank) :-
-	@answer_rank(P, Rank), !.
-
-answer_rank(_, 0).
 
 
 answer_move(Q, P, none, Move) :-

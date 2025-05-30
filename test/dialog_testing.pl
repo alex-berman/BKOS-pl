@@ -14,12 +14,14 @@ run_test(Name:Test) :-
     assert_initial_facts,
     ( get_dict(facts, Test, _) ->
         forall(
-            member(FactStr, Test.facts),
+            nth0(N, Test.facts, FactStr),
             (
                 term_string(Fact, FactStr),
-                assert(@Fact)
+                assert(@Fact),
+                assert(@rank(Fact, N))
             ))
-        ; true ),
+        ; true
+    ),
     test_turns(Test.turns).
 
 test_turns([]) :- !.
