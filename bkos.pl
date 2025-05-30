@@ -126,6 +126,7 @@ emit_icm_for_no_additional_answer :: ([
 	requested_continuation(question(Q)),
 	$(\+ (
 		relevant_answer(Q, P),
+		question_and_answer_match_wrt_argumentative_strategy(Q, P),
 		@P,
 		\+ @asserted(P)
 	))
@@ -134,7 +135,7 @@ emit_icm_for_no_additional_answer :: ([
 
 respond_with_inference :: ([
 	agenda(respond(question(Q))),
-	$argumentative_strategy(Q, datum_then_claim),
+	^argumentative_strategy(Q, datum_then_claim),
 	$relevant_answer(Q, P),
 	$belief(P, Confidence),
 	$hedge_level(Confidence, Hedge),
@@ -151,6 +152,7 @@ respond_with_atomic_answer_move :: ([
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
 	$findall((P, Confidence), (
 		relevant_answer(Q, P),
+		question_and_answer_match_wrt_argumentative_strategy(Q, P),
 		belief(P, Confidence),
 		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
 	), PsAndConfidences),
@@ -163,7 +165,11 @@ respond_with_atomic_answer_move :: ([
 respond_with_conjunction :: ([
 	agenda(respond(question(Q))),
 	answer_delivery_strategy(Q, single_turn),
-	$findall(P, (belief(P, _), relevant_answer(Q, P)), Ps),
+	$findall(P, (
+		belief(P, _),
+		relevant_answer(Q, P),
+		question_and_answer_match_wrt_argumentative_strategy(Q, P)
+	), Ps),
 	$answer_move(Q, Ps, Move)
 	] ->
 	next_system_move(Move)).
@@ -203,29 +209,13 @@ relevant_answer(boolean_question(P), P).
 relevant_answer(boolean_question(P), not(P)).
 
 relevant_answer(why(Explanandum), Datum) :-
-	argumentative_strategy_for_explanandum(Explanandum, claim_then_datum),
 	supports_directly_or_indirectly(Datum, Explanandum).
 
 relevant_answer(why(Explanandum), supports(Antecedent, Consequent, How)) :-
-	argumentative_strategy_for_explanandum(Explanandum, claim_then_warrant),
 	@supports(Antecedent, Consequent, How),
 	unifiable(Consequent, Explanandum, _).
 
 relevant_answer(wh_question(P), P).
-
-
-argumentative_strategy(Q, Strategy) :-
-	@argumentative_strategy(Q, Strategy), !.
-
-argumentative_strategy(_, claim_then_datum).
-
-
-argumentative_strategy_for_explanandum(Explanandum, Strategy) :-
-	@argumentative_strategy(Q, Strategy),
-	relevant_answer(Q, Explanandum),
-	!.
-
-argumentative_strategy_for_explanandum(_, claim_then_datum).
 
 
 supports_directly_or_indirectly(P, Q) :-
@@ -254,6 +244,27 @@ select_answer(PsAndConfidences, P, Confidence) :-
 		answer_rank(P, Rank)
 	), Candidates),
 	max_member((_Rank, P, Confidence), Candidates).
+
+
+question_and_answer_match_wrt_argumentative_strategy(Q, P) :-
+	argumentative_strategy(Q, Strategy),
+	answer_matches_argumenative_strategy(P, Strategy).
+
+
+argumentative_strategy(why(P), Strategy) :-
+	relevant_answer(Q, P),
+	!,
+	( @argumentative_strategy(Q, Strategy) -> true ; Strategy = claim_then_datum ).
+
+argumentative_strategy(_, none).
+
+
+answer_matches_argumenative_strategy(_, none).
+
+answer_matches_argumenative_strategy(P, claim_then_datum) :-
+	P \= supports(_, _, _).
+
+answer_matches_argumenative_strategy(supports(_, _, _), claim_then_warrant).
 
 
 answer_rank(P, Rank) :-
