@@ -135,7 +135,7 @@ emit_icm_for_no_additional_answer :: ([
 
 respond_with_inference :: ([
 	agenda(respond(question(Q))),
-	^argumentative_strategy(Q, datum_then_claim),
+	^argumentative_strategy(Q, inference_from_datum_to_claim),
 	$relevant_answer(Q, P),
 	$belief(P, Confidence),
 	$hedge_level(Confidence, Hedge),
