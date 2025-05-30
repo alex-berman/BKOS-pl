@@ -407,3 +407,13 @@ assert_warrant_in_response_to_negative_understanding_for_inference:
   - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
   - U icm(understanding, negative)
   - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
+
+assert_datum_before_claim:
+  facts:
+  - not(extraverted(this_person))
+  - not(high_value(danceability_mean(this_person)))
+  - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  - argumentative_strategy(boolean_question(extraverted(_)), datum_then_claim)
+  turns:
+  - U ask(boolean_question(extraverted(this_person)))
+  - S assert(not(high_value(danceability_mean(this_person))))

@@ -83,7 +83,8 @@ integrate_user_negative_understanding_concerning_claim :: ([
 integrate_user_negative_understanding_concerning_enthymeme :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
-	qud([why(P)|Qs])
+	qud([why(P)|Qs]),
+	$argumentative_strategy(why(P), claim_then_datum)
 	] ->
 	[
 		qud([wh_question(supports(E, P, How)), P, Qs]),
@@ -145,6 +146,20 @@ respond_with_inference :: ([
 	] -> [
 		qud([why(P)|Qs]),
 		next_system_move(infer(Datum, AnswerMove))
+	]).
+
+respond_with_datum_before_claim :: ([
+	agenda(respond(question(Q))),
+	^argumentative_strategy(Q, datum_then_claim),
+	$relevant_answer(Q, P),
+	$supports_directly_or_indirectly(Datum, P),
+	$belief(Datum, Confidence),
+	$hedge_level(Confidence, Hedge),
+	$answer_move(why(P), Datum, Hedge, Move),
+	qud(Qs)
+	] -> [
+		qud([why(P)|Qs]),
+		next_system_move(Move)
 	]).
 
 respond_with_atomic_answer_move :: ([
