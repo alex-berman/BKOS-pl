@@ -132,6 +132,20 @@ emit_icm_for_no_additional_answer :: ([
 	]
 	-> next_system_move(icm(acceptance, negative, no_additional_answers(Q)))).
 
+respond_with_inference :: ([
+	agenda(respond(question(Q))),
+	$argumentative_strategy(Q, datum_then_claim),
+	$relevant_answer(Q, P),
+	$belief(P, Confidence),
+	$hedge_level(Confidence, Hedge),
+	$answer_move(Q, P, Hedge, AnswerMove),
+	$supports_directly_or_indirectly(Datum, P),
+	qud(Qs)
+	] -> [
+		qud([why(P)|Qs]),
+		next_system_move(infer(Datum, AnswerMove))
+	]).
+
 respond_with_atomic_answer_move :: ([
 	agenda(respond(question(Q))),
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
@@ -153,19 +167,6 @@ respond_with_conjunction :: ([
 	$answer_move(Q, Ps, Move)
 	] ->
 	next_system_move(Move)).
-
-respond_and_explain :: ([
-	agenda(respond_and_explain(Q)),
-	$relevant_answer(Q, P),
-	$belief(P, Confidence),
-	$hedge_level(Confidence, Hedge),
-	$answer_move(Q, P, Hedge, AnswerMove),
-	$supports_directly_or_indirectly(Datum, P),
-	qud(Qs)
-	] -> [
-		qud([why(P)|Qs]),
-		next_system_move(infer(Datum, AnswerMove))
-	]).
 
 select_negative_understanding_when_move_integration_failed :: (
 	non_integrated_move(_) ->
@@ -202,21 +203,29 @@ relevant_answer(boolean_question(P), P).
 relevant_answer(boolean_question(P), not(P)).
 
 relevant_answer(why(Explanandum), Datum) :-
-	argumentative_strategy(Explanandum, datum),
+	argumentative_strategy_for_explanandum(Explanandum, claim_then_datum),
 	supports_directly_or_indirectly(Datum, Explanandum).
 
 relevant_answer(why(Explanandum), supports(Antecedent, Consequent, How)) :-
-	argumentative_strategy(Explanandum, warrant),
+	argumentative_strategy_for_explanandum(Explanandum, claim_then_warrant),
 	@supports(Antecedent, Consequent, How),
 	unifiable(Consequent, Explanandum, _).
 
 relevant_answer(wh_question(P), P).
 
 
-argumentative_strategy(P, Strategy) :-
-	@argumentative_strategy(P, Strategy), !.
+argumentative_strategy(Q, Strategy) :-
+	@argumentative_strategy(Q, Strategy), !.
 
-argumentative_strategy(_, datum).
+argumentative_strategy(_, claim_then_datum).
+
+
+argumentative_strategy_for_explanandum(Explanandum, Strategy) :-
+	@argumentative_strategy(Q, Strategy),
+	relevant_answer(Q, Explanandum),
+	!.
+
+argumentative_strategy_for_explanandum(_, claim_then_datum).
 
 
 supports_directly_or_indirectly(P, Q) :-

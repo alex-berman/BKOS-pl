@@ -383,7 +383,7 @@ warrant_explanation_triggered_by_implicit_why_question:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
   - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
-  - argumentative_strategy(not(extraverted(_)), warrant)
+  - argumentative_strategy(boolean_question(extraverted(this_person)), claim_then_warrant)
   turns:
   - U ask(boolean_question(extraverted(this_person)))
   - S disconfirm(not(extraverted(this_person)))
@@ -391,23 +391,23 @@ warrant_explanation_triggered_by_implicit_why_question:
   - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
 
 respond_and_explain_concurrently:
-  agenda:
-  - respond_and_explain(boolean_question(extraverted(this_person)))
   facts:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
   - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  - argumentative_strategy(boolean_question(extraverted(this_person)), datum_then_claim)
   turns:
+  - U ask(boolean_question(extraverted(this_person)))
   - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
 
 assert_warrant_in_response_to_negative_understanding_for_inference:
-  agenda:
-  - respond_and_explain(boolean_question(extraverted(this_person)))
   facts:
   - not(extraverted(this_person))
   - not(high_value(danceability_mean(this_person)))
   - supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association)
+  - argumentative_strategy(boolean_question(extraverted(this_person)), datum_then_claim)
   turns:
+  - U ask(boolean_question(extraverted(this_person)))
   - S infer(not(high_value(danceability_mean(this_person))), disconfirm(not(extraverted(this_person))))
   - U icm(understanding, negative)
   - S assert(supports(not(high_value(danceability_mean(X))), not(extraverted(X)), association))
