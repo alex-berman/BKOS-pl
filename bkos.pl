@@ -254,17 +254,11 @@ answer_move(wh_question(P), Conjuncts, assert(Conjuncts)) :-
 
 
 select_answer(PsAndConfidences, P, Confidence) :-
-	findall((Rank, P, Confidence), (
-		member((P, Confidence), PsAndConfidences),
-		answer_rank(P, Rank)
-	), Candidates),
-	min_member((_Rank, P, Confidence), Candidates).
+	@P,
+	member((P, Confidence), PsAndConfidences),
+	!.
 
-
-answer_rank(P, Rank) :-
-	@rank(P, Rank), !.
-
-answer_rank(_, 0).
+select_answer([(P, Confidence)|_], P, Confidence).
 
 
 question_and_answer_match_wrt_argumentative_strategy(Q, P) :-

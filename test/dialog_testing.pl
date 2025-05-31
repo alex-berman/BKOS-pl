@@ -14,11 +14,10 @@ run_test(Name:Test) :-
     assert_initial_facts,
     ( get_dict(facts, Test, _) ->
         forall(
-            nth0(N, Test.facts, FactStr),
+            member(FactStr, Test.facts),
             (
                 term_string(Fact, FactStr),
-                assert(@Fact),
-                assert(@rank(Fact, N))
+                assert(@Fact)
             ))
         ; true
     ),
