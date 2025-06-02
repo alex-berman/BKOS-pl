@@ -410,7 +410,7 @@ assert_warrant_in_response_to_negative_understanding_for_inference:
   - U icm(understanding, negative)
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
-assert_datum_before_claim:
+datum_response_strategy:
   facts:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
@@ -419,3 +419,5 @@ assert_datum_before_claim:
   turns:
   - U ask(boolean_question(extraverted(this_person)))
   - S assert(relative_value(danceability_mean, this_person, low))
+  - U icm(understanding, negative)
+  - S assert(not(extraverted(this_person)))

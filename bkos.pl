@@ -80,7 +80,7 @@ integrate_user_negative_understanding_concerning_claim :: ([
 		agenda(respond(question(why(P))))
 	]).
 
-integrate_user_negative_understanding_concerning_datum :: ([
+integrate_user_negative_understanding_concerning_datum_with_direct_response_strategy :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
 	qud([why(P), Q | Qs]),
@@ -91,6 +91,15 @@ integrate_user_negative_understanding_concerning_datum :: ([
 		qud([wh_question(supports(E, P, How)), why(P), Q | Qs]),
 		agenda(respond(question(wh_question(supports(E, P, How)))))
 	]).
+
+integrate_user_negative_understanding_concerning_datum_with_datum_response_strategy :: ([
+	non_integrated_move(icm(understanding, negative)),
+	^previous_system_move(assert(E)),
+	qud([why(P), Q | _]),
+	$response_strategy(Q, datum),
+	^supports(E, P, _)
+	] ->
+	next_system_move(assert(P))).
 
 integrate_user_negative_understanding_concerning_warrant :: ([
 	non_integrated_move(icm(understanding, negative)),
@@ -172,32 +181,10 @@ respond_with_datum :: ([
 		next_system_move(Move)
 	]).
 
-respond_directly_with_atomic_answer_move :: ([
+respond_directly :: ([
 	agenda(respond(question(Q))),
 	$response_strategy(Q, direct),
-	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
-	$findall((P, Confidence), (
-		relevant_answer(Q, P),
-		question_and_answer_match_wrt_evidence_strategy(Q, P),
-		belief(P, Confidence),
-		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
-	), PsAndConfidences),
-	$select_answer(PsAndConfidences, P, Confidence),
-	$hedge_level(Confidence, Hedge),
-	$answer_move(Q, P, Hedge, Move)
-	] ->
-	next_system_move(Move)).
-
-respond_directly_with_conjunction :: ([
-	agenda(respond(question(Q))),
-	$response_strategy(Q, direct),
-	answer_delivery_strategy(Q, single_turn),
-	$findall(P, (
-		belief(P, _),
-		relevant_answer(Q, P),
-		question_and_answer_match_wrt_evidence_strategy(Q, P)
-	), Ps),
-	$answer_move(Q, Ps, Move)
+	$direct_response_move(Q, Move)
 	] ->
 	next_system_move(Move)).
 
@@ -226,6 +213,28 @@ utter_and_remember :: ([
 
 
 % Helper relations
+
+direct_response_move(Q, Move) :-
+	@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _),
+	findall((P, Confidence), (
+		relevant_answer(Q, P),
+		question_and_answer_match_wrt_evidence_strategy(Q, P),
+		belief(P, Confidence),
+		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
+	), PsAndConfidences),
+	select_answer(PsAndConfidences, P, Confidence),
+	hedge_level(Confidence, Hedge),
+	answer_move(Q, P, Hedge, Move).
+
+direct_response_move(Q, Move) :-
+	@answer_delivery_strategy(Q, single_turn),
+	findall(P, (
+		belief(P, _),
+		relevant_answer(Q, P),
+		question_and_answer_match_wrt_evidence_strategy(Q, P)
+	), Ps),
+	answer_move(Q, Ps, Move).
+
 
 relevant_answer(Q, not(P)) :-
 	nonvar(P),
@@ -279,9 +288,9 @@ question_and_answer_match_wrt_evidence_strategy(Q, P) :-
 
 
 response_strategy(Q, Strategy) :-
-	@response_strategy(Q, Strategy), !.
-
-response_strategy(_, direct).
+	( @response_strategy(Q, DeclaredStrategy) ->
+		Strategy = DeclaredStrategy
+	; Strategy = direct ).
 
 
 evidence_strategy(why(P), Strategy) :-
