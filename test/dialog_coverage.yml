@@ -1,6 +1,6 @@
 confirmation_of_prediction:
   facts:
- - extraverted(this_person)
+  - extraverted(this_person)
   turns:
   - U ask(boolean_question(extraverted(this_person)))
   - S confirm(extraverted(this_person))
