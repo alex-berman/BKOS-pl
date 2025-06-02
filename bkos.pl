@@ -83,11 +83,11 @@ integrate_user_negative_understanding_concerning_claim :: ([
 integrate_user_negative_understanding_concerning_enthymeme :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
-	qud([why(P)|Qs]),
-	$argumentative_strategy(why(P), claim_then_datum)
+	qud([why(P), Q | Qs]),
+	$response_strategy(Q, direct)
 	] ->
 	[
-		qud([wh_question(supports(E, P, How)), P, Qs]),
+		qud([wh_question(supports(E, P, How)), why(P), Q | Qs]),
 		agenda(respond(question(wh_question(supports(E, P, How)))))
 	]).
 
@@ -127,7 +127,7 @@ emit_icm_for_no_additional_answer :: ([
 	requested_continuation(question(Q)),
 	$(\+ (
 		relevant_answer(Q, P),
-		question_and_answer_match_wrt_argumentative_strategy(Q, P),
+		question_and_answer_match_wrt_evidence_strategy(Q, P),
 		@P,
 		\+ @asserted(P)
 	))
@@ -136,7 +136,7 @@ emit_icm_for_no_additional_answer :: ([
 
 respond_with_inference :: ([
 	agenda(respond(question(Q))),
-	^argumentative_strategy(Q, inference_from_datum_to_claim),
+	^response_strategy(Q, inference),
 	$relevant_answer(Q, P),
 	$belief(P, Confidence),
 	$hedge_level(Confidence, Hedge),
@@ -148,9 +148,9 @@ respond_with_inference :: ([
 		next_system_move(infer(Datum, AnswerMove))
 	]).
 
-respond_with_datum_before_claim :: ([
+respond_with_datum :: ([
 	agenda(respond(question(Q))),
-	^argumentative_strategy(Q, datum_then_claim),
+	^response_strategy(Q, datum),
 	$relevant_answer(Q, P),
 	$supports_directly_or_indirectly(Datum, P),
 	$belief(Datum, Confidence),
@@ -162,12 +162,13 @@ respond_with_datum_before_claim :: ([
 		next_system_move(Move)
 	]).
 
-respond_with_atomic_answer_move :: ([
+respond_directly_with_atomic_answer_move :: ([
 	agenda(respond(question(Q))),
+	$response_strategy(Q, direct),
 	$(@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _)),
 	$findall((P, Confidence), (
 		relevant_answer(Q, P),
-		question_and_answer_match_wrt_argumentative_strategy(Q, P),
+		question_and_answer_match_wrt_evidence_strategy(Q, P),
 		belief(P, Confidence),
 		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
 	), PsAndConfidences),
@@ -177,13 +178,14 @@ respond_with_atomic_answer_move :: ([
 	] ->
 	next_system_move(Move)).
 
-respond_with_conjunction :: ([
+respond_directly_with_conjunction :: ([
 	agenda(respond(question(Q))),
+	$response_strategy(Q, direct),
 	answer_delivery_strategy(Q, single_turn),
 	$findall(P, (
 		belief(P, _),
 		relevant_answer(Q, P),
-		question_and_answer_match_wrt_argumentative_strategy(Q, P)
+		question_and_answer_match_wrt_evidence_strategy(Q, P)
 	), Ps),
 	$answer_move(Q, Ps, Move)
 	] ->
@@ -261,25 +263,31 @@ select_answer(PsAndConfidences, P, Confidence) :-
 select_answer([(P, Confidence)|_], P, Confidence).
 
 
-question_and_answer_match_wrt_argumentative_strategy(Q, P) :-
-	argumentative_strategy(Q, Strategy),
-	answer_matches_argumenative_strategy(P, Strategy).
+question_and_answer_match_wrt_evidence_strategy(Q, P) :-
+	evidence_strategy(Q, Strategy),
+	answer_matches_evidence_strategy(P, Strategy).
 
 
-argumentative_strategy(why(P), Strategy) :-
+response_strategy(Q, Strategy) :-
+	@response_strategy(Q, Strategy), !.
+
+response_strategy(_, direct).
+
+
+evidence_strategy(why(P), Strategy) :-
 	relevant_answer(Q, P),
 	!,
-	( @argumentative_strategy(Q, Strategy) -> true ; Strategy = claim_then_datum ).
+	( @evidence_strategy(Q, Strategy) -> true ; Strategy = datum ).
 
-argumentative_strategy(_, none).
+evidence_strategy(_, none).
 
 
-answer_matches_argumenative_strategy(_, none).
+answer_matches_evidence_strategy(_, none).
 
-answer_matches_argumenative_strategy(P, claim_then_datum) :-
+answer_matches_evidence_strategy(P, datum) :-
 	P \= supports(_, _, _).
 
-answer_matches_argumenative_strategy(supports(_, _, _), claim_then_warrant).
+answer_matches_evidence_strategy(supports(_, _, _), warrant).
 
 
 answer_move(Q, P, none, Move) :-
