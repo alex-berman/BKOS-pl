@@ -80,15 +80,28 @@ integrate_user_negative_understanding_concerning_claim :: ([
 		agenda(respond(question(why(P))))
 	]).
 
-integrate_user_negative_understanding_concerning_enthymeme :: ([
+integrate_user_negative_understanding_concerning_datum :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
 	qud([why(P), Q | Qs]),
-	$response_strategy(Q, direct)
+	$response_strategy(Q, direct),
+	$evidence_strategy(why(P), datum)
 	] ->
 	[
 		qud([wh_question(supports(E, P, How)), why(P), Q | Qs]),
 		agenda(respond(question(wh_question(supports(E, P, How)))))
+	]).
+
+integrate_user_negative_understanding_concerning_warrant :: ([
+	non_integrated_move(icm(understanding, negative)),
+	^previous_system_move(assert(supports(E, P, _))),
+	qud([why(P), Q | Qs]),
+	$response_strategy(Q, direct),
+	$relevant_answer(DatumQ, E)
+	] ->
+	[
+		qud([DatumQ, why(P), Q | Qs]),
+		agenda(respond(question(DatumQ)))
 	]).
 
 integrate_user_negative_understanding_concerning_inference :: ([
@@ -277,7 +290,9 @@ response_strategy(_, direct).
 evidence_strategy(why(P), Strategy) :-
 	relevant_answer(Q, P),
 	!,
-	( @evidence_strategy(Q, Strategy) -> true ; Strategy = datum ).
+	( @evidence_strategy(Q, DeclaredStrategy) ->
+		Strategy = DeclaredStrategy
+	; Strategy = datum ).
 
 evidence_strategy(_, none).
 
