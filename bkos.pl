@@ -95,14 +95,11 @@ integrate_user_negative_understanding_concerning_datum :: ([
 integrate_user_negative_understanding_concerning_warrant :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(supports(E, P, _))),
-	qud([why(P), Q | Qs]),
+	qud([why(P), Q | _]),
 	$response_strategy(Q, direct),
-	$relevant_answer(DatumQ, E)
+	^E
 	] ->
-	[
-		qud([DatumQ, why(P), Q | Qs]),
-		agenda(respond(question(DatumQ)))
-	]).
+		next_system_move(assert(E))).
 
 integrate_user_negative_understanding_concerning_inference :: ([
 	non_integrated_move(icm(understanding, negative)),
@@ -325,9 +322,14 @@ compatible_with_facts(P) :-
 
 
 contradicts(not(P), P).
+
 contradicts(P, not(P)).
+
 contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
 	contradicts(Q1, Q2).
+
+contradicts(relative_value(Feature, Individual, Value1), relative_value(Feature, Individual, Value2)) :-
+	Value1 \== Value2.
 
 
 belief(P, none) :-
