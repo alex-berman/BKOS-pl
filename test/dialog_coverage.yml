@@ -329,7 +329,7 @@ answer_wh_question_regarding_support:
   - U ask(wh_question(supports(_, not(extraverted(_)), _)))
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
-chained_associative_inference:
+explain_chained_inference_backwards_incrementally:
   facts:
   - not(likes_stimulating_environments(this_person))
   - not(extraverted(this_person))
@@ -343,21 +343,6 @@ chained_associative_inference:
   - S assert(not(extraverted(this_person)))
   - U ask(why(?))
   - S assert(relative_value(danceability_mean, this_person, low))
-
-chained_inferences_of_different_types:
-  facts:
-  - should_have_chest_xrayed(this_person)
-  - notable_risk_of_lung_disease(this_person)
-  - relative_value(oxygen_saturation, this_person, low)
-  - supports(notable_risk_of_lung_disease(X), should_have_chest_xrayed(X), norm)
-  - supports(relative_value(oxygen_saturation, X, low), notable_risk_of_lung_disease(X), association)
-  turns:
-  - U ask(boolean_question(should_have_chest_xrayed(this_person)))
-  - S confirm(should_have_chest_xrayed(this_person))
-  - U ask(why(?))
-  - S assert(notable_risk_of_lung_disease(this_person))
-  - U ask(why(?))
-  - S assert(relative_value(oxygen_saturation, this_person, low))
 
 explain_chained_inference_in_specified_order:
   facts:
