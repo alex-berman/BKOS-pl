@@ -245,7 +245,7 @@ confirmation_of_prediction_weak_hedge:
   - U ask(boolean_question(extraverted(this_person)))
   - S hedge(confirm(extraverted(this_person)), weak)
 
-multiple_explanantia:
+multiple_explanantia_in_separate_turns:
   facts:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
@@ -286,6 +286,22 @@ sub_dialog:
   - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
   - U request_continuation(ask(why(?)))
   - S assert(relative_value(energy_mean, this_person, high))
+  - U request_continuation(ask(why(?)))
+  - S icm(acceptance, negative, no_additional_answers(why(not(extraverted(this_person)))))
+
+multiple_explanantia_in_single_turn:
+  facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - relative_value(energy_mean, this_person, high)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
+  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
+  turns:
+  - U ask(boolean_question(extraverted(this_person)))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask(why(?))
+  - S assert([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)])
   - U request_continuation(ask(why(?)))
   - S icm(acceptance, negative, no_additional_answers(why(not(extraverted(this_person)))))
 
@@ -386,7 +402,7 @@ warrant_evidence_strategy:
   - U icm(understanding, negative)
   - S assert(relative_value(danceability_mean, this_person, low))
 
-respond_and_explain_concurrently:
+explain_with_inference:
   facts:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)

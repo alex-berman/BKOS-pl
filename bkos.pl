@@ -147,7 +147,7 @@ emit_icm_for_no_additional_answer :: ([
 		relevant_answer(Q, P),
 		question_and_answer_match_wrt_evidence_strategy(Q, P),
 		@P,
-		\+ @asserted(P)
+		\+ asserted(P)
 	))
 	]
 	-> next_system_move(icm(acceptance, negative, no_additional_answers(Q)))).
@@ -211,25 +211,36 @@ utter_and_remember :: ([
 % Helper relations
 
 direct_response_move(Q, Move) :-
-	@answer_delivery_strategy(Q, incrementally) ; \+ @answer_delivery_strategy(Q, _),
+	response_delivery_strategy(Q, incrementally),
 	findall((P, Confidence), (
 		relevant_answer(Q, P),
 		question_and_answer_match_wrt_evidence_strategy(Q, P),
 		belief(P, Confidence),
-		(\+ @requested_continuation(question(Q)) ; \+ @asserted(P))
+		(\+ @requested_continuation(question(Q)) ; \+ asserted(P))
 	), PsAndConfidences),
 	select_answer(PsAndConfidences, P, Confidence),
 	hedge_level(Confidence, Hedge),
 	answer_move(Q, P, Hedge, Move).
 
 direct_response_move(Q, Move) :-
-	@answer_delivery_strategy(Q, single_turn),
+	response_delivery_strategy(Q, single_turn),
 	findall(P, (
 		belief(P, _),
 		relevant_answer(Q, P),
 		question_and_answer_match_wrt_evidence_strategy(Q, P)
 	), Ps),
 	answer_move(Q, Ps, Move).
+
+
+response_delivery_strategy(why(P), Strategy) :-
+	relevant_answer(Q, P),
+	!,
+	(@explanation_delivery_strategy(Q, DeclaredStrategy) -> Strategy = DeclaredStrategy
+	; Strategy = incrementally ).
+
+response_delivery_strategy(Q, Strategy) :-
+	(@answer_delivery_strategy(Q, DeclaredStrategy) -> Strategy = DeclaredStrategy
+	; Strategy = incrementally ).
 
 
 relevant_answer(Q, not(P)) :-
@@ -248,6 +259,14 @@ relevant_answer(why(Explanandum), supports(Antecedent, Consequent, How)) :-
 	unifiable(Consequent, Explanandum, _).
 
 relevant_answer(wh_question(P), P).
+
+
+asserted(P) :-
+	@asserted(Conjunction),
+	member(P, Conjunction).
+
+asserted(P) :-
+	@asserted(P).
 
 
 supports_directly_or_indirectly(P, Q) :-
