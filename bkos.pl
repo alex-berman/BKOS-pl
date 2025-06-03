@@ -235,11 +235,15 @@ direct_response_move(Q, Move) :-
 response_delivery_strategy(why(P), Strategy) :-
 	relevant_answer(Q, P),
 	!,
-	(@explanation_delivery_strategy(Q, DeclaredStrategy) -> Strategy = DeclaredStrategy
-	; Strategy = incrementally ).
+	explanation_delivery_strategy(Q, Strategy).
 
 response_delivery_strategy(Q, Strategy) :-
 	(@answer_delivery_strategy(Q, DeclaredStrategy) -> Strategy = DeclaredStrategy
+	; Strategy = incrementally ).
+
+
+explanation_delivery_strategy(Q, Strategy) :-
+	(@explanation_delivery_strategy(Q, DeclaredStrategy) -> Strategy = DeclaredStrategy
 	; Strategy = incrementally ).
 
 
@@ -400,6 +404,7 @@ presupposes(boolean_question(supports(_, Q, _)), Q).
 
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
+	explanation_delivery_strategy(Q, incrementally),
 	relevant_answer(Q, P),
 	@P,
 	@supports(Datum, P, _),
@@ -409,3 +414,11 @@ inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
 		Antecedent = Datum,
 		NewQUD = [why(P) | QUD]
 	).
+
+inference_answer(Q, QUD, infer(Data, P), [why(P) | QUD]) :-
+	explanation_delivery_strategy(Q, single_turn),
+	findall(Datum, (
+		relevant_answer(Q, P),
+		@P,
+		@supports(Datum, P, _)
+	), Data).

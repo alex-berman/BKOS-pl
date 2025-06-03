@@ -424,6 +424,35 @@ assert_warrant_in_response_to_negative_understanding_for_inference:
   - U icm(understanding, negative)
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
+combine_multiple_explanantia_in_inference:
+  facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - relative_value(energy_mean, this_person, high)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
+  - response_strategy(boolean_question(extraverted(_)), inference)
+  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
+  turns:
+  - U ask(boolean_question(extraverted(this_person)))
+  - S infer([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)], not(extraverted(this_person)))
+
+combine_multiple_explanantia_in_chained_inference:
+  facts:
+  - not(likes_stimulating_environments(this_person))
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - relative_value(energy_mean, this_person, high)
+  - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
+  - response_strategy(boolean_question(extraverted(_)), inference)
+  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
+  - response_strategy(boolean_question(likes_stimulating_environments(_)), inference)
+  turns:
+  - U ask(boolean_question(likes_stimulating_environments(this_person)))
+  - S infer(infer([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)], not(extraverted(this_person))), not(likes_stimulating_environments(this_person)))
+
 datum_response_strategy:
   facts:
   - not(extraverted(this_person))
