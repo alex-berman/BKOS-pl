@@ -112,9 +112,8 @@ integrate_user_negative_understanding_concerning_warrant :: ([
 
 integrate_user_negative_understanding_concerning_inference :: ([
 	non_integrated_move(icm(understanding, negative)),
-	^previous_system_move(infer(E, Move)),
-	qud([why(P)|Qs]),
-	$answer_move(_, P, Move)
+	^previous_system_move(infer(E, P)),
+	qud([why(P)|Qs])
 	] ->
 	[
 		qud([wh_question(supports(E, P, How)), P, Qs]),
@@ -156,15 +155,12 @@ emit_icm_for_no_additional_answer :: ([
 respond_with_inference :: ([
 	agenda(respond(question(Q))),
 	^response_strategy(Q, inference),
-	$relevant_answer(Q, P),
-	$belief(P, Confidence),
-	$hedge_level(Confidence, Hedge),
-	$answer_move(Q, P, Hedge, AnswerMove),
-	$supports_directly_or_indirectly(Datum, P),
-	qud(Qs)
-	] -> [
-		qud([why(P)|Qs]),
-		next_system_move(infer(Datum, AnswerMove))
+	qud(QUD),
+	$inference_answer(Q, QUD, AnswerMove, NewQUD)
+	] ->
+	[
+		qud(NewQUD),
+		next_system_move(AnswerMove)
 	]).
 
 respond_with_datum :: ([
@@ -382,3 +378,15 @@ presupposes(why(P), P).
 presupposes(wh_question(P), P).
 presupposes(boolean_question(supports(P, _, _)), P).
 presupposes(boolean_question(supports(_, Q, _)), Q).
+
+
+inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
+	relevant_answer(Q, P),
+	@P,
+	@supports(Datum, P, _),
+	( (relevant_answer(DatumQ, Datum), response_strategy(DatumQ, inference)) ->
+		inference_answer(DatumQ, [why(P) | QUD], Antecedent, NewQUD)
+	;
+		Antecedent = Datum,
+		NewQUD = [why(P) | QUD]
+	).
