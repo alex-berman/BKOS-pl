@@ -1,4 +1,4 @@
-:- module(dialog_testing, [get_test/2, run_test/1]).
+:- module(dialog_testing, [get_test/2, run_test_from_dict/1, run_test/2]).
 :- use_module(db).
 :- use_module(library(yaml)).
 :- use_module(isu_engine).
@@ -8,7 +8,12 @@ get_test(Name:Test, TestsPath) :-
     yaml_read(TestsPath, TestsDict),
     get_dict(Name, TestsDict, Test).
 
-run_test(Name:Test) :-
+run_test(TestsPath, Name) :-
+    yaml_read(TestsPath, TestsDict),
+    get_dict(Name, TestsDict, Test),
+    run_test_from_dict(Name:Test).
+
+run_test_from_dict(Name:Test) :-
     write('\nRunning test '), write(Name), nl, nl,
     clear_facts,
     assert_initial_facts,
