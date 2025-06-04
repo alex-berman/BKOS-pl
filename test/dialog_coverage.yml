@@ -338,8 +338,10 @@ reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
   - U ask(wh_question(support(rating(_,_), not(extraverted(this_person)), _)))
   - S icm(acceptance, negative, lack_knowledge(wh_question(support(rating(_,_), not(extraverted(this_person)), _))))
 
-answer_wh_question_regarding_support:
+answer_general_wh_question_regarding_support:
   facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
   - U ask(wh_question(supports(_, not(extraverted(_)), _)))
