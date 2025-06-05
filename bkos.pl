@@ -12,8 +12,18 @@ _ :: previous_system_move(none).
 
 clear_requested_continuation :: (requested_continuation(_) -> []).
 
-get_latest_move :: (
-	heard(Move) -> non_integrated_move(Move)).
+reject_move_with_presupposition_violation :: ([
+	heard(Move),
+	$get_dict(presuppositions, Move, Presuppositions),
+	$member(Presupposition, Presuppositions),
+	$(\+ compatible_with_facts(Presupposition))
+	] ->
+	next_system_move(icm(acceptance, negative, Presupposition))).
+
+get_move_content :: ([
+	heard(Move),
+	$get_dict(content, Move, Content)
+	] -> non_integrated_move(Content)).
 
 emit_move_on_agenda :: (
 	agenda(emit_move(Move)) ->
@@ -34,14 +44,6 @@ integrate_continuation_request :: (
 		non_integrated_goal(question(Q)),
 		requested_continuation(question(Q))
 	]).
-
-reject_question_with_false_presupposition :: ([
-	non_integrated_goal(question(Q)),
-	$presupposes(Q, P),
-	$(P \== ?),
-	$(\+ compatible_with_facts(P))
-	] ->
-	next_system_move(icm(acceptance, negative, P))).
 
 integrate_underspecified_user_question :: ([
 	non_integrated_goal(question(LiteralQuestion)),
@@ -295,7 +297,7 @@ answer_move(wh_question(P), Conjuncts, assert(Conjuncts)) :-
 
 select_answer(PsAndConfidences, P, Confidence) :-
 	@P,
-	member((P, Confidence), PsAndConfidences),
+		member((P, Confidence), PsAndConfidences),
 	!.
 
 select_answer([(P, Confidence)|_], P, Confidence).
@@ -395,12 +397,6 @@ resolve_underspecified_question(boolean_question(supports(P, Q, ?)), boolean_que
 	!.
 
 resolve_underspecified_question(boolean_question(supports(P, Q, ?)), boolean_question(supports(P, Q, _))).
-
-
-presupposes(why(P), P).
-presupposes(wh_question(P), P).
-presupposes(boolean_question(supports(P, _, _)), P).
-presupposes(boolean_question(supports(_, Q, _)), Q).
 
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-

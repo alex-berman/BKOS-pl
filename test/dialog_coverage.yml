@@ -83,11 +83,11 @@ datum_explanation_triggered_by_explicit_why_question_with_true_content:
   - U ask(why(not(extraverted(this_person))))
   - S assert(relative_value(danceability_mean, this_person, low))
 
-reject_why_question_with_false_content:
+reject_move_with_presupposition_violation:
   facts:
   - not(extraverted(this_person))
   turns:
-  - U ask(why(extraverted(this_person)))
+  - U move{ content:ask(why(extraverted(this_person))), presuppositions:[extraverted(this_person)] }
   - S icm(acceptance, negative, extraverted(this_person))
 
 answer_explicit_why_question_concerning_explanation:
@@ -102,19 +102,6 @@ answer_explicit_why_question_concerning_explanation:
   - S assert(relative_value(danceability_mean, this_person, low))
   - U ask(wh_question(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), X)))
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
-
-reject_explicit_why_question_concerning_false_explanation:
-  facts:
-  - not(extraverted(this_person))
-  - relative_value(danceability_mean, this_person, low)
-  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  turns:
-  - U ask(boolean_question(extraverted(this_person)))
-  - S disconfirm(not(extraverted(this_person)))
-  - U ask(why(not(extraverted(this_person))))
-  - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask(wh_question(supports(relative_value(danceability_mean, this_person, low), extraverted(this_person), X)))
-  - S icm(acceptance, negative, supports(relative_value(danceability_mean, this_person, low), extraverted(this_person), X))
 
 ignore_acknowledgement_from_user:
   facts:
@@ -196,24 +183,6 @@ disconfirmation_of_specific_support_of_unspecified_type:
   turns:
   - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
   - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
-
-reject_boolean_question_concerning_support_with_false_antecedent:
-  facts:
-  - not(extraverted(this_person))
-  - relative_value(danceability_mean, this_person, low)
-  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, this_person, high), not(extraverted(this_person)), ?)))
-  - S icm(acceptance, negative, relative_value(danceability_mean, this_person, high))
-
-reject_boolean_question_concerning_support_with_false_consequent:
-  facts:
-  - not(extraverted(this_person))
-  - relative_value(danceability_mean, this_person, low)
-  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, this_person, low), extraverted(this_person), ?)))
-  - S icm(acceptance, negative, extraverted(this_person))
 
 user_question_about_factors_considered:
   facts:

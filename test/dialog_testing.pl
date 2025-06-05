@@ -63,4 +63,11 @@ test_system_turn(ExpectedSystemMoveAtom) :-
 
 test_user_turn(UserMoveAtom) :-
     atom_to_term(UserMoveAtom, UserMove, _),
-    assert(@heard(UserMove)).
+    move_as_dict(UserMove, UserMoveAsDict),
+    assert(@heard(UserMoveAsDict)).
+
+move_as_dict(Dict, Dict) :-
+    is_dict(Dict),
+    !.
+
+move_as_dict(Content, move{content:Content}).
