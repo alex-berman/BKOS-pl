@@ -45,25 +45,24 @@ integrate_continuation_request :: (
 		requested_continuation(question(Q))
 	]).
 
-integrate_underspecified_user_question :: ([
-	non_integrated_goal(question(LiteralQuestion)),
-	$resolve_underspecified_question(LiteralQuestion, ResolvedQuestion),
+integrate_user_question :: ([
+	non_integrated_goal(question(PotentiallyUnderspecifiedQuestion)),
+	$resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion),
 	qud(Qs)
 	] -> [
 		qud([ResolvedQuestion|Qs]),
 		agenda(respond(question(ResolvedQuestion)))
 	]).
 
-specify_continuation_request :: ([
-	requested_continuation(question(LiteralQuestion)),
-	$resolve_underspecified_question(LiteralQuestion, ResolvedQuestion)
+resolve_continuation_request :: ([
+	requested_continuation(question(PotentiallyUnderspecifiedQuestion)),
+	$resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion)
 	]
 	-> requested_continuation(question(ResolvedQuestion))).
 
 integrate_other_user_goal :: ([
 	non_integrated_goal(question(Q)),
-	$(Q \= why(?)),
-	$(\+ (Q = why(P), \+ compatible_with_facts(P))),
+	$(Q \= wh_question(supports(_, ?, _))),
 	qud(Qs)
 	] -> [
 		qud([Q|Qs]),
@@ -74,30 +73,30 @@ integrate_user_negative_understanding_concerning_claim :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(M),
 	qud([Q|Qs]),
-	$(Q \= why(_)),
+	$(Q \= wh_question(supports(_, _, _))),
 	$answer_move(Q, P, M)
 	] ->
 	[
-		qud([why(P), Q|Qs]),
-		agenda(respond(question(why(P))))
+		qud([wh_question(supports(_, P, _)), Q|Qs]),
+		agenda(respond(question(wh_question(supports(_, P, _)))))
 	]).
 
 integrate_user_negative_understanding_concerning_datum_with_direct_response_strategy :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
-	qud([why(P), Q | Qs]),
+	qud([wh_question(supports(_, P, _)), Q | Qs]),
 	$response_strategy(Q, direct),
-	$evidence_strategy(why(P), datum)
+	$evidence_strategy(wh_question(supports(_, P, _)), datum)
 	] ->
 	[
-		qud([wh_question(supports(E, P, How)), why(P), Q | Qs]),
+		qud([wh_question(supports(E, P, How)), wh_question(supports(_, P, _)), Q | Qs]),
 		agenda(respond(question(wh_question(supports(E, P, How)))))
 	]).
 
 integrate_user_negative_understanding_concerning_datum_with_datum_response_strategy :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(E)),
-	qud([why(P), Q | _]),
+	qud([wh_question(supports(_, P, _)), Q | _]),
 	$response_strategy(Q, datum),
 	^supports(E, P, _)
 	] ->
@@ -106,7 +105,7 @@ integrate_user_negative_understanding_concerning_datum_with_datum_response_strat
 integrate_user_negative_understanding_concerning_warrant :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(assert(supports(E, P, _))),
-	qud([why(P), Q | _]),
+	qud([wh_question(supports(_, P, _)), Q | _]),
 	$response_strategy(Q, direct),
 	^E
 	] ->
@@ -115,7 +114,7 @@ integrate_user_negative_understanding_concerning_warrant :: ([
 integrate_user_negative_understanding_concerning_inference :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(infer(E, P)),
-	qud([why(P)|Qs])
+	qud([wh_question(supports(_, P, _))|Qs])
 	] ->
 	[
 		qud([wh_question(supports(E, P, How)), P, Qs]),
@@ -172,10 +171,10 @@ respond_with_datum :: ([
 	$supports_directly_or_indirectly(Datum, P),
 	$belief(Datum, Confidence),
 	$hedge_level(Confidence, Hedge),
-	$answer_move(why(P), Datum, Hedge, Move),
+	$answer_move(wh_question(supports(_, P, _)), Datum, Hedge, Move),
 	qud(Qs)
 	] -> [
-		qud([why(P)|Qs]),
+		qud([wh_question(supports(_, P, _))|Qs]),
 		next_system_move(Move)
 	]).
 
@@ -227,14 +226,14 @@ direct_response_move(Q, Move) :-
 direct_response_move(Q, Move) :-
 	response_delivery_strategy(Q, single_turn),
 	findall(P, (
-		belief(P, _),
 		relevant_answer(Q, P),
-		question_and_answer_match_wrt_evidence_strategy(Q, P)
+		question_and_answer_match_wrt_evidence_strategy(Q, P),
+		belief(P, _)
 	), Ps),
 	answer_move(Q, Ps, Move).
 
 
-response_delivery_strategy(why(P), Strategy) :-
+response_delivery_strategy(wh_question(supports(_, P, _)), Strategy) :-
 	relevant_answer(Q, P),
 	!,
 	explanation_delivery_strategy(Q, Strategy).
@@ -257,14 +256,19 @@ relevant_answer(boolean_question(P), P).
 
 relevant_answer(boolean_question(P), not(P)).
 
-relevant_answer(why(Explanandum), Datum) :-
-	supports_directly_or_indirectly(Datum, Explanandum).
+relevant_answer(wh_question(supports(Antecedent, Explanandum, _)), Datum) :-
+	var(Antecedent),
+	ground(Explanandum),
+	supports_directly_or_indirectly(Datum, Explanandum),
+	unifiable(Antecedent, Datum, _).
 
-relevant_answer(why(Explanandum), supports(Antecedent, Consequent, How)) :-
+relevant_answer(wh_question(supports(Datum, Explanandum, _)), supports(Antecedent, Consequent, How)) :-
 	@supports(Antecedent, Consequent, How),
+	unifiable(Antecedent, Datum, _),
 	unifiable(Consequent, Explanandum, _).
 
-relevant_answer(wh_question(P), P).
+relevant_answer(wh_question(P), P) :-
+	P \= support(_, _, _).
 
 
 asserted(P) :-
@@ -287,7 +291,7 @@ answer_move(boolean_question(P), P, confirm(P)).
 
 answer_move(boolean_question(P), not(P), disconfirm(not(P))).
 
-answer_move(why(_), P, assert(P)).
+answer_move(wh_question(supports(_, _, _)), P, assert(P)).
 
 answer_move(wh_question(P), P, assert(P)).
 
@@ -314,7 +318,9 @@ response_strategy(Q, Strategy) :-
 	; Strategy = direct ).
 
 
-evidence_strategy(why(P), Strategy) :-
+evidence_strategy(wh_question(supports(Antecedent, P, _)), Strategy) :-
+	var(Antecedent),
+	ground(P),
 	relevant_answer(Q, P),
 	!,
 	( @evidence_strategy(Q, DeclaredStrategy) ->
@@ -356,6 +362,7 @@ contradicts(not(P), P).
 contradicts(P, not(P)).
 
 contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
+	ground(P),
 	contradicts(Q1, Q2).
 
 contradicts(relative_value(Feature, Individual, Value1), relative_value(Feature, Individual, Value2)) :-
@@ -382,13 +389,13 @@ hedge_level(Confidence, medium) :-
 hedge_level(_, weak).
 
 
-resolve_underspecified_question(why(?), why(P)) :-
-	@requested_continuation(question(why(?))),
+resolve_underspecified_question(wh_question(supports(_, ?, _)), wh_question(supports(_, P, _))) :-
+	@requested_continuation(question(wh_question(supports(_, ?, _)))),
 	@qud(Qs),
-	member(why(P), Qs),
+	member(wh_question(supports(_, P, _)), Qs),
 	!.
 
-resolve_underspecified_question(why(?), why(P)) :-
+resolve_underspecified_question(wh_question(supports(_, ?, _)), wh_question(supports(_, P, _))) :-
 	@previous_system_move(M),
 	constative_content(M, P).
 
@@ -405,13 +412,13 @@ inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
 	@P,
 	@supports(Datum, P, _),
 	( (relevant_answer(DatumQ, Datum), response_strategy(DatumQ, inference)) ->
-		inference_answer(DatumQ, [why(P) | QUD], Antecedent, NewQUD)
+		inference_answer(DatumQ, [wh_question(supports(_, P, _)) | QUD], Antecedent, NewQUD)
 	;
 		Antecedent = Datum,
-		NewQUD = [why(P) | QUD]
+		NewQUD = [wh_question(supports(_, P, _)) | QUD]
 	).
 
-inference_answer(Q, QUD, infer(Data, P), [why(P) | QUD]) :-
+inference_answer(Q, QUD, infer(Data, P), [wh_question(supports(_, P, _)) | QUD]) :-
 	explanation_delivery_strategy(Q, single_turn),
 	findall(Datum, (
 		relevant_answer(Q, P),
