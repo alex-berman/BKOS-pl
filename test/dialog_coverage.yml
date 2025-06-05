@@ -181,7 +181,7 @@ disconfirmation_of_specific_support_of_specified_type:
   - relative_value(danceability_mean, this_person, low)
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - supports(relative_value(energy_mean, this_person, high), extraverted(X), association)
+  - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
   - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), association)))
   - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), association)))
@@ -192,7 +192,7 @@ disconfirmation_of_specific_support_of_unspecified_type:
   - relative_value(danceability_mean, this_person, low)
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - supports(relative_value(energy_mean, this_person, high), extraverted(X), association)
+  - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
   - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
   - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
