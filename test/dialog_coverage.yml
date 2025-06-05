@@ -72,7 +72,7 @@ negative_understanding_feedback_when_no_interpretation:
   - U none
   - S icm(understanding, negative)
 
-datum_explanation_triggered_by_explicit_why_question_with_true_content:
+datum_explanation_triggered_by_explicit_why_question:
   facts:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
