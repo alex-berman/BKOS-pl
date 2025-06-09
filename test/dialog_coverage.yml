@@ -470,3 +470,14 @@ reject_causal_question:
   - S assert(relative_value(danceability_mean, this_person, low))
   - U ask(wh_question(causes(_, relative_value(danceability_mean, this_person, low))))
   - S icm(acceptance, negative, lack_knowledge(wh_question(causes(_, relative_value(danceability_mean, this_person, low)))))
+
+treat_causal_question_concerning_claim_as_question_concerning_support:
+  facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  turns:
+  - U ask(boolean_question(extraverted(this_person)))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask(causes(_, ?))
+  - S assert(relative_value(danceability_mean, this_person, low))

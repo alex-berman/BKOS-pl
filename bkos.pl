@@ -60,9 +60,9 @@ resolve_continuation_request :: ([
 	]
 	-> requested_continuation(question(ResolvedQuestion))).
 
-integrate_other_user_goal :: ([
+integrate_other_user_question :: ([
 	non_integrated_goal(question(Q)),
-	$(Q \= wh_question(supports(_, ?, _))),
+	$(\+ is_anaphoric(Q)),
 	qud(Qs)
 	] -> [
 		qud([Q|Qs]),
@@ -209,7 +209,7 @@ utter_and_remember :: ([
 	]).
 
 
-% Helper relations
+% Host logic
 
 direct_response_move(Q, Move) :-
 	response_delivery_strategy(Q, incrementally),
@@ -425,3 +425,16 @@ inference_answer(Q, QUD, infer(Data, P), [wh_question(supports(_, P, _)) | QUD])
 		@P,
 		@supports(Datum, P, _)
 	), Data).
+
+
+is_anaphoric(X) :-
+    X == ?,
+    !.
+
+is_anaphoric(Term) :-
+    compound(Term),
+    Term =.. [_Functor | Args],
+    member(Arg, Args),
+    is_anaphoric(Arg),
+    !.
+
