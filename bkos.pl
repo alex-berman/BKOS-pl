@@ -62,7 +62,7 @@ resolve_continuation_request :: ([
 
 integrate_other_user_goal :: ([
 	non_integrated_goal(question(Q)),
-	$(Q \= wh_question(supports(_, ?, _))),
+	$(Q \= [E, H]^supports(E, ?, H)),
 	qud(Qs)
 	] -> [
 		qud([Q|Qs]),
@@ -73,52 +73,52 @@ integrate_user_negative_understanding_concerning_claim :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(M),
 	qud([Q|Qs]),
-	$(Q \= wh_question(supports(_, _, _))),
+	$(Q \= [E, H]^supports(E, _, H)),
 	$answer_move(Q, P, M)
 	] ->
 	[
-		qud([wh_question(supports(_, P, _)), Q|Qs]),
-		agenda(respond(question(wh_question(supports(_, P, _)))))
+		qud([[E, H]^supports(E, P, H), Q | Qs]),
+		agenda(respond(question([E, H]^supports(E, P, H))))
 	]).
 
 integrate_user_negative_understanding_concerning_datum_with_direct_response_strategy :: ([
 	non_integrated_move(icm(understanding, negative)),
-	^previous_system_move(assert(E)),
-	qud([wh_question(supports(_, P, _)), Q | Qs]),
+	^previous_system_move(assert(PreviouslyAssertedDatum)),
+	qud([[E, H]^supports(E, P, H), Q | Qs]),
 	$response_strategy(Q, direct),
-	$evidence_strategy(wh_question(supports(_, P, _)), datum)
+	$evidence_strategy([E, H]^supports(E, P, H), datum)
 	] ->
 	[
-		qud([wh_question(supports(E, P, How)), wh_question(supports(_, P, _)), Q | Qs]),
-		agenda(respond(question(wh_question(supports(E, P, How)))))
+		qud([[H]^supports(PreviouslyAssertedDatum, P, H), [E, H]^supports(E, P, H), Q | Qs]),
+		agenda(respond(question([H]^supports(PreviouslyAssertedDatum, P, H))))
 	]).
 
 integrate_user_negative_understanding_concerning_datum_with_datum_response_strategy :: ([
 	non_integrated_move(icm(understanding, negative)),
-	^previous_system_move(assert(E)),
-	qud([wh_question(supports(_, P, _)), Q | _]),
+	^previous_system_move(assert(PreviouslyAssertedDatum)),
+	qud([[E, H]^supports(E, P, H), Q | _]),
 	$response_strategy(Q, datum),
-	^supports(E, P, _)
+	^supports(PreviouslyAssertedDatum, P, _)
 	] ->
 	next_system_move(assert(P))).
 
 integrate_user_negative_understanding_concerning_warrant :: ([
 	non_integrated_move(icm(understanding, negative)),
-	^previous_system_move(assert(supports(E, P, _))),
-	qud([wh_question(supports(_, P, _)), Q | _]),
+	^previous_system_move(assert(supports(Datum, P, _))),
+	qud([[E, H]^supports(E, P, H), Q | _]),
 	$response_strategy(Q, direct),
 	^E
 	] ->
-		next_system_move(assert(E))).
+		next_system_move(assert(Datum))).
 
 integrate_user_negative_understanding_concerning_inference :: ([
 	non_integrated_move(icm(understanding, negative)),
-	^previous_system_move(infer(E, P)),
-	qud([wh_question(supports(_, P, _))|Qs])
+	^previous_system_move(infer(Antecedent, P)),
+	qud([[E, H]^supports(E, P, H) | Qs])
 	] ->
 	[
-		qud([wh_question(supports(E, P, How)), P, Qs]),
-		agenda(respond(question(wh_question(supports(E, P, How)))))
+		qud([[H]^supports(Antecedent, P, How), P, Qs]),
+		agenda(respond(question([H]^supports(Antecedent, P, How))))
 	]).
 
 integrate_user_positive_acceptance :: (
@@ -126,8 +126,9 @@ integrate_user_positive_acceptance :: (
 	[]).
 
 deduce_negation :: ([
-	^agenda(respond(question(boolean_question(P)))),
-	$(\+ (belief(F, _), relevant_answer(boolean_question(P), F)))
+	^agenda(respond(question(P))),
+	$is_polar_question(P),
+	$(\+ (belief(F, _), relevant_answer(P, F)))
 	] ->
 	not(P)).
 
@@ -171,10 +172,10 @@ respond_with_datum :: ([
 	$supports_directly_or_indirectly(Datum, P),
 	$belief(Datum, Confidence),
 	$hedge_level(Confidence, Hedge),
-	$answer_move(wh_question(supports(_, P, _)), Datum, Hedge, Move),
+	$answer_move([E, H]^supports(E, P, H), Datum, Hedge, Move),
 	qud(Qs)
 	] -> [
-		qud([wh_question(supports(_, P, _))|Qs]),
+		qud([[E, H]^supports(E, P, H) | Qs]),
 		next_system_move(Move)
 	]).
 
@@ -233,7 +234,7 @@ direct_response_move(Q, Move) :-
 	answer_move(Q, Ps, Move).
 
 
-response_delivery_strategy(wh_question(supports(_, P, _)), Strategy) :-
+response_delivery_strategy([E, H]^supports(E, P, H), Strategy) :-
 	relevant_answer(Q, P),
 	!,
 	explanation_delivery_strategy(Q, Strategy).
@@ -252,23 +253,31 @@ relevant_answer(Q, not(P)) :-
 	nonvar(P),
     relevant_answer(Q, P).
 
-relevant_answer(boolean_question(P), P).
+relevant_answer(P, P) :-
+	is_polar_question(P).
 
-relevant_answer(boolean_question(P), not(P)).
+relevant_answer(P, not(P)) :-
+	is_polar_question(P).
 
-relevant_answer(wh_question(supports(Antecedent, Explanandum, _)), Datum) :-
-	var(Antecedent),
+relevant_answer([E, H]^supports(E, Explanandum, H), Datum) :-
 	ground(Explanandum),
-	supports_directly_or_indirectly(Datum, Explanandum),
-	unifiable(Antecedent, Datum, _).
+	supports_directly_or_indirectly(Datum, Explanandum).
 
-relevant_answer(wh_question(supports(Datum, Explanandum, _)), supports(Antecedent, Consequent, How)) :-
-	@supports(Antecedent, Consequent, How),
-	unifiable(Antecedent, Datum, _),
-	unifiable(Consequent, Explanandum, _).
+relevant_answer([E, H]^supports(E, Explanandum, H), supports(Datum, Explanandum, How)) :-
+	@supports(Datum, Explanandum, How).
 
-relevant_answer(wh_question(P), P) :-
-	P \= support(_, _, _).
+relevant_answer([How]^supports(Datum, Explanandum, How), supports(Datum, Explanandum, How)) :-
+	@supports(Datum, Explanandum, How).
+
+relevant_answer(_^P, P) :-
+	P \= supports(_, _, _).
+
+
+is_polar_question(Q) :-
+	\+ is_wh_question(Q).
+
+
+is_wh_question(_^_).
 
 
 asserted(P) :-
@@ -287,15 +296,19 @@ supports_directly_or_indirectly(P, Q) :-
 	supports_directly_or_indirectly(P, R).
 
 
-answer_move(boolean_question(P), P, confirm(P)).
+answer_move(Q, P, confirm(P)) :-
+	is_polar_question(P),
+	P = Q.
 
-answer_move(boolean_question(P), not(P), disconfirm(not(P))).
+answer_move(Q, not(P), disconfirm(not(P))) :-
+	is_polar_question(P),
+	P = Q.
 
-answer_move(wh_question(supports(_, _, _)), P, assert(P)).
+answer_move(_^supports(_, _, _), P, assert(P)).
 
-answer_move(wh_question(P), P, assert(P)).
+answer_move(_^P, P, assert(P)).
 
-answer_move(wh_question(P), Conjuncts, assert(Conjuncts)) :-
+answer_move(_^P, Conjuncts, assert(Conjuncts)) :-
 	\+ ( member(Conjunct, Conjuncts), \+ unifiable(Conjunct, P, _) ).
 
 
@@ -318,8 +331,7 @@ response_strategy(Q, Strategy) :-
 	; Strategy = direct ).
 
 
-evidence_strategy(wh_question(supports(Antecedent, P, _)), Strategy) :-
-	var(Antecedent),
+evidence_strategy([E, H]^supports(E, P, H), Strategy) :-
 	ground(P),
 	relevant_answer(Q, P),
 	!,
@@ -389,21 +401,15 @@ hedge_level(Confidence, medium) :-
 hedge_level(_, weak).
 
 
-resolve_underspecified_question(wh_question(supports(_, ?, _)), wh_question(supports(_, P, _))) :-
-	@requested_continuation(question(wh_question(supports(_, ?, _)))),
+resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, H)) :-
+	@requested_continuation(question([E, H]^supports(E, ?, H))),
 	@qud(Qs),
-	member(wh_question(supports(_, P, _)), Qs),
+	member([E, H]^supports(E, P, H), Qs),
 	!.
 
-resolve_underspecified_question(wh_question(supports(_, ?, _)), wh_question(supports(_, P, _))) :-
+resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, H)) :-
 	@previous_system_move(M),
 	constative_content(M, P).
-
-resolve_underspecified_question(boolean_question(supports(P, Q, ?)), boolean_question(supports(P, Q, How))) :-
-	@supports(P, Q, How),
-	!.
-
-resolve_underspecified_question(boolean_question(supports(P, Q, ?)), boolean_question(supports(P, Q, _))).
 
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
@@ -411,14 +417,15 @@ inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
 	relevant_answer(Q, P),
 	@P,
 	@supports(Datum, P, _),
+	NewQ = [E, H]^supports(E, P, H),
 	( (relevant_answer(DatumQ, Datum), response_strategy(DatumQ, inference)) ->
-		inference_answer(DatumQ, [wh_question(supports(_, P, _)) | QUD], Antecedent, NewQUD)
+		inference_answer(DatumQ, [NewQ | QUD], Antecedent, NewQUD)
 	;
 		Antecedent = Datum,
-		NewQUD = [wh_question(supports(_, P, _)) | QUD]
+		NewQUD = [NewQ | QUD]
 	).
 
-inference_answer(Q, QUD, infer(Data, P), [wh_question(supports(_, P, _)) | QUD]) :-
+inference_answer(Q, QUD, infer(Data, P), [[E, H]^supports(E, P, H) | QUD]) :-
 	explanation_delivery_strategy(Q, single_turn),
 	findall(Datum, (
 		relevant_answer(Q, P),

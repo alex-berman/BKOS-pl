@@ -2,14 +2,14 @@ confirmation_of_prediction:
   facts:
   - extraverted(this_person)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S confirm(extraverted(this_person))
 
 disconfirmation_of_prediction:
   facts:
   - not(extraverted(this_person))
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
 
 datum_explanation_triggered_by_implicit_why_question:
@@ -18,9 +18,9 @@ datum_explanation_triggered_by_implicit_why_question:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
 
 datum_explanation_triggered_by_negative_understanding:
@@ -29,14 +29,14 @@ datum_explanation_triggered_by_negative_understanding:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
   - U icm(understanding, negative)
   - S assert(relative_value(danceability_mean, this_person, low))
 
 negative_system_understanding_for_unresolvable_why_question:
   turns:
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S icm(understanding, negative)
 
 reject_unanswerable_implicit_why_question_concerning_warrant:
@@ -45,14 +45,14 @@ reject_unanswerable_implicit_why_question_concerning_warrant:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
   - U icm(understanding, negative)
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
-  - U ask(wh_question(supports(_, ?, _)))
-  - S icm(acceptance, negative, lack_knowledge(wh_question(supports(_, supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association), _))))
+  - U ask([E, H]^supports(E, ?, H))
+  - S icm(acceptance, negative, lack_knowledge([E, H]^supports(E, supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association), H)))
 
 warrant_assertion_triggered_by_negative_understanding:
   facts:
@@ -60,9 +60,9 @@ warrant_assertion_triggered_by_negative_understanding:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
   - U icm(understanding, negative)
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
@@ -78,16 +78,16 @@ datum_explanation_triggered_by_explicit_why_question:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, not(extraverted(this_person)), _)))
+  - U ask([E, H]^supports(E, not(extraverted(this_person)), H))
   - S assert(relative_value(danceability_mean, this_person, low))
 
 reject_move_with_presupposition_violation:
   facts:
   - not(extraverted(this_person))
   turns:
-  - U move{ content:ask(wh_question(supports(_, extraverted(this_person), _))), presuppositions:[extraverted(this_person)] }
+  - U move{ content:ask([E, H]^supports(E, extraverted(this_person), H)), presuppositions:[extraverted(this_person)] }
   - S icm(acceptance, negative, extraverted(this_person))
 
 answer_explicit_why_question_concerning_explanation:
@@ -96,11 +96,11 @@ answer_explicit_why_question_concerning_explanation:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, not(extraverted(this_person)), _)))
+  - U ask([E, H]^supports(E, not(extraverted(this_person)), H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask(wh_question(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), X)))
+  - U ask([H]^supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), H))
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
 ignore_acknowledgement_from_user:
@@ -109,39 +109,39 @@ ignore_acknowledgement_from_user:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
   - U icm(acceptance, positive)
   - S
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
 
 confirmation_of_general_support_of_specified_type:
   facts:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)))
+  - U ask(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
   - S confirm(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
 confirmation_of_general_support_of_unspecified_type:
   facts:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), ?)))
+  - U ask(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), _))
   - S confirm(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
 disconfirmation_of_general_support_of_unspecified_type:
   facts:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, X, low), extraverted(X), ?)))
+  - U ask(supports(relative_value(danceability_mean, X, low), extraverted(X), _))
   - S disconfirm(not(supports(relative_value(danceability_mean, X, low), extraverted(X), _)))
 
 disconfirmation_of_general_support_of_specified_type:
   facts:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, X, low), extraverted(X), association)))
+  - U ask(supports(relative_value(danceability_mean, X, low), extraverted(X), association))
   - S disconfirm(not(supports(relative_value(danceability_mean, X, low), extraverted(X), association)))
 
 confirmation_of_specific_support_of_specified_type:
@@ -150,7 +150,7 @@ confirmation_of_specific_support_of_specified_type:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), association)))
+  - U ask(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), association))
   - S confirm(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), association))
 
 confirmation_of_specific_support_of_unspecified_type:
@@ -159,7 +159,7 @@ confirmation_of_specific_support_of_unspecified_type:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), ?)))
+  - U ask(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), _))
   - S confirm(supports(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)), association))
 
 disconfirmation_of_specific_support_of_specified_type:
@@ -170,7 +170,7 @@ disconfirmation_of_specific_support_of_specified_type:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), association)))
+  - U ask(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), association))
   - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), association)))
 
 disconfirmation_of_specific_support_of_unspecified_type:
@@ -181,16 +181,16 @@ disconfirmation_of_specific_support_of_unspecified_type:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
-  - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), ?)))
+  - U ask(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), _))
+  - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), _)))
 
 user_question_about_factors_considered:
   facts:
   - factor_considered(danceability_mean)
   - factor_considered(energy_mean)
-  - answer_delivery_strategy(wh_question(factor_considered(_)), single_turn)
+  - answer_delivery_strategy([X]^factor_considered(X), single_turn)
   turns:
-  - U ask(wh_question(factor_considered(_)))
+  - U ask([X]^factor_considered(X))
   - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
 
 acknowledge_user_assertions:
@@ -204,14 +204,14 @@ confirmation_of_prediction_strong_hedge:
   facts:
   - confidence(extraverted(this_person), 0.95)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S hedge(confirm(extraverted(this_person)), strong)
 
 confirmation_of_prediction_weak_hedge:
   facts:
   - confidence(extraverted(this_person), 0.05)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S hedge(confirm(extraverted(this_person)), weak)
 
 multiple_explanantia_in_separate_turns:
@@ -222,18 +222,18 @@ multiple_explanantia_in_separate_turns:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S assert(relative_value(energy_mean, this_person, high))
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
-  - S icm(acceptance, negative, no_additional_answers(wh_question(supports(_, not(extraverted(this_person)), _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
+  - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
 
 negative_system_understanding_for_contextless_continuation_request_from_user:
   turns:
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S icm(understanding, negative)
 
 sub_dialog:
@@ -245,18 +245,18 @@ sub_dialog:
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
   - factor_considered(danceability_mean)
   - factor_considered(energy_mean)
-  - answer_delivery_strategy(wh_question(factor_considered(_)), single_turn)
+  - answer_delivery_strategy([X]^factor_considered(X), single_turn)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask(wh_question(factor_considered(_)))
+  - U ask([X]^factor_considered(X))
   - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S assert(relative_value(energy_mean, this_person, high))
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
-  - S icm(acceptance, negative, no_additional_answers(wh_question(supports(_, not(extraverted(this_person)), _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
+  - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
 
 multiple_explanantia_in_single_turn:
   facts:
@@ -265,22 +265,22 @@ multiple_explanantia_in_single_turn:
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
-  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
+  - explanation_delivery_strategy(extraverted(this_person), single_turn)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)])
-  - U request_continuation(ask(wh_question(supports(_, ?, _))))
-  - S icm(acceptance, negative, no_additional_answers(wh_question(supports(_, not(extraverted(this_person)), _))))
+  - U request_continuation(ask([E, H]^supports(E, ?, H)))
+  - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
 
 previous_unresolvable_question_does_not_block_response_for_answerable_question:
   facts:
   - extraverted(this_person)
   turns:
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S icm(understanding, negative)
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S confirm(extraverted(this_person))
 
 reject_unanswerable_explicit_why_question_concerning_fact:
@@ -289,12 +289,12 @@ reject_unanswerable_explicit_why_question_concerning_fact:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask(wh_question(supports(_, relative_value(danceability_mean, this_person, low), _)))
-  - S icm(acceptance, negative, lack_knowledge(wh_question(supports(_, relative_value(danceability_mean, this_person, low), _))))
+  - U ask([E, H]^supports(E, relative_value(danceability_mean, this_person, low), H))
+  - S icm(acceptance, negative, lack_knowledge([E, H]^supports(E, relative_value(danceability_mean, this_person, low), H)))
 
 reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
   facts:
@@ -302,10 +302,10 @@ reject_unanswerable_explicit_wh_question_concerning_support_for_claim:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(rating(_,_), not(extraverted(this_person)), _)))
-  - S icm(acceptance, negative, lack_knowledge(wh_question(supports(rating(_,_), not(extraverted(this_person)), _))))
+  - U ask((Track,Rating,H)^supports(rating(Track, Rating), not(extraverted(this_person)), H))
+  - S icm(acceptance, negative, lack_knowledge((Track,Rating,H)^supports(rating(Track, Rating), not(extraverted(this_person)), H)))
 
 answer_general_wh_question_regarding_support:
   facts:
@@ -313,7 +313,7 @@ answer_general_wh_question_regarding_support:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(wh_question(supports(_, not(extraverted(_)), _)))
+  - U ask([E, H]^supports(E, not(extraverted(_)), H))
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
 
 explain_chained_inference_backwards_incrementally:
@@ -324,11 +324,11 @@ explain_chained_inference_backwards_incrementally:
   - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(likes_stimulating_environments(this_person)))
+  - U ask(likes_stimulating_environments(this_person))
   - S disconfirm(not(likes_stimulating_environments(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
 
 explain_chained_inference_in_specified_order:
@@ -339,11 +339,11 @@ explain_chained_inference_in_specified_order:
   - supports(notable_risk_of_lung_disease(X), should_have_chest_xrayed(X), norm)
   - supports(relative_value(oxygen_saturation, X, low), notable_risk_of_lung_disease(X), association)
   turns:
-  - U ask(boolean_question(should_have_chest_xrayed(this_person)))
+  - U ask(should_have_chest_xrayed(this_person))
   - S confirm(should_have_chest_xrayed(this_person))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(oxygen_saturation, this_person, low))
-  - U ask(boolean_question(supports(relative_value(oxygen_saturation, X, low), notable_risk_of_lung_disease(X), ?)))
+  - U ask(supports(relative_value(oxygen_saturation, X, low), notable_risk_of_lung_disease(X), _))
   - S confirm(supports(relative_value(oxygen_saturation, X, low), notable_risk_of_lung_disease(X), association))
 
 explain_chained_inference_in_single_turn:
@@ -353,10 +353,10 @@ explain_chained_inference_in_single_turn:
   - relative_value(danceability_mean, this_person, low)
   - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), inference)
-  - response_strategy(boolean_question(likes_stimulating_environments(_)), inference)
+  - response_strategy(extraverted(_), inference)
+  - response_strategy(likes_stimulating_environments(_), inference)
   turns:
-  - U ask(boolean_question(likes_stimulating_environments(this_person)))
+  - U ask(likes_stimulating_environments(this_person))
   - S infer(infer(relative_value(danceability_mean, this_person, low), not(extraverted(this_person))), not(likes_stimulating_environments(this_person)))
 
 warrant_evidence_strategy:
@@ -364,11 +364,11 @@ warrant_evidence_strategy:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - evidence_strategy(boolean_question(extraverted(_)), warrant)
+  - evidence_strategy(extraverted(_), warrant)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
   - U icm(understanding, negative)
   - S assert(relative_value(danceability_mean, this_person, low))
@@ -378,9 +378,9 @@ explain_with_inference:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), inference)
+  - response_strategy(extraverted(_), inference)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S infer(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)))
 
 assert_warrant_in_response_to_negative_understanding_for_inference:
@@ -388,9 +388,9 @@ assert_warrant_in_response_to_negative_understanding_for_inference:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), inference)
+  - response_strategy(extraverted(_), inference)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S infer(relative_value(danceability_mean, this_person, low), not(extraverted(this_person)))
   - U icm(understanding, negative)
   - S assert(supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association))
@@ -402,10 +402,10 @@ combine_multiple_explanantia_in_inference:
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), inference)
-  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
+  - response_strategy(extraverted(_), inference)
+  - explanation_delivery_strategy(extraverted(this_person), single_turn)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S infer([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)], not(extraverted(this_person)))
 
 combine_multiple_explanantia_in_chained_inference:
@@ -417,11 +417,11 @@ combine_multiple_explanantia_in_chained_inference:
   - supports(not(extraverted(X)), not(likes_stimulating_environments(X)), association)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), inference)
-  - explanation_delivery_strategy(boolean_question(extraverted(this_person)), single_turn)
-  - response_strategy(boolean_question(likes_stimulating_environments(_)), inference)
+  - response_strategy(extraverted(_), inference)
+  - explanation_delivery_strategy(extraverted(this_person), single_turn)
+  - response_strategy(likes_stimulating_environments(_), inference)
   turns:
-  - U ask(boolean_question(likes_stimulating_environments(this_person)))
+  - U ask(likes_stimulating_environments(this_person))
   - S infer(infer([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)], not(extraverted(this_person))), not(likes_stimulating_environments(this_person)))
 
 datum_response_strategy:
@@ -429,9 +429,9 @@ datum_response_strategy:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
-  - response_strategy(boolean_question(extraverted(_)), datum)
+  - response_strategy(extraverted(_), datum)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S assert(relative_value(danceability_mean, this_person, low))
   - U icm(understanding, negative)
   - S assert(not(extraverted(this_person)))
@@ -444,7 +444,7 @@ boolean_question_concerning_evidence_against_claim:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
-  - U ask(boolean_question(supports(relative_value(energy_mean, this_person, high), extraverted(this_person), _)))
+  - U ask(supports(relative_value(energy_mean, this_person, high), extraverted(this_person), _))
   - S confirm(supports(relative_value(energy_mean, this_person, high), extraverted(this_person), association))
 
 wh_question_concerning_evidence_against_claim:
@@ -455,7 +455,7 @@ wh_question_concerning_evidence_against_claim:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), extraverted(X), association)
   turns:
-  - U ask(wh_question(supports(_, extraverted(this_person), _)))
+  - U ask([E, H]^supports(E, extraverted(this_person), H))
   - S assert(relative_value(energy_mean, this_person, high))
 
 reject_causal_question:
@@ -464,9 +464,9 @@ reject_causal_question:
   - relative_value(danceability_mean, this_person, low)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   turns:
-  - U ask(boolean_question(extraverted(this_person)))
+  - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
-  - U ask(wh_question(supports(_, ?, _)))
+  - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask(wh_question(causes(_, relative_value(danceability_mean, this_person, low))))
-  - S icm(acceptance, negative, lack_knowledge(wh_question(causes(_, relative_value(danceability_mean, this_person, low)))))
+  - U ask([C]^causes(C, relative_value(danceability_mean, this_person, low)))
+  - S icm(acceptance, negative, lack_knowledge([C]^causes(C, relative_value(danceability_mean, this_person, low))))
