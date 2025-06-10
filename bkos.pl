@@ -73,7 +73,7 @@ integrate_user_negative_understanding_concerning_claim :: ([
 	non_integrated_move(icm(understanding, negative)),
 	^previous_system_move(M),
 	qud([Q|Qs]),
-	$(Q \= wh_question(supports(_, _, _))),
+	$(\+ is_epistemic_question(Q)),
 	$answer_move(Q, P, M)
 	] ->
 	[
@@ -438,3 +438,5 @@ is_anaphoric(Term) :-
     is_anaphoric(Arg),
     !.
 
+
+is_epistemic_question(wh_question(supports(_, _, _))).
