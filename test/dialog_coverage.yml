@@ -274,6 +274,18 @@ multiple_explanantia_in_single_turn:
   - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
 
+multiple_non_explanans_answers_in_separate_turns:
+  facts:
+  - factor_considered(danceability_mean)
+  - factor_considered(energy_mean)
+  turns:
+  - U ask([X]^factor_considered(X))
+  - S assert(factor_considered(danceability_mean))
+  - U request_continuation(ask([X]^factor_considered(X)))
+  - S assert(factor_considered(energy_mean))
+  - U request_continuation(ask([X]^factor_considered(X)))
+  - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
+
 previous_unresolvable_question_does_not_block_response_for_answerable_question:
   facts:
   - extraverted(this_person)
