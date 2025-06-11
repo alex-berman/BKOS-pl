@@ -38,6 +38,17 @@ integrate_user_ask :: (
 	non_integrated_move(ask(Q)) ->
 	non_integrated_goal(question(Q))).
 
+treat_user_positive_acceptance_as_continuation_request :: ([
+	non_integrated_move(icm(acceptance, positive)),
+	^qud([Q | _]),
+	$response_delivery_strategy(Q, incrementally),
+	$relevant_answer(Q, P),
+	$question_and_answer_match_wrt_evidence_strategy(Q, P),
+	^P,
+	$(\+ asserted(P))
+ 	] ->
+	non_integrated_move(request_continuation(?))).
+
 integrate_continuation_request :: ([
 	non_integrated_move(request_continuation(PotentiallyUnderspecifiedMove)),
 	$resolve_potentially_underspecified_move(PotentiallyUnderspecifiedMove, ResolvedGoal)
@@ -116,7 +127,7 @@ integrate_user_negative_understanding_concerning_inference :: ([
 		agenda(respond(question([H]^supports(Antecedent, P, How))))
 	]).
 
-integrate_user_positive_acceptance :: (
+ignore_user_positive_acceptance :: (
 	non_integrated_move(icm(acceptance, positive)) ->
 	[]).
 

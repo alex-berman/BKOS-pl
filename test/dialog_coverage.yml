@@ -214,7 +214,7 @@ confirmation_of_prediction_weak_hedge:
   - U ask(extraverted(this_person))
   - S hedge(confirm(extraverted(this_person)), weak)
 
-multiple_explanantia_in_separate_turns:
+multiple_explanantia_in_separate_turns_triggered_by_continuation_request:
   facts:
   - not(extraverted(this_person))
   - relative_value(danceability_mean, this_person, low)
@@ -230,6 +230,23 @@ multiple_explanantia_in_separate_turns:
   - S assert(relative_value(energy_mean, this_person, high))
   - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
+
+multiple_explanantia_in_separate_turns_triggered_by_acknowledgement:
+  facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - relative_value(energy_mean, this_person, high)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
+  turns:
+  - U ask(extraverted(this_person))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask([E, H]^supports(E, ?, H))
+  - S assert(relative_value(danceability_mean, this_person, low))
+  - U icm(acceptance, positive)
+  - S assert(relative_value(energy_mean, this_person, high))
+  - U icm(acceptance, positive)
+  - S
 
 negative_system_understanding_for_contextless_continuation_request_from_user:
   turns:
