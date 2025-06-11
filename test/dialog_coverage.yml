@@ -286,7 +286,24 @@ multiple_non_explanans_answers_in_separate_turns:
   - U request_continuation(ask([X]^factor_considered(X)))
   - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
 
-elliptical_continuation_request:
+elliptical_continuation_request_for_support_question:
+  facts:
+  - not(extraverted(this_person))
+  - relative_value(danceability_mean, this_person, low)
+  - relative_value(energy_mean, this_person, high)
+  - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
+  - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
+  turns:
+  - U ask(extraverted(this_person))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask([E, H]^supports(E, ?, H))
+  - S assert(relative_value(danceability_mean, this_person, low))
+  - U request_continuation(?)
+  - S assert(relative_value(energy_mean, this_person, high))
+  - U request_continuation(?)
+  - S icm(acceptance, negative, no_additional_answers([E, H]^supports(E, not(extraverted(this_person)), H)))
+
+elliptical_continuation_request_for_non_support_question:
   facts:
   - factor_considered(danceability_mean)
   - factor_considered(energy_mean)
