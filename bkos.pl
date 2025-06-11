@@ -38,11 +38,12 @@ integrate_user_ask :: (
 	non_integrated_move(ask(Q)) ->
 	non_integrated_goal(question(Q))).
 
-integrate_continuation_request :: (
-	non_integrated_move(request_continuation(ask(Q))) ->
-	[
-		non_integrated_goal(question(Q)),
-		requested_continuation(question(Q))
+integrate_continuation_request :: ([
+	non_integrated_move(request_continuation(PotentiallyUnderspecifiedMove)),
+	$resolve_potentially_underspecified_move(PotentiallyUnderspecifiedMove, ResolvedGoal)
+	] -> [
+		non_integrated_goal(ResolvedGoal),
+		requested_continuation(ResolvedGoal)
 	]).
 
 integrate_user_question :: ([
@@ -53,12 +54,6 @@ integrate_user_question :: ([
 		qud([ResolvedQuestion|Qs]),
 		agenda(respond(question(ResolvedQuestion)))
 	]).
-
-resolve_continuation_request :: ([
-	requested_continuation(question(PotentiallyUnderspecifiedQuestion)),
-	$resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion)
-	]
-	-> requested_continuation(question(ResolvedQuestion))).
 
 integrate_other_user_goal :: ([
 	non_integrated_goal(question(Q)),
@@ -401,8 +396,17 @@ hedge_level(Confidence, medium) :-
 hedge_level(_, weak).
 
 
+resolve_potentially_underspecified_move(?, question(Q)) :-
+	@qud([Q | _]).
+
+resolve_potentially_underspecified_move(ask(PotentiallyUnderspecifiedQuestion), question(ResolvedQuestion)) :-
+	resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion), !.
+
+resolve_potentially_underspecified_move(ask(Q), question(Q)).
+
+
 resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, H)) :-
-	@requested_continuation(question([E, H]^supports(E, ?, H))),
+	@non_integrated_move(request_continuation(ask([E, H]^supports(E, ?, H)))),
 	@qud(Qs),
 	member([E, H]^supports(E, P, H), Qs),
 	!.

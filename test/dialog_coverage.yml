@@ -286,6 +286,18 @@ multiple_non_explanans_answers_in_separate_turns:
   - U request_continuation(ask([X]^factor_considered(X)))
   - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
 
+elliptical_continuation_request:
+  facts:
+  - factor_considered(danceability_mean)
+  - factor_considered(energy_mean)
+  turns:
+  - U ask([X]^factor_considered(X))
+  - S assert(factor_considered(danceability_mean))
+  - U request_continuation(?)
+  - S assert(factor_considered(energy_mean))
+  - U request_continuation(?)
+  - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
+
 previous_unresolvable_question_does_not_block_response_for_answerable_question:
   facts:
   - extraverted(this_person)
