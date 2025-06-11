@@ -10,7 +10,7 @@ _ :: previous_system_move(none).
 
 % ISU rules
 
-clear_requested_continuation :: (requested_continuation(_) -> []).
+clear_requested_continuation :: (requested_continuation(_, _) -> []).
 
 reject_move_with_presupposition_violation :: ([
 	heard(Move),
@@ -46,15 +46,17 @@ treat_user_positive_acceptance_as_continuation_request :: ([
 	$question_and_answer_match_wrt_evidence_strategy(Q, P),
 	^P,
 	$(\+ asserted(P))
- 	] ->
-	non_integrated_move(request_continuation(?))).
+ 	] -> [
+		non_integrated_goal(question(Q)),
+		requested_continuation(question(Q), implicit)
+	]).
 
 integrate_continuation_request :: ([
 	non_integrated_move(request_continuation(PotentiallyUnderspecifiedMove)),
 	$resolve_potentially_underspecified_move(PotentiallyUnderspecifiedMove, ResolvedGoal)
 	] -> [
 		non_integrated_goal(ResolvedGoal),
-		requested_continuation(ResolvedGoal)
+		requested_continuation(ResolvedGoal, explicit)
 	]).
 
 integrate_user_question :: ([
@@ -150,7 +152,7 @@ acknowledge_user_assertion :: (
 
 emit_icm_for_no_additional_answer :: ([
 	agenda(respond(question(Q))),
-	requested_continuation(question(Q)),
+	requested_continuation(question(Q), _),
 	$(\+ (
 		relevant_answer(Q, P),
 		question_and_answer_match_wrt_evidence_strategy(Q, P),
@@ -216,7 +218,7 @@ utter_and_remember :: ([
 	]).
 
 
-% Helper relations
+% Host logic
 
 direct_response_move(Q, Move) :-
 	response_delivery_strategy(Q, incrementally),
@@ -224,11 +226,16 @@ direct_response_move(Q, Move) :-
 		relevant_answer(Q, P),
 		question_and_answer_match_wrt_evidence_strategy(Q, P),
 		belief(P, Confidence),
-		(\+ @requested_continuation(question(Q)) ; \+ asserted(P))
+		(\+ @requested_continuation(question(Q), _) ; \+ asserted(P))
 	), PsAndConfidences),
 	select_answer(PsAndConfidences, P, Confidence),
 	hedge_level(Confidence, Hedge),
-	answer_move(Q, P, Hedge, Move).
+	answer_move(Q, P, Hedge, AnswerMove),
+	( @requested_continuation(question(Q), implicit) ->
+		Move = signal_continuation(AnswerMove)
+	;
+		Move = AnswerMove
+	).
 
 direct_response_move(Q, Move) :-
 	response_delivery_strategy(Q, single_turn),
@@ -365,9 +372,15 @@ answer_move(Q, P, Hedge, hedge(Move, Hedge)) :-
 
 
 constative_content(confirm(P), P).
+
 constative_content(disconfirm(P), P).
+
 constative_content(assert(P), P).
+
 constative_content(hedge(Move), P) :-
+	constative_content(Move, P).
+
+constative_content(signal_continuation(Move), P) :-
 	constative_content(Move, P).
 
 
