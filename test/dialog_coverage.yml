@@ -205,6 +205,11 @@ elliptical_user_question_about_features_considered:
   - U ask([X]^uses_feature(?, X))
   - S assert([uses_feature(extraverted(_), danceability_mean), uses_feature(extraverted(_), energy_mean)])
 
+negative_understanding_for_contextless_elliptical_user_question_about_features_considered:
+  turns:
+  - U ask([X]^uses_feature(?, X))
+  - S icm(understanding, negative)
+
 acknowledge_user_assertions:
   turns:
   - U assert(extraverted(this_person))

@@ -53,7 +53,7 @@ treat_user_positive_acceptance_as_continuation_request :: ([
 
 integrate_continuation_request :: ([
 	non_integrated_move(request_continuation(PotentiallyUnderspecifiedMove)),
-	$resolve_potentially_underspecified_move(PotentiallyUnderspecifiedMove, ResolvedGoal)
+	$resolve_underspecified_move(PotentiallyUnderspecifiedMove, ResolvedGoal)
 	] -> [
 		non_integrated_goal(ResolvedGoal),
 		requested_continuation(ResolvedGoal, explicit)
@@ -66,15 +66,6 @@ integrate_user_question :: ([
 	] -> [
 		qud([ResolvedQuestion|Qs]),
 		agenda(respond(question(ResolvedQuestion)))
-	]).
-
-integrate_other_user_goal :: ([
-	non_integrated_goal(question(Q)),
-	$(Q \= [E, H]^supports(E, ?, H)),
-	qud(Qs)
-	] -> [
-		qud([Q|Qs]),
-		agenda(respond(question(Q)))
 	]).
 
 integrate_user_negative_understanding_concerning_claim :: ([
@@ -420,13 +411,11 @@ hedge_level(Confidence, medium) :-
 hedge_level(_, weak).
 
 
-resolve_potentially_underspecified_move(?, question(Q)) :-
+resolve_underspecified_move(?, question(Q)) :-
 	@qud([Q | _]).
 
-resolve_potentially_underspecified_move(ask(PotentiallyUnderspecifiedQuestion), question(ResolvedQuestion)) :-
-	resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion), !.
-
-resolve_potentially_underspecified_move(ask(Q), question(Q)).
+resolve_underspecified_move(ask(PotentiallyUnderspecifiedQuestion), question(ResolvedQuestion)) :-
+	resolve_underspecified_question(PotentiallyUnderspecifiedQuestion, ResolvedQuestion).
 
 
 resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, H)) :-
@@ -437,10 +426,27 @@ resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, 
 
 resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, H)) :-
 	@previous_system_move(M),
-	constative_content(M, P).
+	constative_content(M, P),
+	!.
 
 resolve_underspecified_question([X]^uses_feature(?, X), [X]^uses_feature(Q, X)) :-
-	@qud([Q | _]).
+	@qud([Q | _]),
+	!.
+
+resolve_underspecified_question(Q, Q) :-
+	\+ is_underspecified(Q).
+
+
+is_underspecified(Term) :-
+    atomic(Term),
+	!,
+    (Term == ?).
+
+is_underspecified(Term) :-
+	nonvar(Term),
+	Term =.. [_ | Args],
+	member(Arg, Args),
+	is_underspecified(Arg).
 
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
