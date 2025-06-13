@@ -439,6 +439,9 @@ resolve_underspecified_question([E, H]^supports(E, ?, H), [E, H]^supports(E, P, 
 	@previous_system_move(M),
 	constative_content(M, P).
 
+resolve_underspecified_question([X]^uses_feature(?, X), [X]^uses_feature(Q, X)) :-
+	@qud([Q | _]).
+
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
 	explanation_delivery_strategy(Q, incrementally),

@@ -1,6 +1,6 @@
 confirmation_of_prediction:
   facts:
- - extraverted(this_person)
+  - extraverted(this_person)
   turns:
   - U ask(extraverted(this_person))
   - S confirm(extraverted(this_person))
@@ -191,6 +191,18 @@ explicit_user_question_about_features_considered:
   - answer_delivery_strategy([X]^uses_feature(extraverted(_), X), single_turn)
   turns:
   - U ask([X]^uses_feature(extraverted(_), X))
+  - S assert([uses_feature(extraverted(_), danceability_mean), uses_feature(extraverted(_), energy_mean)])
+
+elliptical_user_question_about_features_considered:
+  facts:
+  - not(extraverted(this_person))
+  - uses_feature(extraverted(_), danceability_mean)
+  - uses_feature(extraverted(_), energy_mean)
+  - answer_delivery_strategy([X]^uses_feature(extraverted(_), X), single_turn)
+  turns:
+  - U ask(extraverted(this_person))
+  - S disconfirm(not(extraverted(this_person)))
+  - U ask([X]^uses_feature(?, X))
   - S assert([uses_feature(extraverted(_), danceability_mean), uses_feature(extraverted(_), energy_mean)])
 
 acknowledge_user_assertions:
