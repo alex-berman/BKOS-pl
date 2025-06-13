@@ -433,8 +433,21 @@ resolve_underspecified_question([X]^uses_feature(?, X), [X]^uses_feature(Q, X)) 
 	@qud([Q | _]),
 	!.
 
+resolve_underspecified_question([X]^value(QueriedFeature, QueriedIndividual, X), [X]^value(Feature, Individual, X)) :-
+	( QueriedFeature == ? ; QueriedIndividual == ? ),
+	@previous_system_move(M),
+	constative_content(M, relative_value(Feature, Individual, _)),
+	matches_query(Feature, QueriedFeature),
+	matches_query(Individual, QueriedIndividual).
+
 resolve_underspecified_question(Q, Q) :-
 	\+ is_underspecified(Q).
+
+
+matches_query(_, X) :-
+	(X == ?).
+
+matches_query(X, X).
 
 
 is_underspecified(Term) :-
@@ -447,6 +460,7 @@ is_underspecified(Term) :-
 	Term =.. [_ | Args],
 	member(Arg, Args),
 	is_underspecified(Arg).
+
 
 
 inference_answer(Q, QUD, infer(Antecedent, P), NewQUD) :-
