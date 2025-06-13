@@ -1,6 +1,6 @@
 confirmation_of_prediction:
   facts:
-  - extraverted(this_person)
+ - extraverted(this_person)
   turns:
   - U ask(extraverted(this_person))
   - S confirm(extraverted(this_person))
@@ -184,14 +184,14 @@ disconfirmation_of_specific_support_of_unspecified_type:
   - U ask(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), _))
   - S disconfirm(not(supports(relative_value(energy_mean, this_person, high), not(extraverted(this_person)), _)))
 
-user_question_about_factors_considered:
+explicit_user_question_about_features_considered:
   facts:
-  - factor_considered(danceability_mean)
-  - factor_considered(energy_mean)
-  - answer_delivery_strategy([X]^factor_considered(X), single_turn)
+  - uses_feature(extraverted(_), danceability_mean)
+  - uses_feature(extraverted(_), energy_mean)
+  - answer_delivery_strategy([X]^uses_feature(extraverted(_), X), single_turn)
   turns:
-  - U ask([X]^factor_considered(X))
-  - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
+  - U ask([X]^uses_feature(extraverted(_), X))
+  - S assert([uses_feature(extraverted(_), danceability_mean), uses_feature(extraverted(_), energy_mean)])
 
 acknowledge_user_assertions:
   turns:
@@ -264,16 +264,16 @@ sub_dialog:
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
-  - factor_considered(danceability_mean)
-  - factor_considered(energy_mean)
-  - answer_delivery_strategy([X]^factor_considered(X), single_turn)
+  - uses_feature(extraverted(_), danceability_mean)
+  - uses_feature(extraverted(_), energy_mean)
+  - answer_delivery_strategy([X]^uses_feature(extraverted(_), X), single_turn)
   turns:
   - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
   - U ask([E, H]^supports(E, ?, H))
   - S assert(relative_value(danceability_mean, this_person, low))
-  - U ask([X]^factor_considered(X))
-  - S assert([factor_considered(danceability_mean), factor_considered(energy_mean)])
+  - U ask([X]^uses_feature(extraverted(_), X))
+  - S assert([uses_feature(extraverted(_), danceability_mean), uses_feature(extraverted(_), energy_mean)])
   - U request_continuation(ask([E, H]^supports(E, ?, H)))
   - S assert(relative_value(energy_mean, this_person, high))
   - U request_continuation(ask([E, H]^supports(E, ?, H)))
@@ -286,7 +286,7 @@ multiple_explanantia_in_single_turn:
   - relative_value(energy_mean, this_person, high)
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
-  - explanation_delivery_strategy(extraverted(this_person), single_turn)
+  - explanation_delivery_strategy(extraverted(_), single_turn)
   turns:
   - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
@@ -297,15 +297,15 @@ multiple_explanantia_in_single_turn:
 
 multiple_non_explanans_answers_in_separate_turns:
   facts:
-  - factor_considered(danceability_mean)
-  - factor_considered(energy_mean)
+  - uses_feature(extraverted(_), danceability_mean)
+  - uses_feature(extraverted(_), energy_mean)
   turns:
-  - U ask([X]^factor_considered(X))
-  - S assert(factor_considered(danceability_mean))
-  - U request_continuation(ask([X]^factor_considered(X)))
-  - S assert(factor_considered(energy_mean))
-  - U request_continuation(ask([X]^factor_considered(X)))
-  - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
+  - U ask([X]^uses_feature(extraverted(_), X))
+  - S assert(uses_feature(extraverted(_), danceability_mean))
+  - U request_continuation(ask([X]^uses_feature(extraverted(_), X)))
+  - S assert(uses_feature(extraverted(_), energy_mean))
+  - U request_continuation(ask([X]^uses_feature(extraverted(_), X)))
+  - S icm(acceptance, negative, no_additional_answers([X]^uses_feature(extraverted(_), X)))
 
 elliptical_continuation_request_for_support_question:
   facts:
@@ -326,15 +326,15 @@ elliptical_continuation_request_for_support_question:
 
 elliptical_continuation_request_for_non_support_question:
   facts:
-  - factor_considered(danceability_mean)
-  - factor_considered(energy_mean)
+  - uses_feature(extraverted(_), danceability_mean)
+  - uses_feature(extraverted(_), energy_mean)
   turns:
-  - U ask([X]^factor_considered(X))
-  - S assert(factor_considered(danceability_mean))
+  - U ask([X]^uses_feature(extraverted(_), X))
+  - S assert(uses_feature(extraverted(_), danceability_mean))
   - U request_continuation(?)
-  - S assert(factor_considered(energy_mean))
+  - S assert(uses_feature(extraverted(_), energy_mean))
   - U request_continuation(?)
-  - S icm(acceptance, negative, no_additional_answers([X]^factor_considered(X)))
+  - S icm(acceptance, negative, no_additional_answers([X]^uses_feature(extraverted(_), X)))
 
 previous_unresolvable_question_does_not_block_response_for_answerable_question:
   facts:
@@ -465,7 +465,7 @@ combine_multiple_explanantia_in_inference:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
   - response_strategy(extraverted(_), inference)
-  - explanation_delivery_strategy(extraverted(this_person), single_turn)
+  - explanation_delivery_strategy(extraverted(_), single_turn)
   turns:
   - U ask(extraverted(this_person))
   - S infer([relative_value(danceability_mean, this_person, low), relative_value(energy_mean, this_person, high)], not(extraverted(this_person)))
@@ -480,7 +480,7 @@ combine_multiple_explanantia_in_chained_inference:
   - supports(relative_value(danceability_mean, X, low), not(extraverted(X)), association)
   - supports(relative_value(energy_mean, X, high), not(extraverted(X)), association)
   - response_strategy(extraverted(_), inference)
-  - explanation_delivery_strategy(extraverted(this_person), single_turn)
+  - explanation_delivery_strategy(extraverted(_), single_turn)
   - response_strategy(likes_stimulating_environments(_), inference)
   turns:
   - U ask(likes_stimulating_environments(this_person))
