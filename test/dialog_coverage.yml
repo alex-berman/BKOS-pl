@@ -1,16 +1,23 @@
-confirmation_of_prediction:
+confirmation_response_to_polar_question:
   facts:
   - extraverted(this_person)
   turns:
   - U ask(extraverted(this_person))
   - S confirm(extraverted(this_person))
 
-disconfirmation_of_prediction:
+disconfirmation_response_to_polar_question:
   facts:
   - not(extraverted(this_person))
   turns:
   - U ask(extraverted(this_person))
   - S disconfirm(not(extraverted(this_person)))
+
+assertive_response_to_wh_question:
+  facts:
+  - relative_value(danceability_mean, this_person, low)
+  turns:
+  - U ask([X]^relative_value(danceability_mean, this_person, X))
+  - S assert(relative_value(danceability_mean, this_person, low))
 
 datum_explanation_triggered_by_implicit_why_question:
   facts:
