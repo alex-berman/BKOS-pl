@@ -1,6 +1,6 @@
 :- ensure_loaded(isu_engine).
 
-get_move_content :: ([
+get_move :: ([
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move)
 	] -> non_integrated_move(Move)).
