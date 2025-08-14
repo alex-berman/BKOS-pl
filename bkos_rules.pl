@@ -5,13 +5,9 @@ get_move :: ([
 	$get_dict(move, Interpretation, Move)
 	] -> non_integrated_move(Move)).
 
-integrate_user_question :: ([
-	non_integrated_move(ask(Q)),
-	qud(Qs)
-	] -> [
-		qud([Q|Qs]),
-		agenda(respond(Q))
-	]).
+integrate_user_question :: (
+	non_integrated_move(ask(Q)) -> agenda(respond(Q))
+	).
 
 respond :: ([
 	agenda(respond(Q)),
