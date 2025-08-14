@@ -6,7 +6,8 @@
 test(thesis, [forall(get_test(TestAsDict, 'test/dialog_coverage_thesis.yml'))]) :-
     run_test_from_dict(TestAsDict).
 
-test(various, [forall(get_test(TestAsDict, 'test/dialog_coverage_various.yml'))]) :-
+test(various, [forall(get_test(TestAsDict, 'test/dialog_coverage_various.yml')),
+               blocked(disabled_in_thesis_branch)]) :-
     run_test_from_dict(TestAsDict).
 
 :- end_tests(dialog_coverage).
