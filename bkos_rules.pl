@@ -5,11 +5,6 @@ get_move_content :: ([
 	$get_dict(content, Move, Content)
 	] -> non_integrated_move(Content)).
 
-emit_move_on_agenda :: (
-	agenda(emit_move(Move)) ->
-	next_system_move(Move)
-).
-
 integrate_user_question :: ([
 	non_integrated_move(ask(Q)),
 	qud(Qs)
