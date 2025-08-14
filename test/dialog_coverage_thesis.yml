@@ -1,0 +1,6 @@
+deliver_prediction_without_explanation:
+  facts:
+    - satisfied_with_surgery(patient)
+  turns:
+    - U ask(satisfied_with_surgery(patient))
+    - S confirm(satisfied_with_surgery(patient))
