@@ -1,9 +1,9 @@
 :- ensure_loaded(isu_engine).
 
 get_move_content :: ([
-	heard(Move),
-	$get_dict(content, Move, Content)
-	] -> non_integrated_move(Content)).
+	heard(Interpretation),
+	$get_dict(move, Interpretation, Move)
+	] -> non_integrated_move(Move)).
 
 integrate_user_question :: ([
 	non_integrated_move(ask(Q)),

@@ -46,9 +46,9 @@ test_turn(TurnStr) :-
     test_system_turn(ExpectedSystemMoveAtom).
 
 test_turn(TurnStr) :-
-    atom_concat("U ", UserMoveAtom, TurnStr),
+    atom_concat("U ", InterpretationAtom, TurnStr),
     !,
-    test_user_turn(UserMoveAtom).
+    test_user_turn(InterpretationAtom).
 
 test_turn(TurnStr) :-
     throw(unsupported_turn_format(TurnStr)).
@@ -61,13 +61,13 @@ test_system_turn(ExpectedSystemMoveAtom) :-
     assertion(ActualSystemMove = ExpectedSystemMove),
     retract(@utter(_)).
 
-test_user_turn(UserMoveAtom) :-
-    atom_to_term(UserMoveAtom, UserMove, _),
-    move_as_dict(UserMove, UserMoveAsDict),
-    assert(@heard(UserMoveAsDict)).
+test_user_turn(InterpretationAtom) :-
+    atom_to_term(InterpretationAtom, Interpretation, _),
+    interpretation_as_dict(Interpretation, InterpretationAsDict),
+    assert(@heard(InterpretationAsDict)).
 
-move_as_dict(Dict, Dict) :-
+interpretation_as_dict(Dict, Dict) :-
     is_dict(Dict),
     !.
 
-move_as_dict(Content, move{content:Content}).
+interpretation_as_dict(Move, interpretation{move:Move}).
