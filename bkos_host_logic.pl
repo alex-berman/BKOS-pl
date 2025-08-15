@@ -4,8 +4,9 @@
 response(Q, Move) :-
 	relevant_answer(Q, P),
 	@P,
-	evidence_strategy(Q, Strategy),
-	satisfies_evidence_strategy(P, Strategy),
+	( evidence_strategy(Q, Strategy) ->
+		satisfies_evidence_strategy(P, Strategy)
+	; true ),
 	answer_move(Q, P, Move).
 
 
@@ -21,15 +22,10 @@ relevant_answer(_^P, P).
 
 evidence_strategy(_^supports(_, P, _), Strategy) :-
 	relevant_answer(XQ, P),
-	!,
 	( @evidence_strategy(XQ, Strategy) ->
 		true
 	; Strategy = datum ).
 
-evidence_strategy(_, none).
-
-
-satisfies_evidence_strategy(_, none).
 
 satisfies_evidence_strategy(P, datum) :-
 	P \= supports(_, _, _).
