@@ -1,4 +1,5 @@
 :- ensure_loaded(isu_syntax).
+:- ensure_loaded(db).
 
 response(Q, Move) :-
 	relevant_answer(Q, P),
