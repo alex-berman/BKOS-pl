@@ -1,7 +1,8 @@
 response(Q, Move) :-
-  relevant_answer(Q, P),
-  @P,
+	relevant_answer(Q, P),
+	@P,
 	answer_move(Q, P, Move).
+
 
 relevant_answer(P, P).
 
