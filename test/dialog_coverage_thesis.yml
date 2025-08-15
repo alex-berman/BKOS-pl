@@ -36,3 +36,16 @@ elaborate_datum_quantitatively:
     - S assert(relative_value(back_pain, patient, low))
     - U ask([V]^value(back_pain, patient, V))
     - S assert(value(back_pain, patient, 4))
+
+elicit_warrant_explanation:
+  facts:
+    - satisfied(patient)
+    - relative_value(back_pain, patient, low)
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - evidence_strategy(satisfied(_), warrant)
+  turns:
+    - U ask(satisfied(patient))
+    - S confirm(satisfied(patient))
+    - U ask([E, M]^supports(E, satisfied(patient), M))
+    - S assert(supports(relative_value(back_pain, X, low), satisfied(X), association))
+
