@@ -37,7 +37,7 @@ apply_and_count([user:(RuleName :: (Antecedent -> Consequent))|Rules], N) :-
     N is ThisN + RestN.
 
 print_state :-
-    write('-------------------\nState:\n'),
+    write('State:\n'),
     forall(@Fact, (write('  '), write(Fact), nl)),
     nl.
 
