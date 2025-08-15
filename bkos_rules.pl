@@ -11,6 +11,6 @@ integrate_user_question :: (
 
 respond :: ([
 	agenda(respond(Q)),
-	$response_move(Q, Move)
+	$response(Q, Move)
 	] ->
 	utter(Move)).

@@ -1,4 +1,4 @@
-response_move(Q, Move) :-
+response(Q, Move) :-
   relevant_answer(Q, P),
   @P,
 	answer_move(Q, P, Move).
