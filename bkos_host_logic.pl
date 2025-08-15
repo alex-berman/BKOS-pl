@@ -10,8 +10,8 @@ relevant_answer(P, P).
 
 relevant_answer(P, not(P)).
 
-relevant_answer([E, M]^supports(E, Explanandum, M), Datum) :-
-	@supports(Datum, Explanandum, _).
+relevant_answer([_, _]^supports(_, X, _), E) :-
+	@supports(E, X, _).
 
 
 answer_move(P, P, confirm(P)).
