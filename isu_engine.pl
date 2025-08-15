@@ -14,6 +14,7 @@ apply_rules_exhaustively :-
     !.
 
 repeat_apply_until_nothing_applied :-
+    print_state,
     bagof(
         user:(RuleName :: (Antecedent -> Consequent)),
         user:(RuleName :: (Antecedent -> Consequent)),
