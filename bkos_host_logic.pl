@@ -8,8 +8,6 @@ relevant_answer(P, P).
 relevant_answer(P, not(P)).
 
 
-answer_move(Q, P, confirm(P)) :-
-	P = Q.
+answer_move(P, P, confirm(P)).
 
-answer_move(Q, not(P), disconfirm(not(P))) :-
-	P = Q.
+answer_move(P, not(P), disconfirm(not(P))).
