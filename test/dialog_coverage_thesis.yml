@@ -1,13 +1,13 @@
 deliver_prediction_without_explanation_as_confirmation:
   facts:
-    - satisfied_with_surgery(patient)
+    - satisfied(patient)
   turns:
-    - U ask(satisfied_with_surgery(patient))
-    - S confirm(satisfied_with_surgery(patient))
+    - U ask(satisfied(patient))
+    - S confirm(satisfied(patient))
 
 deliver_prediction_without_explanation_as_disconfirmation:
   facts:
-    - not(satisfied_with_surgery(patient))
+    - not(satisfied(patient))
   turns:
-    - U ask(satisfied_with_surgery(patient))
-    - S disconfirm(not(satisfied_with_surgery(patient)))
+    - U ask(satisfied(patient))
+    - S disconfirm(not(satisfied(patient)))
