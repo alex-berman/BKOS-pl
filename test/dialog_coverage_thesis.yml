@@ -22,3 +22,17 @@ elicit_datum_explanation:
     - S confirm(satisfied(patient))
     - U ask([E, M]^supports(E, satisfied(patient), M))
     - S assert(relative_value(back_pain, patient, low))
+
+elaborate_datum_quantitatively:
+  facts:
+    - satisfied(patient)
+    - value(back_pain, patient, 4)
+    - relative_value(back_pain, patient, low)
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+  turns:
+    - U ask(satisfied(patient))
+    - S confirm(satisfied(patient))
+    - U ask([E, M]^supports(E, satisfied(patient), M))
+    - S assert(relative_value(back_pain, patient, low))
+    - U ask([V]^value(back_pain, patient, V))
+    - S assert(value(back_pain, patient, 4))
