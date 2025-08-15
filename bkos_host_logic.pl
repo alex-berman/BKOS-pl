@@ -1,3 +1,5 @@
+:- ensure_loaded(isu_syntax).
+
 response(Q, Move) :-
 	relevant_answer(Q, P),
 	@P,
@@ -8,7 +10,12 @@ relevant_answer(P, P).
 
 relevant_answer(P, not(P)).
 
+relevant_answer([E, H]^supports(E, Explanandum, H), Datum) :-
+	@supports(Datum, Explanandum, _).
+
 
 answer_move(P, P, confirm(P)).
 
 answer_move(P, not(P), disconfirm(not(P))).
+
+answer_move(_^supports(_, _, _), P, assert(P)).
