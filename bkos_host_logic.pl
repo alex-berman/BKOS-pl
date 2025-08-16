@@ -2,11 +2,8 @@
 :- ensure_loaded(db).
 
 response(Q, Move) :-
-	relevant_answer(Q, P),
 	@P,
-	( evidence_strategy(Q, Strategy) ->
-		satisfies_evidence_strategy(P, Strategy)
-	; true ),
+	relevant_answer(Q, P),
 	answer_move(Q, P, Move).
 
 
@@ -18,19 +15,6 @@ relevant_answer([_, _]^supports(_, X, _), E) :-
 	@supports(E, X, _).
 
 relevant_answer(_^P, P).
-
-
-evidence_strategy(_^supports(_, P, _), Strategy) :-
-	relevant_answer(XQ, P),
-	( @evidence_strategy(XQ, Strategy) ->
-		true
-	; Strategy = datum ).
-
-
-satisfies_evidence_strategy(P, datum) :-
-	P \= supports(_, _, _).
-
-satisfies_evidence_strategy(supports(_, _, _), warrant).
 
 
 answer_move(P, P, confirm(P)).
