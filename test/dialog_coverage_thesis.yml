@@ -12,10 +12,11 @@ deliver_prediction_without_explanation_as_disconfirmation:
     - U ask(satisfied(patient))
     - S disconfirm(not(satisfied(patient)))
 
-elicit_datum_explanation:
+elicit_datum_explanation_for_continuous_feature:
   facts:
     - satisfied(patient)
     - relative_value(back_pain, patient, low)
+    - value(back_pain, patient, 4)
     - supports(relative_value(back_pain, X, low), satisfied(X), association)
   turns:
     - U ask(satisfied(patient))
@@ -37,11 +38,23 @@ elaborate_datum_quantitatively:
     - U ask([V]^value(back_pain, patient, V))
     - S assert(value(back_pain, patient, 4))
 
+elicit_datum_explanation_for_categorical_feature:
+  facts:
+    - satisfied(patient)
+    - value(clinic_type, patient, private)
+    - supports(value(clinic_type, X, private), satisfied(X), association)
+  turns:
+    - U ask(satisfied(patient))
+    - S confirm(satisfied(patient))
+    - U ask([E, M]^supports(E, satisfied(patient), M))
+    - S assert(value(clinic_type, patient, private))
+
 elicit_warrant_explanation:
   facts:
     - satisfied(patient)
     - supports(relative_value(back_pain, X, low), satisfied(X), association)
     - relative_value(back_pain, patient, low)
+    - value(back_pain, patient, 4)
     - evidence_strategy(satisfied(_), warrant)
   turns:
     - U ask(satisfied(patient))
