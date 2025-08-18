@@ -38,7 +38,12 @@ apply_and_count([user:(RuleName :: (Antecedent -> Consequent))|Rules], N) :-
 
 print_state :-
     write('State:\n'),
-    forall(@Fact, (write('  '), write(Fact), nl)),
+    forall(@Fact, (
+        write('  '),
+        numbervars(Fact),
+        write(Fact),
+        nl
+    )),
     nl.
 
 antecedent_holds([]) :- !.
