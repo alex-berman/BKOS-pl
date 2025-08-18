@@ -22,15 +22,15 @@ add_response :: ([
 
 respond :: ([
 	agenda(respond(Q)),
-	$(\+ (
+	$findall(P, @response(Q, P), Ps),
+	$( @tcu(Ps) ; (\+ (
 		@P,
 		relevant_answer(Q, P),
 		\+ (
 			@response(Q, P2),
 			implicates(Q, P2, P)
 		)
-	)),
-	$findall(P, @response(Q, P), Ps),
+	))),
 	$answer_move(Q, Ps, Move)
 	] ->
 	utter(Move)).

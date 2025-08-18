@@ -75,3 +75,24 @@ elicit_explanation_with_multiple_data_conjunctively:
     - S confirm(satisfied(patient))
     - U ask([E, M]^supports(E, satisfied(patient), M))
     - S assert([relative_value(back_pain, patient, low), relative_value(disability, patient, low)])
+
+deliver_explanations_incrementally:
+  facts:
+    - satisfied(patient)
+    - relative_value(back_pain, patient, low)
+    - value(back_pain, patient, 4)
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - relative_value(disability, patient, low)
+    - value(disability, patient, 26)
+    - supports(relative_value(disability, X, low), satisfied(X), association)
+    - tcu([_])
+  turns:
+    - U ask(satisfied(patient))
+    - S confirm(satisfied(patient))
+    - U ask([E, M]^supports(E, satisfied(patient), M))
+    - S assert(relative_value(back_pain, patient, low))
+# TODO:
+#    - U icm(acceptance, positive)
+#    - S signal_continuation(assert(relative_value(disability, patient, low)))
+#    - U icm(acceptance, positive)
+#    - S
