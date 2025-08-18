@@ -1,24 +1,39 @@
 :- ensure_loaded(isu_syntax).
 :- ensure_loaded(db).
 
-response(Q, Move) :-
-	@P,
-	relevant_answer(Q, P),
-	answer_move(Q, P, Move).
 
+relevant_answer(P, P) :-
+	polar_question(P).
 
-relevant_answer(P, P).
-
-relevant_answer(P, not(P)).
+relevant_answer(P, not(P)) :-
+	polar_question(P).
 
 relevant_answer([_, _]^supports(_, X, _), E) :-
 	@supports(E, X, _).
 
-relevant_answer(_^P, P).
+relevant_answer(_^P, P) :-
+	@P.
 
+
+polar_question(P) :-
+	P \= _^_.
+
+
+answer_move(Q, [P], M) :-
+	!,
+	answer_move(Q, P, M).
 
 answer_move(P, P, confirm(P)).
 
 answer_move(P, not(P), disconfirm(not(P))).
 
 answer_move(_^_, P, assert(P)).
+
+
+implicates(_, P, P).
+
+implicates(_^supports(_, X, _), E, supports(E, X, M)) :-
+	@supports(E, X, M).
+
+implicates(_^supports(_, X, _), supports(E, X, M), E) :-
+	@supports(E, X, M).
