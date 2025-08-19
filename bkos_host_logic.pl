@@ -8,15 +8,13 @@ relevant_answer(P, P) :-
 relevant_answer(P, not(P)) :-
 	polar_question(P).
 
-relevant_answer(_^supports(QueriedEvidence, QueriedConsequent, _), Evidence) :-
-	\+ ground(QueriedEvidence),
-	ground(QueriedConsequent),
-	supports_directly_or_indirectly(Evidence, QueriedConsequent).
+relevant_answer([E, M]^supports(E, Consequent, M), Evidence) :-
+	ground(Consequent),
+	supports_directly_or_indirectly(Evidence, Consequent).
 
-relevant_answer(_^supports(QueriedEvidence, QueriedConsequent, _), Consequent) :-
-	ground(QueriedEvidence),
-	\+ ground(QueriedConsequent),
-	supports_directly_or_indirectly(QueriedEvidence, Consequent).
+relevant_answer([C, M]^supports(Evidence, C, M), Consequent) :-
+	ground(Evidence),
+	supports_directly_or_indirectly(Evidence, Consequent).
 
 relevant_answer(_^P, P) :-
 	@P.
