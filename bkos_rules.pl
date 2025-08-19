@@ -2,25 +2,25 @@
 
 _ :: qud([]).
 
-get_move :: ([
+get_move :: [
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move)
-	] -* non_integrated_move(Move)).
+	] -* non_integrated_move(Move).
 
-integrate_user_question :: ([
+integrate_user_question :: [
 	qud(Qs),
 	non_integrated_move(ask(Q))
 	] -* [
 		qud([Q|Qs]),
 		agenda(respond(_{q:Q}))
-	]).
+	].
 
-integrate_acknowledgement :: ([
+integrate_acknowledgement :: [
 	non_integrated_move(icm(acceptance, positive)),
 	^qud([Q|_])
-	] -* agenda(respond(_{q:Q, continuation:true}))).
+	] -* agenda(respond(_{q:Q, continuation:true})).
 
-respond :: ([
+respond :: [
 	agenda(respond(R)),
 	$get_dict(q, R, Q),
 	$findall(P, (
@@ -35,4 +35,4 @@ respond :: ([
 	[
 		utter(Move),
 		uttered(Move)
-	]).
+	].

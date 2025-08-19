@@ -16,16 +16,16 @@ apply_rules_exhaustively :-
 repeat_apply_until_nothing_applied :-
     print_state,
     bagof(
-        user:(RuleName :: (Antecedent -* Consequent)),
-        user:(RuleName :: (Antecedent -* Consequent)),
+        user:(RuleName :: Antecedent -* Consequent),
+        user:(RuleName :: Antecedent -* Consequent),
         Rules),
     repeat,
     apply_and_count(Rules, N),
     N == 0. % repeat if at least one rule applied
 
 apply_and_count([], 0).
-apply_and_count([user:(RuleName :: (Antecedent -* Consequent))|Rules], N) :-
-    user:(RuleName :: (Antecedent -* Consequent)),
+apply_and_count([user:(RuleName :: Antecedent -* Consequent)|Rules], N) :-
+    user:(RuleName :: Antecedent -* Consequent),
     ( antecedent_holds(Antecedent) ->
       potentially_consume(Antecedent),
       establish(Consequent),
