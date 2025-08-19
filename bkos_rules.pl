@@ -5,12 +5,12 @@ _ :: qud([]).
 get_move :: ([
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move)
-	] -> non_integrated_move(Move)).
+	] -* non_integrated_move(Move)).
 
 integrate_user_question :: ([
 	qud(Qs),
 	non_integrated_move(ask(Q))
-	] -> [
+	] -* [
 		qud([Q|Qs]),
 		agenda(respond(_{q:Q}))
 	]).
@@ -18,7 +18,7 @@ integrate_user_question :: ([
 integrate_acknowledgement :: ([
 	non_integrated_move(icm(acceptance, positive)),
 	^qud([Q|_])
-	] -> agenda(respond(_{q:Q, continuation:true}))).
+	] -* agenda(respond(_{q:Q, continuation:true}))).
 
 respond :: ([
 	agenda(respond(R)),
@@ -31,7 +31,7 @@ respond :: ([
 	$remove_pragmatical_redundance(Q, RelevantNonUtteredResponses, RelevantInformativeResponses),
 	$satisfy_tcu(RelevantInformativeResponses, SelectedResponses),
 	$answer_move(R, SelectedResponses, Move)
-	] ->
+	] -*
 	[
 		utter(Move),
 		uttered(Move)
