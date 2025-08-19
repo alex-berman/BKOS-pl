@@ -1,22 +1,38 @@
 :- ensure_loaded(isu_syntax).
 
+_ :: qud([]).
+
 get_move :: ([
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move)
 	] -> non_integrated_move(Move)).
 
-integrate_user_question :: (
-	non_integrated_move(ask(Q)) -> agenda(respond(Q))
-	).
+integrate_user_question :: ([
+	qud(Qs),
+	non_integrated_move(ask(Q))
+	] -> [
+		qud([Q|Qs]),
+		agenda(respond(_{q:Q}))
+	]).
+
+integrate_acknowledgement :: ([
+	non_integrated_move(icm(acceptance, positive)),
+	^qud([Q|_])
+	] -> agenda(respond(_{q:Q, continuation:true}))).
 
 respond :: ([
-	agenda(respond(Q)),
+	agenda(respond(R)),
+	$get_dict(q, R, Q),
 	$findall(P, (
 		@P,
+		\+ has_asserted(P),
 		relevant_answer(Q, P)
-	), RelevantResponses),
-	$remove_pragmatical_redundance(Q, RelevantResponses, RelevantInformativeResponses),
+	), RelevantNonUtteredResponses),
+	$remove_pragmatical_redundance(Q, RelevantNonUtteredResponses, RelevantInformativeResponses),
 	$satisfy_tcu(RelevantInformativeResponses, SelectedResponses),
-	$answer_move(Q, SelectedResponses, Move)
+	$answer_move(R, SelectedResponses, Move)
 	] ->
-	utter(Move)).
+	[
+		utter(Move),
+		uttered(Move)
+	]).

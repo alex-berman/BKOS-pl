@@ -19,6 +19,17 @@ polar_question(P) :-
 	P \= _^_.
 
 
+answer_move(R, Ps, signal_continuation(M)) :-
+	is_dict(R),
+	get_dict(continuation, R, true),
+	get_dict(q, R, Q),
+	answer_move(Q, Ps, M).
+
+answer_move(R, Ps, M) :-
+	is_dict(R),
+	get_dict(q, R, Q),
+	answer_move(Q, Ps, M).
+
 answer_move(Q, [P], M) :-
 	!,
 	answer_move(Q, P, M).
@@ -36,7 +47,7 @@ remove_pragmatical_redundance(Q, L, L2) :-
 remove_pragmatical_redundance(_, [], _, []).
 
 remove_pragmatical_redundance(Q, [X|Xs], Prev, Ys) :-
-    member(Y, Prev),
+	( member(Y, Prev) ; has_asserted(Y) ),
     implicates(Q, Y, X),
     !,
     remove_pragmatical_redundance(Q, Xs, [X|Prev], Ys).
@@ -60,3 +71,23 @@ satisfy_tcu(Ps, TCU) :-
 	;
 		TCU = Ps
 	).
+
+
+has_asserted(P) :-
+	@uttered(Move),
+	constative_content(Move, P).
+
+
+constative_content(confirm(P), P).
+
+constative_content(disconfirm(P), P).
+
+constative_content(assert(P), P).
+
+constative_content(signal_continuation(M), P) :-
+	constative_content(M, P).
+
+constative_content(Moves, P) :-
+	is_list(Moves),
+	member(Move, Moves),
+	constative_content(Move, P).

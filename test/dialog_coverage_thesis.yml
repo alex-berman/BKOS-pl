@@ -91,8 +91,7 @@ deliver_explanations_incrementally:
     - S confirm(satisfied(patient))
     - U ask([E, M]^supports(E, satisfied(patient), M))
     - S assert(relative_value(back_pain, patient, low))
-# TODO:
-#    - U icm(acceptance, positive)
-#    - S signal_continuation(assert(relative_value(disability, patient, low)))
-#    - U icm(acceptance, positive)
-#    - S
+    - U icm(acceptance, positive)
+    - S signal_continuation(assert(relative_value(disability, patient, low)))
+    - U icm(acceptance, positive)
+    - S
