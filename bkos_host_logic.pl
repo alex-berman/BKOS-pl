@@ -9,15 +9,27 @@ relevant_answer(P, not(P)) :-
 	polar_question(P).
 
 relevant_answer([E, M]^supports(E, Consequent, M), Evidence) :-
+	\+ ground(E),
+	\+ ground(M),
 	ground(Consequent),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
+relevant_answer([E, M]^supports(E, Consequent, M), supports(_, Consequent, _)) :-
+	\+ ground(E),
+	\+ ground(M),
+	ground(Consequent).
+
 relevant_answer([C, M]^supports(Evidence, C, M), Consequent) :-
+	\+ ground(C),
+	\+ ground(M),
 	ground(Evidence),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
 relevant_answer(_^P, P) :-
-	@P.
+	P = value(_, _, _).
+
+relevant_answer(_^P, P) :-
+	P = relative_value(_, _, _).
 
 
 polar_question(P) :-
@@ -54,19 +66,20 @@ answer_move(P, not(P), disconfirm(not(P))).
 answer_move(_^_, P, assert(P)).
 
 
-remove_pragmatical_redundance(Q, L, L2) :-
-    remove_pragmatical_redundance(Q, L, [], L2).
+remove_pragmatical_redundance(R, L, L2) :-
+    remove_pragmatical_redundance(R, L, [], L2).
 
 remove_pragmatical_redundance(_, [], _, []).
 
-remove_pragmatical_redundance(Q, [X|Xs], Prev, Ys) :-
-	( member(Y, Prev) ; has_asserted(Y) ),
+remove_pragmatical_redundance(R, [X|Xs], Prev, Ys) :-
+	( member(Y, Prev) ; (get_dict(continuation, R, true), has_asserted(Y)) ),
+	get_dict(q, R, Q),
     implicates(Q, Y, X),
     !,
-    remove_pragmatical_redundance(Q, Xs, [X|Prev], Ys).
+    remove_pragmatical_redundance(R, Xs, [X|Prev], Ys).
 
-remove_pragmatical_redundance(Q, [X|Xs], Prev, [X|Ys]) :-
-    remove_pragmatical_redundance(Q, Xs, [X|Prev], Ys).
+remove_pragmatical_redundance(R, [X|Xs], Prev, [X|Ys]) :-
+    remove_pragmatical_redundance(R, Xs, [X|Prev], Ys).
 
 
 implicates(_, P, P).
