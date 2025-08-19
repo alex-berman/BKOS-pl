@@ -9,28 +9,14 @@ integrate_user_question :: (
 	non_integrated_move(ask(Q)) -> agenda(respond(Q))
 	).
 
-add_response :: ([
-	^agenda(respond(Q)),
-	^P,
-	$relevant_answer(Q, P),
-	$(\+ (
-		@response(Q, P2),
-		implicates(Q, P2, P)
-	))
-	] ->
-	response(Q, P)).
-
 respond :: ([
 	agenda(respond(Q)),
-	$findall(P, @response(Q, P), Ps),
-	$( @tcu(Ps) ; (\+ (
+	$findall(P, (
 		@P,
-		relevant_answer(Q, P),
-		\+ (
-			@response(Q, P2),
-			implicates(Q, P2, P)
-		)
-	))),
-	$answer_move(Q, Ps, Move)
+		relevant_answer(Q, P)
+	), RelevantResponses),
+	$remove_pragmatical_redundance(Q, RelevantResponses, RelevantInformativeResponses),
+	$satisfy_tcu(RelevantInformativeResponses, SelectedResponses),
+	$answer_move(Q, SelectedResponses, Move)
 	] ->
 	utter(Move)).

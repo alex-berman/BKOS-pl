@@ -30,6 +30,21 @@ answer_move(P, not(P), disconfirm(not(P))).
 answer_move(_^_, P, assert(P)).
 
 
+remove_pragmatical_redundance(Q, L, L2) :-
+    remove_pragmatical_redundance(Q, L, [], L2).
+
+remove_pragmatical_redundance(_, [], _, []).
+
+remove_pragmatical_redundance(Q, [X|Xs], Prev, Ys) :-
+    member(Y, Prev),
+    implicates(Q, Y, X),
+    !,
+    remove_pragmatical_redundance(Q, Xs, [X|Prev], Ys).
+
+remove_pragmatical_redundance(Q, [X|Xs], Prev, [X|Ys]) :-
+    remove_pragmatical_redundance(Q, Xs, [X|Prev], Ys).
+
+
 implicates(_, P, P).
 
 implicates(_^supports(_, X, _), E, supports(E, X, M)) :-
@@ -37,3 +52,11 @@ implicates(_^supports(_, X, _), E, supports(E, X, M)) :-
 
 implicates(_^supports(_, X, _), supports(E, X, M), E) :-
 	@supports(E, X, M).
+
+
+satisfy_tcu(Ps, TCU) :-
+	( @tcu(TCU) ->
+		append(TCU, _, Ps)
+	;
+		TCU = Ps
+	).
