@@ -1,4 +1,4 @@
-:- ensure_loaded(isu_engine).
+:- ensure_loaded(isu_syntax).
 
 get_move :: ([
 	heard(Interpretation),
