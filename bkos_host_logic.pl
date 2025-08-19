@@ -9,7 +9,7 @@ relevant_answer(P, not(P)) :-
 	polar_question(P).
 
 relevant_answer([_, _]^supports(_, X, _), E) :-
-	@supports(E, X, _).
+	supports_directly_or_indirectly(E, X).
 
 relevant_answer(_^P, P) :-
 	@P.
@@ -17,6 +17,14 @@ relevant_answer(_^P, P) :-
 
 polar_question(P) :-
 	P \= _^_.
+
+
+supports_directly_or_indirectly(P, Q) :-
+	@supports(P, Q, _).
+
+supports_directly_or_indirectly(P, Q) :-
+	@supports(R, Q, _),
+	supports_directly_or_indirectly(P, R).
 
 
 answer_move(R, Ps, signal_continuation(M)) :-
