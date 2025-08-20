@@ -84,8 +84,8 @@ remove_pragmatical_redundance(R, L, L2) :-
 remove_pragmatical_redundance(_, [], _, []).
 
 remove_pragmatical_redundance(R, [X|Xs], Prev, Ys) :-
-	( member(Y, Prev) ; (get_dict(continuation, R, true), has_asserted(Y)) ),
 	get_dict(q, R, Q),
+	( member(Y, Prev) ; (get_dict(continuation, R, true), has_responded(Q, Y)) ),
     implicates(Q, Y, X),
     !,
     remove_pragmatical_redundance(R, Xs, [X|Prev], Ys).
@@ -115,9 +115,9 @@ satisfy_tcu(Ps, TCU) :-
 	).
 
 
-has_asserted(P) :-
-	@uttered(Move),
-	constative_content(Move, P).
+has_responded(Q, P) :-
+	@responded(Q, Ps),
+	member(P, Ps).
 
 
 constative_content(confirm(P), P).

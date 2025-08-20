@@ -25,14 +25,13 @@ respond :: [
 	$get_dict(q, R, Q),
 	$findall(P, (
 		@P,
-		\+ (get_dict(continuation, R, true), has_asserted(P)),
+		\+ (get_dict(continuation, R, true), has_responded(Q, P)),
 		valid_answer(Q, P)
 	), ValidNonUtteredResponses),
 	$remove_pragmatical_redundance(R, ValidNonUtteredResponses, ValidInformativeResponses),
 	$satisfy_tcu(ValidInformativeResponses, SelectedResponses),
 	$answer_move(R, SelectedResponses, Move)
-	] -*
-	[
+	] -* [
 		utter(Move),
-		uttered(Move)
+		responded(Q, SelectedResponses)
 	].
