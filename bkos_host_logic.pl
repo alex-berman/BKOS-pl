@@ -8,20 +8,20 @@ valid_answer(P, A) :-
 
 valid_answer(Vars^Body, A) :-
 	Body = supports(E, Consequent, _),
-    memberchk(E, Vars),
+    contains_variable(Vars, E),
 	(
 		supports_directly_or_indirectly(Evidence, Consequent),
 		A = Evidence
 	;
+		SupportsFact = supports(_, _, _),
 		@SupportsFact,
 		unifiable(SupportsFact, supports(_, Consequent, _), _),
 		A = SupportsFact
 	).
 
-valid_answer([C, M]^supports(Evidence, C, M), Consequent) :-
-	\+ ground(C),
-	\+ ground(M),
-	ground(Evidence),
+valid_answer(Vars^Body, Consequent) :-
+	Body = supports(Evidence, C, _),
+    contains_variable(Vars, C),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
 valid_answer(_^P, A) :-
@@ -32,6 +32,11 @@ valid_answer(_^P, A) :-
 
 polar_question(P) :-
 	P \= _^_.
+
+
+contains_variable(Vars, Var) :-
+	member(Var1, Vars),
+	Var1 == Var.
 
 
 supports_directly_or_indirectly(P, Q) :-

@@ -20,8 +20,10 @@ test(valid_answer_for_polar_questions) :-
     test_valid_answers(p, [p, not(p)]).
 
 
-test(valid_answer_for_supports) :-
+test(valid_answer_for_basic_support) :-
     given_db([
+        e(x),
+        c(x),
         supports(e(X), c(X), m)
         ]),
     test_valid_answers([E, M]^supports(E, c(x), M), [
@@ -29,6 +31,24 @@ test(valid_answer_for_supports) :-
         supports(e(Y), c(Y), m)
     ]),
     test_valid_answers([C, M]^supports(e(x), C, M), [
+        c(x)
+    ]).
+
+
+test(valid_answer_for_chained_support) :-
+    given_db([
+        e(x),
+        c(x),
+        supports(e(X), c1(X), m),
+        supports(c1(X), c(X), m)
+        ]),
+    test_valid_answers([E, M]^supports(E, c(x), M), [
+        c1(x),
+        e(x),
+        supports(c1(Y), c(Y), m)
+    ]),
+    test_valid_answers([C, M]^supports(e(x), C, M), [
+        c1(x),
         c(x)
     ]).
 
