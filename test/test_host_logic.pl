@@ -1,6 +1,5 @@
 :- ensure_loaded(bkos_host_logic).
 :- ensure_loaded(isu_syntax).
-- ensure_loaded(db).
 
 
 set_facts(Facts) :-
