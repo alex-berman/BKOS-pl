@@ -23,6 +23,7 @@ test(valid_answer_for_polar_questions) :-
 
 
 test(valid_answer_for_basic_support) :-
+    % evidence question
     test_valid_answers(
         [],
         [E, M]^supports(E, c(x), M),
@@ -38,6 +39,8 @@ test(valid_answer_for_basic_support) :-
             e(x),
             supports(e(Y), c(Y), m)
         ]),
+    
+    % claim question
     test_valid_answers(
         [],
         [C, M]^supports(e(x), C, M),
@@ -51,6 +54,18 @@ test(valid_answer_for_basic_support) :-
         ],
         [C, M]^supports(e(x), C, M),
         [c(x)]
+    ),
+
+    % means question
+    test_valid_answers(
+        [],
+        [M]^supports(e(x), c(x), M),
+        []
+    ),
+    test_valid_answers(
+        [supports(e(X), c(X), m)],
+        [M]^supports(e(x), c(x), M),
+        [supports(e(X), c(X), m)]
     ).
 
 

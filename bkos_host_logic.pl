@@ -27,6 +27,12 @@ valid_answer(Vars^Body, Consequent) :-
     contains_variable(Vars, C),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
+valid_answer([M]^Body, SupportsFact) :-
+	Body = supports(_, _, M),
+	SupportsFact = supports(_, _, M),
+	@SupportsFact,
+	unifiable(SupportsFact, Body, _).
+
 valid_answer(_^P, A) :-
 	P \= supports(_, _, _),
 	copy_term(P, A),
