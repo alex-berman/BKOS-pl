@@ -33,6 +33,13 @@ test(valid_answer_for_supports) :-
     ]).
 
 
+test(valid_answer_for_basic_lookup) :-
+    given_db([
+        value(back_pain, patient, 4)
+        ]),
+    test_valid_answers([V]^value(back_pain, patient, V), [value(back_pain, patient, 4)]).
+
+
 test(remove_pragmatical_redundance) :-
     given_db([
         supports(e(X), c(X), m)

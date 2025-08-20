@@ -27,11 +27,10 @@ valid_answer([C, M]^supports(Evidence, C, M), Consequent) :-
 	ground(Evidence),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-valid_answer(_^P, P) :-
-	P = value(_, _, _).
-
-valid_answer(_^P, P) :-
-	P = relative_value(_, _, _).
+valid_answer(_^P, A) :-
+	P \= supports(_, _, _),
+	copy_term(P, A),
+	@A.
 
 
 polar_question(P) :-
