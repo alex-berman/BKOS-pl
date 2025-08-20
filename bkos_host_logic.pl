@@ -14,10 +14,12 @@ valid_answer([E, M]^supports(E, Consequent, M), Evidence) :-
 	ground(Consequent),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-valid_answer([E, M]^supports(E, Consequent, M), supports(_, Consequent, _)) :-
+valid_answer([E, M]^supports(E, Consequent, M), SupportsFact) :-
 	\+ ground(E),
 	\+ ground(M),
-	ground(Consequent).
+	@SupportsFact,
+	ground(Consequent),
+	unifiable(SupportsFact, supports(_, Consequent, _), _).
 
 valid_answer([C, M]^supports(Evidence, C, M), Consequent) :-
 	\+ ground(C),
@@ -82,12 +84,16 @@ remove_pragmatical_redundance(R, [X|Xs], Prev, [X|Ys]) :-
     remove_pragmatical_redundance(R, Xs, [X|Prev], Ys).
 
 
-implicates(_, P, P).
+implicates(Q, A, B) :-
+	copy_term((Q, A, B), (Q1, A1, B1)),
+	implicates_with_unification(Q1, A1, B1).
 
-implicates(_^supports(_, X, _), E, supports(E, X, M)) :-
+implicates_with_unification(_, P, P).
+
+implicates_with_unification(_^supports(_, X, _), E, supports(E, X, M)) :-
 	@supports(E, X, M).
 
-implicates(_^supports(_, X, _), supports(E, X, M), E) :-
+implicates_with_unification(_^supports(_, X, _), supports(E, X, M), E) :-
 	@supports(E, X, M).
 
 

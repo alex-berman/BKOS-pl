@@ -1,27 +1,47 @@
 :- ensure_loaded(bkos_host_logic).
 :- ensure_loaded(isu_syntax).
-:- ensure_loaded(db).
+- ensure_loaded(db).
+
 
 given_db(Facts) :-
     retractall(@_),
     forall(member(Fact, Facts), assertz(@Fact)).
 
+
+test_valid_answers(Q, Expected) :-
+    findall(A, valid_answer(Q, A), Actual),
+    assertion(Actual =@= Expected).
+
+
 :- begin_tests(host_logic).
 
-test(valid_answer_for_polar_questions) :-
-    assertion(valid_answer(p, p)),
-    assertion(valid_answer(p, not(p))),
-    assertion(\+ valid_answer(p, a)),
-    assertion(\+ valid_answer(p, not(a))).
 
-test(valid_answer_for_support) :-
+test(valid_answer_for_polar_questions) :-
+    test_valid_answers(p, [p, not(p)]).
+
+
+test(valid_answer_for_supports) :-
     given_db([
-        supports(e, c, m)
+        supports(e(X), c(X), m)
         ]),
-    assertion(valid_answer([E, M]^supports(E, c, M), e)),
-    assertion(valid_answer([E, M]^supports(E, c, M), supports(e, c, m))),
-    assertion(valid_answer([C, M]^supports(e, C, M), c)).
-    % TODO?
-    %assertion(valid_answer([M]^supports(e, c, M), supports(e, c, m))).
+    test_valid_answers([E, M]^supports(E, c(x), M), [
+        e(x),
+        supports(e(Y), c(Y), m)
+    ]),
+    test_valid_answers([C, M]^supports(e(x), C, M), [
+        c(x)
+    ]).
+
+
+test(remove_pragmatical_redundance) :-
+    given_db([
+        supports(e(X), c(X), m)
+        ]),
+    Q = [E, M]^supports(E, c(x), M),
+    R = _{q:Q},
+    remove_pragmatical_redundance(R, [supports(e(X), c(X), m), e(x)], Actual), !,
+    Expected = [supports(e(Y), c(Y), m)],
+    assertion(Actual =@= Expected).
+
 
 :- end_tests(host_logic).

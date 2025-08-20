@@ -58,7 +58,7 @@ test_system_turn(ExpectedSystemMoveAtom) :-
     apply_rules_exhaustively,
     assertion(@utter(_)),
     @utter(ActualSystemMove),
-    assertion(ActualSystemMove = ExpectedSystemMove),
+    assertion(ActualSystemMove =@= ExpectedSystemMove),
     retract(@utter(_)).
 
 test_user_turn(InterpretationAtom) :-
