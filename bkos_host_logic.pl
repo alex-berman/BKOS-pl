@@ -4,13 +4,16 @@
 
 valid_answer(P, A) :-
 	polar_question(P),
-	( A = P ; A = not(P) ).
+	( A = P ; A = not(P) ),
+	@A.
+
 
 valid_answer(Vars^Body, A) :-
 	Body = supports(E, Consequent, _),
     contains_variable(Vars, E),
 	(
 		supports_directly_or_indirectly(Evidence, Consequent),
+		@Evidence,
 		A = Evidence
 	;
 		SupportsFact = supports(_, _, _),
