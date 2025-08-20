@@ -2,24 +2,21 @@
 :- ensure_loaded(db).
 
 
-valid_answer(P, P) :-
-	polar_question(P).
+valid_answer(P, A) :-
+	polar_question(P),
+	( A = P ; A = not(P) ).
 
-valid_answer(P, not(P)) :-
-	polar_question(P).
-
-valid_answer([E, M]^supports(E, Consequent, M), Evidence) :-
-	\+ ground(E),
-	\+ ground(M),
-	ground(Consequent),
-	supports_directly_or_indirectly(Evidence, Consequent).
-
-valid_answer([E, M]^supports(E, Consequent, M), SupportsFact) :-
-	\+ ground(E),
-	\+ ground(M),
-	@SupportsFact,
-	ground(Consequent),
-	unifiable(SupportsFact, supports(_, Consequent, _), _).
+valid_answer(Vars^Body, A) :-
+	Body = supports(E, Consequent, _),
+    memberchk(E, Vars),
+	(
+		supports_directly_or_indirectly(Evidence, Consequent),
+		A = Evidence
+	;
+		@SupportsFact,
+		unifiable(SupportsFact, supports(_, Consequent, _), _),
+		A = SupportsFact
+	).
 
 valid_answer([C, M]^supports(Evidence, C, M), Consequent) :-
 	\+ ground(C),
