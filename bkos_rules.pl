@@ -26,10 +26,10 @@ respond :: [
 	$findall(P, (
 		@P,
 		\+ (get_dict(continuation, R, true), has_asserted(P)),
-		relevant_answer(Q, P)
-	), RelevantNonUtteredResponses),
-	$remove_pragmatical_redundance(R, RelevantNonUtteredResponses, RelevantInformativeResponses),
-	$satisfy_tcu(RelevantInformativeResponses, SelectedResponses),
+		valid_answer(Q, P)
+	), ValidNonUtteredResponses),
+	$remove_pragmatical_redundance(R, ValidNonUtteredResponses, ValidInformativeResponses),
+	$satisfy_tcu(ValidInformativeResponses, SelectedResponses),
 	$answer_move(R, SelectedResponses, Move)
 	] -*
 	[

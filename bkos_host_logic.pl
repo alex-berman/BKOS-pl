@@ -2,33 +2,33 @@
 :- ensure_loaded(db).
 
 
-relevant_answer(P, P) :-
+valid_answer(P, P) :-
 	polar_question(P).
 
-relevant_answer(P, not(P)) :-
+valid_answer(P, not(P)) :-
 	polar_question(P).
 
-relevant_answer([E, M]^supports(E, Consequent, M), Evidence) :-
+valid_answer([E, M]^supports(E, Consequent, M), Evidence) :-
 	\+ ground(E),
 	\+ ground(M),
 	ground(Consequent),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-relevant_answer([E, M]^supports(E, Consequent, M), supports(_, Consequent, _)) :-
+valid_answer([E, M]^supports(E, Consequent, M), supports(_, Consequent, _)) :-
 	\+ ground(E),
 	\+ ground(M),
 	ground(Consequent).
 
-relevant_answer([C, M]^supports(Evidence, C, M), Consequent) :-
+valid_answer([C, M]^supports(Evidence, C, M), Consequent) :-
 	\+ ground(C),
 	\+ ground(M),
 	ground(Evidence),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-relevant_answer(_^P, P) :-
+valid_answer(_^P, P) :-
 	P = value(_, _, _).
 
-relevant_answer(_^P, P) :-
+valid_answer(_^P, P) :-
 	P = relative_value(_, _, _).
 
 
