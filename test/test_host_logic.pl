@@ -125,8 +125,7 @@ test(remove_pragmatical_redundance) :-
         supports(e(X), c(X), m)
         ]),
     Q = [E, M]>>supports(E, c(x), M),
-    R = _{q:Q},
-    remove_pragmatical_redundance(R, [supports(e(X), c(X), m), e(x)], Actual), !,
+    remove_pragmatical_redundance(Q, false, [supports(e(X), c(X), m), e(x)], Actual), !,
     Expected = [supports(e(Y), c(Y), m)],
     assertion(Actual =@= Expected).
 
