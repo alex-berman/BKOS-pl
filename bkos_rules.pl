@@ -8,6 +8,10 @@ get_move_and_clear_agenda :: [
 	*agenda(_)
 	] -* non_integrated_move(Move).
 
+provide_negative_understanding_when_no_semantic_interpretation ::
+	non_integrated_move(none) -*
+	utter(icm(understanding, negative)).
+
 reject_unanswerable_question :: [
 	non_integrated_move(ask(Q)),
 	$(\+ valid_answer(Q, _))
