@@ -124,18 +124,3 @@ satisfy_tcu(Ps, TCU) :-
 has_responded(Q, P) :-
 	@responded(Q, Ps),
 	member(P, Ps).
-
-
-constative_content(confirm(P), P).
-
-constative_content(disconfirm(P), P).
-
-constative_content(assert(P), P).
-
-constative_content(signal_continuation(M), P) :-
-	constative_content(M, P).
-
-constative_content(Moves, P) :-
-	is_list(Moves),
-	member(Move, Moves),
-	constative_content(Move, P).
