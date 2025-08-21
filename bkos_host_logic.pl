@@ -2,6 +2,10 @@
 :- ensure_loaded(db).
 
 
+valid_answer([]>>P, A) :-
+	( A = P ; A = not(P) ),
+	@A.
+
 valid_answer(Vars>>Body, A) :-
 	Body = supports(E, Consequent, _),
     contains_variable(Vars, E),
@@ -27,13 +31,9 @@ valid_answer([M]>>Body, SupportsFact) :-
 	@SupportsFact,
 	unifiable(SupportsFact, Body, _).
 
-valid_answer(_>>P, A) :-
+valid_answer([_]>>P, A) :-
 	P \= supports(_, _, _),
 	copy_term(P, A),
-	@A.
-
-valid_answer([]>>P, A) :-
-	A = not(P),
 	@A.
 
 
@@ -65,9 +65,9 @@ answer_move(Q, [P], M) :-
 	!,
 	answer_move(Q, P, M).
 
-answer_move({}>>P, P, confirm(P)).
+answer_move([]>>P, P, confirm(P)).
 
-answer_move({}>>P, not(P), disconfirm(not(P))).
+answer_move([]>>P, not(P), disconfirm(not(P))).
 
 answer_move(_>>_, P, assert(P)).
 

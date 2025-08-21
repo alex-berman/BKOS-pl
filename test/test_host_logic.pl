@@ -65,6 +65,18 @@ test(valid_answer_for_basic_support) :-
         [supports(e(X), c(X), m)],
         [M]>>supports(e(x), c(x), M),
         [supports(e(X), c(X), m)]
+    ),
+
+    % polar question
+    test_valid_answers(
+        [],
+        []>>supports(e(X), c(X), _),
+        []
+    ),
+    test_valid_answers(
+        [supports(e(X), c(X), m)],
+        []>>supports(e(X), c(X), _),
+        [supports(e(X), c(X), m)]
     ).
 
 
