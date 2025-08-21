@@ -26,14 +26,19 @@ run_test_from_dict(Name:Test) :-
             ))
         ; true
     ),
-    test_turns(Test.turns).
+    test_turns(Test.turns, 1).
 
-test_turns([]) :- !.
-
-test_turns([TurnStr|TurnsTail]) :-
-    write('Turn='), write(TurnStr), nl,
-    test_turn(TurnStr),
-    test_turns(TurnsTail).
+test_turns(Turns, N) :-
+    length(Turns, NumTurns),
+    ( N =< NumTurns ->
+        nth1(N, Turns, TurnStr),
+        format('Turn #~w: ~w\n', [N, TurnStr]),
+        test_turn(TurnStr),
+        NextN is N + 1,
+        test_turns(Turns, NextN)
+    ;
+        true
+    ).
 
 test_turn("S") :-
     !,
