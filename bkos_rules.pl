@@ -22,13 +22,6 @@ integrate_acknowledgement :: [
 	^qud([Q|_])
 	] -* agenda(respond(_{q:Q, continuation:true})).
 
-deduce_negated_support :: [
-	^agenda(respond(R)),
-	$get_dict(q, R, Q),
-	$(Q = []>>supports(E, C, M)),
-	$(\+ valid_answer(Q, _))
-	] -* not(supports(E, C, M)).
-
 respond :: [
 	agenda(respond(R)),
 	$get_dict(q, R, Q),
