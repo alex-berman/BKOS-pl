@@ -267,3 +267,10 @@ provide_negative_understanding_when_no_semantic_interpretation:
   turns:
   - U none
   - S icm(understanding, negative)
+
+hedge_answer:
+  facts:
+    - confidence(satisfied(patient), moderate)
+  turns:
+    - U ask([]>>satisfied(patient))
+    - S hedge(confirm(satisfied(patient)), moderate)

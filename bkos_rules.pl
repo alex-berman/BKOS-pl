@@ -37,7 +37,7 @@ respond :: [
 	$get_dict(q, R, Q),
 	$(get_dict(continuation, R, IsContinuation) -> true ; IsContinuation = false),
 	$findall(P, (
-		@P,
+		belief(P),
 		\+ (IsContinuation == true, has_responded(Q, P)),
 		valid_answer(Q, P)
 	), ValidNonUtteredResponses),
@@ -53,7 +53,7 @@ deliver_claim_and_supporting_evidence_as_inference :: [
 	agenda(argue(C)),
 	$(Q = [E, M]>>supports(E, C, M)),
 	$findall(P, (
-		@P,
+		belief(P),
 		valid_answer(Q, P)
 	), ValidSupportingPropositions),
 	$remove_pragmatical_redundance(Q, false, ValidSupportingPropositions, SelectedSupportingPropositions)
