@@ -2,14 +2,16 @@
 
 _ :: qud([]).
 
-get_move :: [
+get_move_and_clear_agenda :: [
 	heard(Interpretation),
-	$get_dict(move, Interpretation, Move)
+	$get_dict(move, Interpretation, Move),
+	*agenda(_)
 	] -* non_integrated_move(Move).
 
 integrate_user_question :: [
 	qud(Qs),
-	non_integrated_move(ask(Q))
+	non_integrated_move(ask(Q)),
+	*responded(Q, _)
 	] -* [
 		qud([Q|Qs]),
 		agenda(respond(_{q:Q}))
