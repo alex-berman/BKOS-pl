@@ -8,6 +8,12 @@ get_move_and_clear_agenda :: [
 	*agenda(_)
 	] -* non_integrated_move(Move).
 
+reject_unanswerable_question :: [
+	non_integrated_move(ask(Q)),
+	$(\+ valid_answer(Q, _))
+	] -*
+	utter(icm(acceptance, negative, lack_knowledge(Q))).
+
 integrate_user_question :: [
 	qud(Qs),
 	non_integrated_move(ask(Q)),
