@@ -2,13 +2,7 @@
 :- ensure_loaded(db).
 
 
-valid_answer(P, A) :-
-	polar_question(P),
-	( A = P ; A = not(P) ),
-	@A.
-
-
-valid_answer(Vars^Body, A) :-
+valid_answer(Vars>>Body, A) :-
 	Body = supports(E, Consequent, _),
     contains_variable(Vars, E),
 	(
@@ -22,25 +16,25 @@ valid_answer(Vars^Body, A) :-
 		A = SupportsFact
 	).
 
-valid_answer(Vars^Body, Consequent) :-
+valid_answer(Vars>>Body, Consequent) :-
 	Body = supports(Evidence, C, _),
     contains_variable(Vars, C),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-valid_answer([M]^Body, SupportsFact) :-
+valid_answer([M]>>Body, SupportsFact) :-
 	Body = supports(_, _, M),
 	SupportsFact = supports(_, _, M),
 	@SupportsFact,
 	unifiable(SupportsFact, Body, _).
 
-valid_answer(_^P, A) :-
+valid_answer(_>>P, A) :-
 	P \= supports(_, _, _),
 	copy_term(P, A),
 	@A.
 
-
-polar_question(P) :-
-	P \= _^_.
+valid_answer([]>>P, A) :-
+	A = not(P),
+	@A.
 
 
 contains_variable(Vars, Var) :-
@@ -71,11 +65,11 @@ answer_move(Q, [P], M) :-
 	!,
 	answer_move(Q, P, M).
 
-answer_move(P, P, confirm(P)).
+answer_move({}>>P, P, confirm(P)).
 
-answer_move(P, not(P), disconfirm(not(P))).
+answer_move({}>>P, not(P), disconfirm(not(P))).
 
-answer_move(_^_, P, assert(P)).
+answer_move(_>>_, P, assert(P)).
 
 
 remove_pragmatical_redundance(R, L, L2) :-
@@ -100,10 +94,10 @@ implicates(Q, A, B) :-
 
 implicates_with_unification(_, P, P).
 
-implicates_with_unification(_^supports(_, X, _), E, supports(E, X, M)) :-
+implicates_with_unification(_>>supports(_, X, _), E, supports(E, X, M)) :-
 	@supports(E, X, M).
 
-implicates_with_unification(_^supports(_, X, _), supports(E, X, M), E) :-
+implicates_with_unification(_>>supports(_, X, _), supports(E, X, M), E) :-
 	@supports(E, X, M).
 
 

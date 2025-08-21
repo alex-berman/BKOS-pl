@@ -17,15 +17,15 @@ test_valid_answers(Facts, Q, Expected) :-
 
 
 test(valid_answer_for_polar_questions) :-
-    test_valid_answers([], p, []),
-    test_valid_answers([p, not(p)], p, [p, not(p)]).
+    test_valid_answers([], []>>p, []),
+    test_valid_answers([p, not(p)], []>>p, [p, not(p)]).
 
 
 test(valid_answer_for_basic_support) :-
     % evidence question
     test_valid_answers(
         [],
-        [E, M]^supports(E, c(x), M),
+        [E, M]>>supports(E, c(x), M),
         []),
     test_valid_answers(
         [
@@ -33,7 +33,7 @@ test(valid_answer_for_basic_support) :-
             c(x),
             supports(e(X), c(X), m)
         ],
-        [E, M]^supports(E, c(x), M),
+        [E, M]>>supports(E, c(x), M),
         [
             e(x),
             supports(e(Y), c(Y), m)
@@ -42,7 +42,7 @@ test(valid_answer_for_basic_support) :-
     % claim question
     test_valid_answers(
         [],
-        [C, M]^supports(e(x), C, M),
+        [C, M]>>supports(e(x), C, M),
         []
     ),
     test_valid_answers(
@@ -51,19 +51,19 @@ test(valid_answer_for_basic_support) :-
             c(x),
             supports(e(X), c(X), m)
         ],
-        [C, M]^supports(e(x), C, M),
+        [C, M]>>supports(e(x), C, M),
         [c(x)]
     ),
 
     % means question
     test_valid_answers(
         [],
-        [M]^supports(e(x), c(x), M),
+        [M]>>supports(e(x), c(x), M),
         []
     ),
     test_valid_answers(
         [supports(e(X), c(X), m)],
-        [M]^supports(e(x), c(x), M),
+        [M]>>supports(e(x), c(x), M),
         [supports(e(X), c(X), m)]
     ).
 
@@ -77,7 +77,7 @@ test(valid_answer_for_chained_support) :-
             supports(e(X), c1(X), m),
             supports(c1(X), c(X), m)
         ],
-        [E, M]^supports(E, c(x), M),
+        [E, M]>>supports(E, c(x), M),
         [
             c1(x),
             e(x),
@@ -92,7 +92,7 @@ test(valid_answer_for_chained_support) :-
             supports(e(X), c1(X), m),
             supports(c1(X), c(X), m)
         ],
-        [C, M]^supports(e(x), C, M),
+        [C, M]>>supports(e(x), C, M),
         [
             c1(x),
             c(x)
@@ -103,7 +103,7 @@ test(valid_answer_for_chained_support) :-
 test(valid_answer_for_basic_lookup) :-
     test_valid_answers(
         [value(back_pain, patient, 4)],
-        [V]^value(back_pain, patient, V),
+        [V]>>value(back_pain, patient, V),
         [value(back_pain, patient, 4)]
     ).
 
@@ -112,7 +112,7 @@ test(remove_pragmatical_redundance) :-
     set_facts([
         supports(e(X), c(X), m)
         ]),
-    Q = [E, M]^supports(E, c(x), M),
+    Q = [E, M]>>supports(E, c(x), M),
     R = _{q:Q},
     remove_pragmatical_redundance(R, [supports(e(X), c(X), m), e(x)], Actual), !,
     Expected = [supports(e(Y), c(Y), m)],
