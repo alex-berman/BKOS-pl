@@ -122,7 +122,6 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
     - U icm(acceptance, positive)
     - S
 
-
 explain_chained_inference_backwards:
   facts:
     - surgery_recommended(patient)
@@ -155,7 +154,21 @@ explain_chained_inference_forward:
     - U ask([E, M]>>supports(E, surgery_recommended(patient), M))
     - S assert(relative_value(back_pain, patient, low))
 
-open_request_for_forward_expansion:
+confirm_warrant:
+  facts:
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+  turns:
+    - U ask([]>>supports(relative_value(back_pain, X, low), satisfied(X), _))
+    - S confirm(supports(relative_value(back_pain, X, low), satisfied(X), association))
+
+disconfirm_warrant:
+  facts:
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+  turns:
+    - U ask([]>>supports(relative_value(back_pain, X, high), satisfied(X), _))
+    - S disconfirm(not(supports(relative_value(back_pain, X, high), satisfied(X), _)))
+
+respond_to_open_request_for_forward_expansion:
   facts:
     - satisfied(patient)
     - relative_value(back_pain, patient, low)
@@ -167,7 +180,7 @@ open_request_for_forward_expansion:
     - U ask([C, M]>>supports(relative_value(back_pain, patient, low), C, M))
     - S assert(satisfied(patient))
 
-confirmation_of_forward_expansion:
+confirm_forward_expansion:
   facts:
     - satisfied(patient)
     - relative_value(back_pain, patient, low)

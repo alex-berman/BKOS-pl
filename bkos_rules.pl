@@ -22,6 +22,13 @@ integrate_acknowledgement :: [
 	^qud([Q|_])
 	] -* agenda(respond(_{q:Q, continuation:true})).
 
+deduce_negation :: [
+	^agenda(respond(R)),
+	$get_dict(q, R, Q),
+	$(Q = []>>P),
+	$(\+ valid_answer(Q, _))
+	] -* not(P).
+
 respond :: [
 	agenda(respond(R)),
 	$get_dict(q, R, Q),
