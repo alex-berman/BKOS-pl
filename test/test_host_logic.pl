@@ -22,7 +22,7 @@ test(valid_answer_for_polar_questions) :-
 
 
 test(valid_answer_for_basic_support) :-
-    % evidence question
+    % wh-question concerning evidence
     test_valid_answers(
         [],
         [E, M]>>supports(E, c(x), M),
@@ -39,7 +39,7 @@ test(valid_answer_for_basic_support) :-
             supports(e(Y), c(Y), m)
         ]),
     
-    % claim question
+    % wh-question concerning claim
     test_valid_answers(
         [],
         [C, M]>>supports(e(x), C, M),
@@ -55,7 +55,7 @@ test(valid_answer_for_basic_support) :-
         [c(x)]
     ),
 
-    % means question
+    % wh-question concerning means
     test_valid_answers(
         [],
         [M]>>supports(e(x), c(x), M),
@@ -67,7 +67,7 @@ test(valid_answer_for_basic_support) :-
         [supports(e(X), c(X), m)]
     ),
 
-    % polar question
+    % polar question concerning warrant
     test_valid_answers(
         [],
         []>>supports(e(X), c(X), _),
@@ -77,6 +77,17 @@ test(valid_answer_for_basic_support) :-
         [supports(e(X), c(X), m)],
         []>>supports(e(X), c(X), _),
         [supports(e(X), c(X), m)]
+    ),
+
+    % polar question concerning datum explanation
+    test_valid_answers(
+        [
+            e(x),
+            c(x),
+            supports(e(X), c(X), m)
+        ],
+        []>>supports(e(x), c(x), _),
+        [supports(e(x), c(x), m)]
     ).
 
 
