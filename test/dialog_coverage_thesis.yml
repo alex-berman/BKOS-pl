@@ -284,3 +284,13 @@ confirm_datum_explanation:
   turns:
     - U ask([]>>supports(relative_value(back_pain, patient, low), satisfied(patient), _))
     - S confirm(supports(relative_value(back_pain, patient, low), satisfied(patient), association))
+
+reject_move_with_presupposition_violation:
+  facts:
+    - satisfied(patient)
+    - relative_value(back_pain, patient, low)
+    - value(back_pain, patient, 4)
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+  turns:
+    - U move{ content:ask([]>>supports(relative_value(back_pain, patient, high), satisfied(patient), _)), presuppositions:[relative_value(back_pain, patient, high)] }
+    - S icm(acceptance, negative, relative_value(back_pain, patient, high))

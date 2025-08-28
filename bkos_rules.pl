@@ -2,6 +2,14 @@
 
 _ :: qud([]).
 
+reject_move_with_presupposition_violation :: [
+	heard(Move),
+	$get_dict(presuppositions, Move, Presuppositions),
+	$member(Presupposition, Presuppositions),
+	$(\+ compatible_with_facts(Presupposition))
+	] -*
+	utter(icm(acceptance, negative, Presupposition)).
+
 get_move_and_clear_agenda :: [
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move),

@@ -124,3 +124,19 @@ satisfy_tcu(Ps, TCU) :-
 has_responded(Q, P) :-
 	@responded(Q, Ps),
 	member(P, Ps).
+
+
+compatible_with_facts(P) :-
+	\+ (belief(Q), contradicts(Q, P)).
+
+
+contradicts(not(P), P).
+
+contradicts(P, not(P)).
+
+contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
+	ground(P),
+	contradicts(Q1, Q2).
+
+contradicts(relative_value(Feature, Individual, Value1), relative_value(Feature, Individual, Value2)) :-
+	Value1 \== Value2.
