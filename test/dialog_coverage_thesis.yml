@@ -249,7 +249,7 @@ deliver_prediction_as_inference:
   turns:
     - S infer([relative_value(back_pain, patient, low)], satisfied(patient))
 
-reject_unanswerable_question:
+reject_unanswerable_question_concerning_cause_of_specific_datum:
   facts:
     - satisfied(patient)
     - relative_value(back_pain, patient, low)
@@ -262,6 +262,13 @@ reject_unanswerable_question:
     - S assert(relative_value(back_pain, patient, low))
     - U ask([E]>>supports(E, relative_value(back_pain, patient, low), causation))
     - S icm(acceptance, negative, lack_knowledge([E]>>supports(E, relative_value(back_pain, patient, low), causation)))
+
+reject_unanswerable_question_concerning_general_causal_relation:
+  facts:
+    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+  turns:
+    - U ask([]>>supports(relative_value(back_pain, X, _), satisfied(X), causation))
+    - S icm(acceptance, negative, lack_knowledge([]>>supports(relative_value(back_pain, X, _), satisfied(X), causation)))
 
 provide_negative_understanding_when_no_semantic_interpretation:
   turns:
