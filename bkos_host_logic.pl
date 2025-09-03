@@ -4,18 +4,18 @@
 
 valid_answer([]>>P, A) :-
 	( A = P ; A = not(P) ),
-	belief(A).
+	@A.
 
 valid_answer(Vars>>Body, A) :-
 	Body = supports(E, Consequent, _),
     contains_variable(Vars, E),
 	(
 		supports_directly_or_indirectly(Evidence, Consequent),
-		belief(Evidence),
+		@Evidence,
 		A = Evidence
 	;
 		SupportsFact = supports(_, _, _),
-		belief(SupportsFact),
+		@SupportsFact,
 		unifiable(SupportsFact, supports(_, Consequent, _), _),
 		A = SupportsFact
 	).
@@ -28,17 +28,13 @@ valid_answer(Vars>>Body, Consequent) :-
 valid_answer([M]>>Body, SupportsFact) :-
 	Body = supports(_, _, M),
 	SupportsFact = supports(_, _, M),
-	belief(SupportsFact),
+	@SupportsFact,
 	unifiable(SupportsFact, Body, _).
 
 valid_answer([_]>>P, A) :-
 	P \= supports(_, _, _),
 	copy_term(P, A),
-	belief(A).
-
-
-belief(P) :-
-	(@P ; @confidence(P, _)).
+	@A.
 
 
 contains_variable(Vars, Var) :-
@@ -47,10 +43,10 @@ contains_variable(Vars, Var) :-
 
 
 supports_directly_or_indirectly(P, Q) :-
-	belief(supports(P, Q, _)).
+	@supports(P, Q, _).
 
 supports_directly_or_indirectly(P, Q) :-
-	belief(supports(R, Q, _)),
+	@supports(R, Q, _),
 	supports_directly_or_indirectly(P, R).
 
 
@@ -65,24 +61,15 @@ answer_move(R, Ps, M) :-
 	get_dict(q, R, Q),
 	answer_move(Q, Ps, M).
 
-answer_move(Q, P, hedge(M, Confidence)) :-
-	@confidence(P, Confidence),
-	!,
-	unhedged_answer_move(Q, P, M).
-
 answer_move(Q, [P], M) :-
 	!,
 	answer_move(Q, P, M).
 
-answer_move(Q, P, M) :-
-	unhedged_answer_move(Q, P, M).
+answer_move([]>>P, P, confirm(P)).
 
+answer_move([]>>P, not(P), disconfirm(not(P))).
 
-unhedged_answer_move([]>>P, P, confirm(P)).
-
-unhedged_answer_move([]>>P, not(P), disconfirm(not(P))).
-
-unhedged_answer_move(_>>_, P, assert(P)).
+answer_move(_>>_, P, assert(P)).
 
 
 remove_pragmatical_redundance(Q, IsContinuation, L, L2) :-
@@ -107,10 +94,10 @@ implicates(Q, A, B) :-
 implicates_with_unification(_, P, P).
 
 implicates_with_unification(_>>supports(_, X, _), E, supports(E, X, M)) :-
-	belief(supports(E, X, M)).
+	@supports(E, X, M).
 
 implicates_with_unification(_>>supports(_, X, _), supports(E, X, M), E) :-
-	belief(supports(E, X, M)).
+	@supports(E, X, M).
 
 
 satisfy_tcu(Ps, TCU) :-
@@ -127,7 +114,7 @@ has_responded(Q, P) :-
 
 
 compatible_with_facts(P) :-
-	\+ (belief(Q), contradicts(Q, P)).
+	\+ (@Q, contradicts(Q, P)).
 
 
 contradicts(not(P), P).

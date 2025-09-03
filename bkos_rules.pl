@@ -45,7 +45,7 @@ respond :: [
 	$get_dict(q, R, Q),
 	$(get_dict(continuation, R, IsContinuation) -> true ; IsContinuation = false),
 	$findall(P, (
-		belief(P),
+		@P,
 		\+ (IsContinuation == true, has_responded(Q, P)),
 		valid_answer(Q, P)
 	), A1),
@@ -61,7 +61,7 @@ deliver_claim_and_supporting_evidence_as_inference :: [
 	agenda(argue(C)),
 	$(Q = [E, M]>>supports(E, C, M)),
 	$findall(P, (
-		belief(P),
+		@P,
 		valid_answer(Q, P)
 	), A1),
 	$remove_pragmatical_redundance(Q, false, A1, A)
