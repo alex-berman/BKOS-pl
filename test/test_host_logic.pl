@@ -31,7 +31,8 @@ test(valid_answer_for_basic_support) :-
         [
             e(x),
             c(x),
-            supports(e(X), c(X), m)
+            supports(e(X), c(X), m),
+            supports(f(X), c(X), m)
         ],
         [E, M]>>supports(E, c(x), M),
         [
@@ -49,7 +50,8 @@ test(valid_answer_for_basic_support) :-
         [
             e(x),
             c(x),
-            supports(e(X), c(X), m)
+            supports(e(X), c(X), m),
+            supports(f(X), c(X), m)
         ],
         [C, M]>>supports(e(x), C, M),
         [c(x)]
@@ -84,10 +86,13 @@ test(valid_answer_for_basic_support) :-
         [
             e(x),
             c(x),
-            supports(e(X), c(X), m)
+            supports(e(X), c(X), m),
+            supports(f(X), c(X), m)
         ],
         []>>supports(e(x), c(x), _),
-        [supports(e(x), c(x), m)]
+        [
+            supports(e(x), c(x), m)
+        ]
     ).
 
 

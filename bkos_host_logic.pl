@@ -14,8 +14,9 @@ valid_answer(Vars>>Body, A) :-
 		@Evidence,
 		A = Evidence
 	;
-		SupportsFact = supports(_, _, _),
+		SupportsFact = supports(SupportingAntecedent, _, _),
 		@SupportsFact,
+		matches_fact(SupportingAntecedent),
 		unifiable(SupportsFact, supports(_, Consequent, _), _),
 		A = SupportsFact
 	).
@@ -48,6 +49,18 @@ supports_directly_or_indirectly(P, Q) :-
 supports_directly_or_indirectly(P, Q) :-
 	@supports(R, Q, _),
 	supports_directly_or_indirectly(P, R).
+
+supports_directly_or_indirectly(P, relative_prob(Pred, Ind, moderate)) :-
+	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, high)), PosEvidences),
+	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, low)), NegEvidences),
+	PosEvidences \== [],
+	NegEvidences \== [],
+	(member(P, PosEvidences) ; member(P, NegEvidences)).
+
+
+matches_fact(P) :-
+	@P1,
+	unifiable(P, P1, _).
 
 
 answer_move(R, Ps, signal_continuation(M)) :-
