@@ -48,13 +48,13 @@ respond :: [
 		belief(P),
 		\+ (IsContinuation == true, has_responded(Q, P)),
 		valid_answer(Q, P)
-	), ValidNonUtteredResponses),
-	$remove_pragmatical_redundance(Q, IsContinuation, ValidNonUtteredResponses, ValidInformativeResponses),
-	$satisfy_tcu(ValidInformativeResponses, SelectedResponses),
-	$answer_move(R, SelectedResponses, Move)
+	), A1),
+	$remove_pragmatical_redundance(Q, IsContinuation, A1, A2),
+	$satisfy_tcu(A2, A),
+	$answer_move(R, A, Move)
 	] -* [
 		utter(Move),
-		responded(Q, SelectedResponses)
+		responded(Q, A)
 	].
 
 deliver_claim_and_supporting_evidence_as_inference :: [
@@ -63,6 +63,6 @@ deliver_claim_and_supporting_evidence_as_inference :: [
 	$findall(P, (
 		belief(P),
 		valid_answer(Q, P)
-	), ValidSupportingPropositions),
-	$remove_pragmatical_redundance(Q, false, ValidSupportingPropositions, SelectedSupportingPropositions)
-	] -* utter(infer(SelectedSupportingPropositions, C)).
+	), A1),
+	$remove_pragmatical_redundance(Q, false, A1, A)
+	] -* utter(infer(A, C)).
