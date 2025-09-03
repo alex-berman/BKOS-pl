@@ -1,95 +1,88 @@
-deliver_prediction_without_explanation_as_confirmation:
+deliver_prediction_without_explanation:
   facts:
-   - satisfied(patient)
+   - relative_value(satisfaction, patient, high)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-
-deliver_prediction_without_explanation_as_disconfirmation:
-  facts:
-    - not(satisfied(patient))
-  turns:
-    - U ask([]>>satisfied(patient))
-    - S disconfirm(not(satisfied(patient)))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
 
 elicit_datum_explanation_for_continuous_feature:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
 
 elaborate_datum_quantitatively:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - value(back_pain, patient, 4)
     - relative_value(back_pain, patient, low)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
     - U ask([V]>>value(back_pain, patient, V))
     - S assert(value(back_pain, patient, 4))
 
 elicit_datum_explanation_for_categorical_feature:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - value(clinic_type, patient, private)
-    - supports(value(clinic_type, X, private), satisfied(X), association)
+    - supports(value(clinic_type, X, private), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(value(clinic_type, patient, private))
 
 elicit_warrant_explanation:
   facts:
-    - satisfied(patient)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - relative_value(satisfaction, patient, high)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
-    - S assert(supports(relative_value(back_pain, X, low), satisfied(X), association))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
+    - S assert(supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association))
 
 elicit_explanation_with_multiple_data_conjunctively:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), satisfied(X), association)
+    - supports(relative_value(disability, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert([relative_value(back_pain, patient, low), relative_value(disability, patient, low)])
 
 deliver_explanations_incrementally:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), satisfied(X), association)
+    - supports(relative_value(disability, X, low), relative_value(satisfaction, X, high), association)
     - tcu([_])
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
     - U icm(acceptance, positive)
     - S signal_continuation(assert(relative_value(disability, patient, low)))
@@ -98,24 +91,24 @@ deliver_explanations_incrementally:
 
 repeat_incremental_explanation_delivery_when_quested_repeated:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), satisfied(X), association)
+    - supports(relative_value(disability, X, low), relative_value(satisfaction, X, high), association)
     - tcu([_])
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
     - U icm(acceptance, positive)
     - S signal_continuation(assert(relative_value(disability, patient, low)))
     - U icm(acceptance, positive)
     - S
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
     - U icm(acceptance, positive)
     - S signal_continuation(assert(relative_value(disability, patient, low)))
@@ -125,28 +118,28 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
 explain_chained_inference_backwards:
   facts:
     - surgery_recommended(patient)
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(satisfied(X), surgery_recommended(X), norm)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(satisfaction, X, high), surgery_recommended(X), norm)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - tcu([_])
   turns:
     - U ask([]>>surgery_recommended(patient))
     - S confirm(surgery_recommended(patient))
     - U ask([E, M]>>supports(E, surgery_recommended(patient), M))
-    - S assert(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
 
 explain_chained_inference_forward:
   facts:
     - surgery_recommended(patient)
     - relative_value(back_pain, patient, low)
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - value(back_pain, patient, 4)
-    - supports(satisfied(X), surgery_recommended(X), norm)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(satisfaction, X, high), surgery_recommended(X), norm)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - tcu([_])
   turns:
     - U ask([]>>surgery_recommended(patient))
@@ -156,119 +149,119 @@ explain_chained_inference_forward:
 
 confirm_warrant:
   facts:
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
-    - not(supports(relative_value(back_pain, X, high), satisfied(X), _))
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
+    - not(supports(relative_value(back_pain, X, high), relative_value(satisfaction, X, high), _))
   turns:
-    - U ask([]>>supports(relative_value(back_pain, X, low), satisfied(X), _))
-    - S confirm(supports(relative_value(back_pain, X, low), satisfied(X), association))
+    - U ask([]>>supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), _))
+    - S confirm(supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association))
 
 disconfirm_warrant:
   facts:
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
-    - not(supports(relative_value(back_pain, X, high), satisfied(X), _))
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
+    - not(supports(relative_value(back_pain, X, high), relative_value(satisfaction, X, high), _))
   turns:
-    - U ask([]>>supports(relative_value(back_pain, X, high), satisfied(X), _))
-    - S disconfirm(not(supports(relative_value(back_pain, X, high), satisfied(X), _)))
+    - U ask([]>>supports(relative_value(back_pain, X, high), relative_value(satisfaction, X, high), _))
+    - S disconfirm(not(supports(relative_value(back_pain, X, high), relative_value(satisfaction, X, high), _)))
 
 respond_to_open_request_for_forward_expansion:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - agenda(respond(_{q:[X]>>relative_value(back_pain, patient, X)}))
   turns:
     - S assert(relative_value(back_pain, patient, low))
     - U ask([C, M]>>supports(relative_value(back_pain, patient, low), C, M))
-    - S assert(satisfied(patient))
+    - S assert(relative_value(satisfaction, patient, high))
 
 confirm_forward_expansion:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - agenda(respond(_{q:[X]>>relative_value(back_pain, patient, X)}))
   turns:
     - S assert(relative_value(back_pain, patient, low))
-    - U ask([]>>supports(relative_value(back_pain, patient, low), satisfied(patient), _))
-    - S confirm(supports(relative_value(back_pain, patient, low), satisfied(patient), association))
+    - U ask([]>>supports(relative_value(back_pain, patient, low), relative_value(satisfaction, patient, high), _))
+    - S confirm(supports(relative_value(back_pain, patient, low), relative_value(satisfaction, patient, high), association))
 
 provide_evidence_against_claim:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
     - relative_value(disability, patient, high)
     - value(disability, patient, 71)
-    - supports(relative_value(disability, X, high), not(satisfied(X)), association)
+    - supports(relative_value(disability, X, high), relative_value(satisfaction, X, low), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
-    - U ask([E, M]>>supports(E, not(satisfied(patient)), M))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, low), M))
     - S assert(relative_value(disability, patient, high))
 
 repeat_exhaustive_answer_for_repeated_question:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
 
 wh_question_concerning_means:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
-    - U ask([M]>>supports(relative_value(back_pain, X, low), satisfied(X), M))
-    - S assert(supports(relative_value(back_pain, X, low), satisfied(X), association))
+    - U ask([M]>>supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), M))
+    - S assert(supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association))
 
 deliver_prediction_as_inference:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
-    - agenda(argue(satisfied(patient)))
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
+    - agenda(argue(relative_value(satisfaction, patient, high)))
   turns:
-    - S infer([relative_value(back_pain, patient, low)], satisfied(patient))
+    - S infer([relative_value(back_pain, patient, low)], relative_value(satisfaction, patient, high))
 
 reject_unanswerable_question_concerning_cause_of_specific_datum:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S confirm(satisfied(patient))
-    - U ask([E, M]>>supports(E, satisfied(patient), M))
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, high))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, high), M))
     - S assert(relative_value(back_pain, patient, low))
     - U ask([E]>>supports(E, relative_value(back_pain, patient, low), causation))
     - S icm(acceptance, negative, lack_knowledge([E]>>supports(E, relative_value(back_pain, patient, low), causation)))
 
 reject_unanswerable_question_concerning_general_causal_relation:
   facts:
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>supports(relative_value(back_pain, X, _), satisfied(X), causation))
-    - S icm(acceptance, negative, lack_knowledge([]>>supports(relative_value(back_pain, X, _), satisfied(X), causation)))
+    - U ask([]>>supports(relative_value(back_pain, X, _), relative_value(satisfaction, X, high), causation))
+    - S icm(acceptance, negative, lack_knowledge([]>>supports(relative_value(back_pain, X, _), relative_value(satisfaction, X, high), causation)))
 
 provide_negative_understanding_when_no_semantic_interpretation:
   turns:
@@ -277,27 +270,41 @@ provide_negative_understanding_when_no_semantic_interpretation:
 
 hedge_answer:
   facts:
-    - confidence(satisfied(patient), moderate)
+    - confidence(relative_value(satisfaction, patient, high), moderate)
   turns:
-    - U ask([]>>satisfied(patient))
-    - S hedge(confirm(satisfied(patient)), moderate)
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S hedge(assert(relative_value(satisfaction, patient, high)), moderate)
 
 confirm_datum_explanation:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U ask([]>>supports(relative_value(back_pain, patient, low), satisfied(patient), _))
-    - S confirm(supports(relative_value(back_pain, patient, low), satisfied(patient), association))
+    - U ask([]>>supports(relative_value(back_pain, patient, low), relative_value(satisfaction, patient, high), _))
+    - S confirm(supports(relative_value(back_pain, patient, low), relative_value(satisfaction, patient, high), association))
 
 reject_move_with_presupposition_violation:
   facts:
-    - satisfied(patient)
+    - relative_value(satisfaction, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), satisfied(X), association)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
   turns:
-    - U move{ content:ask([]>>supports(relative_value(back_pain, patient, high), satisfied(patient), _)), presuppositions:[relative_value(back_pain, patient, high)] }
+    - U move{ content:ask([]>>supports(relative_value(back_pain, patient, high), relative_value(satisfaction, patient, high), _)), presuppositions:[relative_value(back_pain, patient, high)] }
     - S icm(acceptance, negative, relative_value(back_pain, patient, high))
+
+elicit_datum_explanation_for_moderate_value:
+  facts:
+    - relative_value(satisfaction, patient, moderate)
+    - relative_value(back_pain, patient, moderate)
+    - value(back_pain, patient, 5)
+    - supports(relative_value(back_pain, X, low), relative_value(satisfaction, X, high), association)
+    - supports(relative_value(back_pain, X, moderate), relative_value(satisfaction, X, moderate), association)
+    - supports(relative_value(back_pain, X, high), relative_value(satisfaction, X, low), association)
+  turns:
+    - U ask([X]>>relative_value(satisfaction, patient, X))
+    - S assert(relative_value(satisfaction, patient, moderate))
+    - U ask([E, M]>>supports(E, relative_value(satisfaction, patient, moderate), M))
+    - S assert(relative_value(back_pain, patient, moderate))
