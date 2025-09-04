@@ -136,14 +136,4 @@ test(valid_answer_for_basic_lookup) :-
     ).
 
 
-test(remove_pragmatical_redundance) :-
-    set_facts([
-        supports(e(X), c(X), m)
-        ]),
-    Q = [E, M]>>supports(E, c(x), M),
-    remove_pragmatical_redundance(Q, false, [supports(e(X), c(X), m), e(x)], Actual), !,
-    Expected = [supports(e(Y), c(Y), m)],
-    assertion(Actual =@= Expected).
-
-
 :- end_tests(host_logic).

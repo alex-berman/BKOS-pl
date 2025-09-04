@@ -45,24 +45,19 @@ respond :: [
 	$get_dict(q, R, Q),
 	$(get_dict(continuation, R, IsContinuation) -> true ; IsContinuation = false),
 	$findall(P, (
-		@P,
-		\+ (IsContinuation == true, has_responded(Q, P)),
-		valid_answer(Q, P)
-	), A1),
-	$remove_pragmatical_redundance(Q, IsContinuation, A1, A2),
-	$satisfy_tcu(A2, A),
-	$answer_move(R, A, Move)
+		valid_answer(Q, P),
+		\+ (IsContinuation == true, has_responded(Q, P))
+	), ValidAnswers),
+	$select_answers(Q, ValidAnswers, SelectedAnswers),
+	$answer_move(R, SelectedAnswers, Move)
 	] -* [
 		utter(Move),
-		responded(Q, A)
+		responded(Q, SelectedAnswers)
 	].
 
 deliver_claim_and_supporting_evidence_as_inference :: [
 	agenda(argue(C)),
 	$(Q = [E, M]>>supports(E, C, M)),
-	$findall(P, (
-		@P,
-		valid_answer(Q, P)
-	), A1),
-	$remove_pragmatical_redundance(Q, false, A1, A)
-	] -* utter(infer(A, C)).
+	$findall(P, valid_answer(Q, P), ValidAnswers),
+	$select_answers(Q, ValidAnswers, SelectedAnswers)
+	] -* utter(infer(SelectedAnswers, C)).

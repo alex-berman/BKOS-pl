@@ -4,14 +4,18 @@
 :- use_module(isu_engine).
 :- ensure_loaded(isu_syntax).
 
+
 get_test(Name:Test, TestsPath) :-
     yaml_read(TestsPath, TestsDict),
-    get_dict(Name, TestsDict, Test).
+    get_dict(Name, TestsDict, Test),
+    get_dict(turns, Test, _).
+
 
 run_test(TestsPath, Name) :-
     yaml_read(TestsPath, TestsDict),
     get_dict(Name, TestsDict, Test),
     run_test_from_dict(Name:Test).
+
 
 run_test_from_dict(Name:Test) :-
     write('\nRunning test '), write(Name), nl, nl,
@@ -20,13 +24,11 @@ run_test_from_dict(Name:Test) :-
     ( get_dict(facts, Test, _) ->
         forall(
             member(FactStr, Test.facts),
-            (
-                term_string(Fact, FactStr),
-                assert(@Fact)
-            ))
+            assert_fact(FactStr))
         ; true
     ),
     test_turns(Test.turns, 1).
+
 
 test_turns(Turns, N) :-
     length(Turns, NumTurns),
@@ -39,6 +41,17 @@ test_turns(Turns, N) :-
     ;
         true
     ).
+
+
+assert_fact(Strs) :-
+    is_list(Strs),
+    !,
+    forall(member(Str, Strs), assert_fact(Str)).
+
+assert_fact(Str) :-
+    term_string(Fact, Str),
+    assert(@Fact).
+
 
 test_turn("S") :-
     !,
@@ -58,6 +71,7 @@ test_turn(TurnStr) :-
 test_turn(TurnStr) :-
     throw(unsupported_turn_format(TurnStr)).
 
+
 test_system_turn(ExpectedSystemMoveAtom) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
     apply_rules_exhaustively,
@@ -66,10 +80,12 @@ test_system_turn(ExpectedSystemMoveAtom) :-
     assertion(ActualSystemMove =@= ExpectedSystemMove),
     retract(@utter(_)).
 
+
 test_user_turn(InterpretationAtom) :-
     atom_to_term(InterpretationAtom, Interpretation, _),
     interpretation_as_dict(Interpretation, InterpretationAsDict),
     assert(@heard(InterpretationAsDict)).
+
 
 interpretation_as_dict(Dict, Dict) :-
     is_dict(Dict),

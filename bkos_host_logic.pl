@@ -43,19 +43,21 @@ contains_variable(Vars, Var) :-
 	Var1 == Var.
 
 
-supports_directly_or_indirectly(P, Q) :-
-	@supports(P, Q, _).
+supports_directly_or_indirectly(A, C) :-
+	@supports(A, C, _).
 
-supports_directly_or_indirectly(P, Q) :-
-	@supports(R, Q, _),
-	supports_directly_or_indirectly(P, R).
+supports_directly_or_indirectly(A, C) :-
+	@supports(A1, C, _),
+	supports_directly_or_indirectly(A, A1).
 
-supports_directly_or_indirectly(P, relative_prob(Pred, Ind, moderate)) :-
+supports_directly_or_indirectly(A, C) :-
+	C = relative_prob(Pred, Ind, moderate),
+	@C,
 	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, high)), PosEvidences),
 	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, low)), NegEvidences),
 	PosEvidences \== [],
 	NegEvidences \== [],
-	(member(P, PosEvidences) ; member(P, NegEvidences)).
+	(member(A, PosEvidences) ; member(A, NegEvidences)).
 
 
 matches_fact(P) :-
@@ -85,39 +87,12 @@ answer_move([]>>P, not(P), disconfirm(not(P))).
 answer_move(_>>_, P, assert(P)).
 
 
-remove_pragmatical_redundance(Q, IsContinuation, L, L2) :-
-    remove_pragmatical_redundance(Q, IsContinuation, L, [], L2).
-
-remove_pragmatical_redundance(_, _, [], _, []).
-
-remove_pragmatical_redundance(Q, IsContinuation, [X|Xs], Prev, Ys) :-
-	( member(Y, Prev) ; (IsContinuation == true, has_responded(Q, Y)) ),
-    implicates(Q, Y, X),
-    !,
-    remove_pragmatical_redundance(Q, IsContinuation, Xs, [X|Prev], Ys).
-
-remove_pragmatical_redundance(Q, IsContinuation, [X|Xs], Prev, [X|Ys]) :-
-    remove_pragmatical_redundance(Q, IsContinuation, Xs, [X|Prev], Ys).
-
-
-implicates(Q, A, B) :-
-	copy_term((Q, A, B), (Q1, A1, B1)),
-	implicates_with_unification(Q1, A1, B1).
-
-implicates_with_unification(_, P, P).
-
-implicates_with_unification(_>>supports(_, X, _), E, supports(E, X, M)) :-
-	@supports(E, X, M).
-
-implicates_with_unification(_>>supports(_, X, _), supports(E, X, M), E) :-
-	@supports(E, X, M).
-
-
-satisfy_tcu(Ps, TCU) :-
-	( @tcu(TCU) ->
-		append(TCU, _, Ps)
+select_answers(Q, Candidates, Result) :-
+	(@(select_answers(Q, Candidates, Selected) :- Condition) ->
+		Condition,
+		findall(A, (member(A, Selected), member(A, Candidates)), Result)
 	;
-		TCU = Ps
+		Result = Candidates
 	).
 
 
