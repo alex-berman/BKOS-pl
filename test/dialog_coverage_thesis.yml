@@ -30,6 +30,13 @@ reusable_facts:
     - supports(value(clinic_type(X), public), relative_prob(satisfied(X), low), association)
 
 
+respond_in_agenda:
+  facts:
+  - relative_prob(satisfied(patient), high)
+  - agenda(respond(_{q:[X]>>relative_prob(satisfied(patient), X)}))
+  turns:
+  - S assert(relative_prob(satisfied(patient), high))
+
 answer_wh_question_concerning_predicted_probability:
   facts:
    - relative_prob(satisfied(patient), high)
