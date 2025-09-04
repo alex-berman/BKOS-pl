@@ -16,6 +16,20 @@ selection_policies:
       call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 2))
 
 
+reusable_facts:
+  spinal_stenosis_model_facts: &spinal_stenosis_model_facts
+    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
+    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
+    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
+    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
+    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
+    - not(supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), association))
+    - not(supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, low), association))
+    - supports(value(clinic_type, X, private), relative_prob(satisfied, X, high), association)
+    - supports(value(clinic_type, X, public), relative_prob(satisfied, X, low), association)
+
+
 deliver_prediction_without_explanation:
   facts:
    - relative_prob(satisfied, patient, high)
@@ -28,9 +42,7 @@ elicit_datum_explanation_for_continuous_feature:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -43,9 +55,7 @@ elaborate_datum_quantitatively:
     - relative_prob(satisfied, patient, high)
     - value(back_pain, patient, 4)
     - relative_value(back_pain, patient, low)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -59,8 +69,7 @@ elicit_datum_explanation_for_categorical_feature:
   facts:
     - relative_prob(satisfied, patient, high)
     - value(clinic_type, patient, private)
-    - supports(value(clinic_type, X, private), relative_prob(satisfied, X, high), association)
-    - supports(value(clinic_type, X, public), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -71,9 +80,7 @@ elicit_datum_explanation_for_categorical_feature:
 elicit_warrant_explanation:
   facts:
     - relative_prob(satisfied, patient, high)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
     - *select_warrants
@@ -88,14 +95,9 @@ elicit_explanation_with_multiple_data_conjunctively:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -108,14 +110,9 @@ deliver_explanations_incrementally:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
     - *select_1st_datum
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -132,14 +129,9 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
     - *select_1st_datum
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -166,9 +158,7 @@ explain_chained_inference_backwards:
     - supports(relative_prob(satisfied, X, high), surgery_recommended(X), norm)
     - supports(relative_prob(satisfied, X, moderate), not(surgery_recommended(X)), norm)
     - supports(relative_prob(satisfied, X, low), not(surgery_recommended(X)), norm)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_1st_datum
   turns:
     - U ask([]>>surgery_recommended(patient))
@@ -187,9 +177,7 @@ explain_chained_inference_forward:
     - supports(relative_prob(satisfied, X, high), surgery_recommended(X), norm)
     - supports(relative_prob(satisfied, X, moderate), not(surgery_recommended(X)), norm)
     - supports(relative_prob(satisfied, X, low), not(surgery_recommended(X)), norm)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_2nd_datum
   turns:
     - U ask([]>>surgery_recommended(patient))
@@ -199,34 +187,24 @@ explain_chained_inference_forward:
 
 confirm_warrant:
   facts:
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
-    - not(supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), _))
-    - not(supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, low), _))
+    - *spinal_stenosis_model_facts
   turns:
     - U ask([]>>supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), _))
     - S confirm(supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association))
 
 disconfirm_warrant:
   facts:
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
-    - not(supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), _))
-    - not(supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, low), _))
+    - *spinal_stenosis_model_facts
   turns:
     - U ask([]>>supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), _))
-    - S disconfirm(not(supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), _)))
+    - S disconfirm(not(supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, high), association)))
 
 respond_to_open_request_for_forward_expansion:
   facts:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - agenda(respond(_{q:[X]>>relative_value(back_pain, patient, X)}))
     - *select_data
   turns:
@@ -239,9 +217,7 @@ confirm_forward_expansion:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - agenda(respond(_{q:[X]>>relative_value(back_pain, patient, X)}))
   turns:
     - S assert(relative_value(back_pain, patient, low))
@@ -253,14 +229,9 @@ provide_evidence_against_claim:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(disability, patient, high)
     - value(disability, patient, 71)
-    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -275,9 +246,7 @@ repeat_exhaustive_answer_for_repeated_question:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -292,9 +261,7 @@ wh_question_concerning_means:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -309,9 +276,7 @@ deliver_prediction_as_inference:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - agenda(argue(relative_prob(satisfied, patient, high)))
     - *select_data
   turns:
@@ -322,9 +287,7 @@ reject_unanswerable_question_concerning_cause_of_specific_datum:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -336,9 +299,7 @@ reject_unanswerable_question_concerning_cause_of_specific_datum:
 
 reject_unanswerable_question_concerning_general_causal_relation:
   facts:
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
   turns:
     - U ask([]>>supports(relative_value(back_pain, X, _), relative_prob(satisfied, X, high), causation))
     - S icm(acceptance, negative, lack_knowledge([]>>supports(relative_value(back_pain, X, _), relative_prob(satisfied, X, high), causation)))
@@ -353,9 +314,7 @@ confirm_datum_explanation:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
   turns:
     - U ask([]>>supports(relative_value(back_pain, patient, low), relative_prob(satisfied, patient, high), _))
     - S confirm(supports(relative_value(back_pain, patient, low), relative_prob(satisfied, patient, high), association))
@@ -365,9 +324,7 @@ reject_move_with_presupposition_violation:
     - relative_prob(satisfied, patient, high)
     - relative_value(back_pain, patient, low)
     - value(back_pain, patient, 4)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
   turns:
     - U move{ content:ask([]>>supports(relative_value(back_pain, patient, high), relative_prob(satisfied, patient, high), _)), presuppositions:[relative_value(back_pain, patient, high)] }
     - S icm(acceptance, negative, relative_value(back_pain, patient, high))
@@ -377,9 +334,7 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
     - relative_prob(satisfied, patient, moderate)
     - relative_value(back_pain, patient, moderate)
     - value(back_pain, patient, 5)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
@@ -392,14 +347,9 @@ explain_moderate_estimated_probability_caused_by_contrasting_feature_contributio
     - relative_prob(satisfied, patient, moderate)
     - relative_value(back_pain, patient, high)
     - value(back_pain, patient, 7)
-    - supports(relative_value(back_pain, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(back_pain, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(back_pain, X, high), relative_prob(satisfied, X, low), association)
+    - *spinal_stenosis_model_facts
     - relative_value(disability, patient, low)
     - value(disability, patient, 26)
-    - supports(relative_value(disability, X, low), relative_prob(satisfied, X, high), association)
-    - supports(relative_value(disability, X, moderate), relative_prob(satisfied, X, moderate), association)
-    - supports(relative_value(disability, X, high), relative_prob(satisfied, X, low), association)
     - *select_data
   turns:
     - U ask([X]>>relative_prob(satisfied, patient, X))
