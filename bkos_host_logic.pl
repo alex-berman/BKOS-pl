@@ -6,6 +6,9 @@ valid_answer([]>>P, A) :-
 	( A = P ; A = not(P) ),
 	@A.
 
+valid_answer([]>>P, relative_prob(P, R)) :-
+	@relative_prob(P, R).
+
 valid_answer(Vars>>Body, A) :-
 	Body = supports(E, Consequent, _),
     contains_variable(Vars, E),
@@ -51,10 +54,10 @@ supports_directly_or_indirectly(A, C) :-
 	supports_directly_or_indirectly(A, A1).
 
 supports_directly_or_indirectly(A, C) :-
-	C = relative_prob(Pred, Ind, moderate),
+	C = relative_prob(Event, moderate),
 	@C,
-	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, high)), PosEvidences),
-	findall(E, supports_directly_or_indirectly(E, relative_prob(Pred, Ind, low)), NegEvidences),
+	findall(E, supports_directly_or_indirectly(E, relative_prob(Event, high)), PosEvidences),
+	findall(E, supports_directly_or_indirectly(E, relative_prob(Event, low)), NegEvidences),
 	PosEvidences \== [],
 	NegEvidences \== [],
 	(member(A, PosEvidences) ; member(A, NegEvidences)).
@@ -113,5 +116,5 @@ contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
 	ground(P),
 	contradicts(Q1, Q2).
 
-contradicts(relative_value(Feature, Individual, Value1), relative_value(Feature, Individual, Value2)) :-
+contradicts(relative_value(Feature, Value1), relative_value(Feature, Value2)) :-
 	Value1 \== Value2.
