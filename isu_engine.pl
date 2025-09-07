@@ -30,7 +30,6 @@ repeat_apply_until_nothing_applied :-
 apply_and_count([], 0).
 
 apply_and_count([user:(RuleName :: Antecedent -* Consequent)|Rules], N) :-
-    user:(RuleName :: Antecedent -* Consequent),
     ( antecedent_holds(Antecedent) ->
       potentially_consume(Antecedent),
       establish(Consequent),
