@@ -48,7 +48,7 @@ respond :: [
 		valid_answer(Q, P),
 		\+ (IsContinuation == true, has_responded(Q, P))
 	), ValidAnswers),
-	$select_answers(Q, ValidAnswers, SelectedAnswers),
+	$select_answers(ValidAnswers, SelectedAnswers),
 	$answer_move(R, SelectedAnswers, Move)
 	] -* [
 		utter(Move),

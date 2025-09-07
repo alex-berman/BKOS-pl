@@ -90,13 +90,10 @@ answer_move([]>>P, not(P), disconfirm(not(P))).
 answer_move(_, P, assert(P)).
 
 
-select_answers(Q, Candidates, Result) :-
-	(@(select_answers(Q, Candidates, Selected) :- Condition) ->
-		Condition,
-		findall(A, (member(A, Selected), member(A, Candidates)), Result)
-	;
-		Result = Candidates
-	).
+select_answers(Candidates, Selected) :-
+    append(_, Rest, Candidates),
+    append(Selected, _, Rest),
+    Selected \= [].
 
 
 has_responded(Q, P) :-

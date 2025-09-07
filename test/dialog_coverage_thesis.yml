@@ -57,7 +57,7 @@ elicit_datum_explanation_for_continuous_feature:
     - relative_prob(satisfied(patient), high)
     - relative_value(back_pain(patient), low)
     - *spinal_stenosis_model_facts
-    - *select_data
+    #- *select_data
   turns:
     - U ask([]>>satisfied(patient))
     - S assert(relative_prob(satisfied(patient), high))

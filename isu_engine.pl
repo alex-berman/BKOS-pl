@@ -1,4 +1,4 @@
-:- module(engine, [assert_initial_facts/0, apply_rules_exhaustively/0, '@'/1, clear_facts/0]).
+:- module(engine, [assert_initial_facts/1, apply_rules/2, '@'/1, clear_facts/0]).
 :- use_module(db).
 :- ensure_loaded(isu_syntax).
 
@@ -6,45 +6,57 @@
 :- multifile user:(::)/2.
 
 
-assert_initial_facts :-
+assert_initial_facts(State) :-
     forall((user:(_ :: Term), Term \= (_ -* _)),
-	   assert(@Term)).
+	   db_add(State, Term)).
 
 
-apply_rules_exhaustively :-
-    repeat_apply_until_nothing_applied,
-    !.
-
-
-repeat_apply_until_nothing_applied :-
-    print_state,
+apply_rules(State, CandidateNextStates) :-
+    print_state(State),
     bagof(
         user:(RuleName :: Antecedent -* Consequent),
         user:(RuleName :: Antecedent -* Consequent),
         Rules),
-    repeat,
-    apply_and_count(Rules, N),
-    N == 0. % repeat if at least one rule applied
+    apply_rules(State, Rules, CandidateNextStates).
 
 
-apply_and_count([], 0).
+apply_rules(State, [user:(RuleName :: Antecedent -* Consequent)|Rules], Result) :-
+    %format('~w: testing ~w\n', [State, RuleName]),
+    set_current_state(State),
+    ( setof(Consequent, antecedent_holds(State, Antecedent), Solutions) ->
+        %format('Solutions=~w\n', [Solutions]),
+        ( Solutions = [Solution] ->
+            potentially_consume(State, Antecedent),
+            establish(State, Solution),
+            write('Applied: '), write(RuleName), nl,
+            print_state(State),
+            apply_rules(State, Rules, Result)
+        ;
+            findall(
+                SolutionStates,
+                (
+                    member(Solution, Solutions),
+                    fork_state(State, CandidateNextState),
+                    set_current_state(CandidateNextState),
+                    potentially_consume(CandidateNextState, Antecedent),
+                    establish(CandidateNextState, Solution),
+                    write('Applied: '), write(RuleName), nl,
+                    print_state(CandidateNextState),
+                    apply_rules(CandidateNextState, Rules, SolutionStates)
+                ),
+                Result
+            )
+        )
+    ;
+        apply_rules(State, Rules, Result)
+    ).
 
-apply_and_count([user:(RuleName :: Antecedent -* Consequent)|Rules], N) :-
-    user:(RuleName :: Antecedent -* Consequent),
-    ( antecedent_holds(Antecedent) ->
-      potentially_consume(Antecedent),
-      establish(Consequent),
-      write('Applied: '), write(RuleName), nl,
-      print_state,
-      ThisN = 1
-    ; ThisN = 0),
-    apply_and_count(Rules, RestN),
-    N is ThisN + RestN.
+apply_rules(State, [], [State]).
 
 
-print_state :-
-    write('State:\n'),
-    forall(@Fact, (
+print_state(State) :-
+    format('~w:\n', [State]),
+    forall(db_get(State, Fact), (
         write('  '),
         numbervars(Fact),
         write(Fact),
@@ -53,78 +65,78 @@ print_state :-
     nl.
 
 
-antecedent_holds([]) :- !.
+antecedent_holds(_, []) :- !.
 
-antecedent_holds([Head|Tail]) :-
+antecedent_holds(State, [Head|Tail]) :-
     !,
-    antecedent_holds(Head),
-    antecedent_holds(Tail).
+    antecedent_holds(State, Head),
+    antecedent_holds(State, Tail).
 
-antecedent_holds(^Proposition) :- % premise is to be reproduced (corresponds to -* in ProLin)
+antecedent_holds(State, ^Proposition) :- % premise is to be reproduced (corresponds to -* in ProLin)
     !,
-    @Proposition.
+    db_get(State, Proposition).
 
-antecedent_holds(?Proposition) :- % check if proposition is non-unique (roughly corresponds to ?-* in ProLin)
+antecedent_holds(State, ?Proposition) :- % check if proposition is non-unique (roughly corresponds to ?-* in ProLin)
     !,
-    setof(Proposition, @Proposition, Solutions),
+    setof(Proposition, db_get(State, Proposition), Solutions),
     length(Solutions, N),
     N >= 2.
 
-antecedent_holds(!Proposition) :- % check if proposition is unique (roughly corresponds to !-* in ProLin)
+antecedent_holds(State, !Proposition) :- % check if proposition is unique (roughly corresponds to !-* in ProLin)
     !,
-    setof(Proposition, @Proposition, Solutions),
+    setof(Proposition, db_get(State, Proposition), Solutions),
     length(Solutions, N),
     N == 1,
     Solutions = [Proposition]. % unify with the unique solution
 
-antecedent_holds(\+P) :- % check if proposition does NOT hold
+antecedent_holds(State, \+P) :- % check if proposition does NOT hold
     !,
-    \+ @P.
+    \+ db_get(State, P).
 
-antecedent_holds(*_). % consume all matching premises (antecedent always true)
+antecedent_holds(_, *_). % consume all matching premises (antecedent always true)
 
-antecedent_holds($Condition) :-
+antecedent_holds(_, $Condition) :-
     !,
     Condition.
 
-antecedent_holds(Proposition) :-
-    @Proposition.
+antecedent_holds(State, Fact) :-
+    db_get(State, Fact).
 
 
-potentially_consume([]) :- !.
+potentially_consume(_, []) :- !.
 
-potentially_consume([Head|Tail]) :-
+potentially_consume(State, [Head|Tail]) :-
     !,
-    potentially_consume(Head),
-    potentially_consume(Tail).
+    potentially_consume(State, Head),
+    potentially_consume(State, Tail).
 
-potentially_consume(^_) :- !. % don't consume premises that are reproduced
+potentially_consume(_, ^_) :- !. % don't consume premises that are reproduced
 
-potentially_consume(?_) :- !. % don't consume content of non-uniqueness test
+potentially_consume(_, ?_) :- !. % don't consume content of non-uniqueness test
 
-potentially_consume(!_) :- !. % don't consume content of uniqueness test
+potentially_consume(_, !_) :- !. % don't consume content of uniqueness test
 
-potentially_consume($_) :- !. % don't consume Prolog-native conditions
+potentially_consume(_, $_) :- !. % don't consume Prolog-native conditions
 
-potentially_consume(\+_) :- !. % don't consume negation test
+potentially_consume(_, \+_) :- !. % don't consume negation test
 
-potentially_consume(*Pattern) :- % consume all matching premises
-    retractall(@Pattern).
+potentially_consume(State, *Pattern) :- % consume all matching premises
+    db_remove_all(State, Pattern).
 
-potentially_consume(Proposition) :-
-    retract(@Proposition).
+potentially_consume(State, Proposition) :-
+    db_remove(State, Proposition).
 
 
-establish([]) :- !.
+establish(_, []) :- !.
 
-establish([Head|Tail]) :-
+establish(State, [Head|Tail]) :-
     !,
-    establish(Head),
-    establish(Tail).
+    establish(State, Head),
+    establish(State, Tail).
 
-establish(Proposition) :-
-    assert(@Proposition).
+establish(State, Proposition) :-
+    db_add(State, Proposition).
 
 
 clear_facts :-
-    retractall(@_).
+    db_remove_all(_).
