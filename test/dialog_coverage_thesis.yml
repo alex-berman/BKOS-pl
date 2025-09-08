@@ -47,7 +47,10 @@ explanation_for_continuous_feature:
         one_of:
         - assert(relative_value(back_pain(patient), low))
         - assert(supports(relative_value(back_pain(X), low), relative_prob(satisfied(X), high), association))
-        - assert([relative_value(back_pain(patient), low), supports(relative_value(back_pain(X), low), relative_prob(satisfied(X), high), association)])
+        - assert([
+            relative_value(back_pain(patient), low),
+            supports(relative_value(back_pain(X), low), relative_prob(satisfied(X), high), association)
+          ])
 
 elaborate_datum_quantitatively:
   facts:

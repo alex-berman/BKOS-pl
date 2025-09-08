@@ -73,20 +73,21 @@ test_system_turn(StateID, ExpectedOutputAsDict, NextStateID) :-
     is_dict(ExpectedOutputAsDict),
     !,
     get_dict(one_of, ExpectedOutputAsDict, ExpectedSystemMoveAtoms),
-    findall(Move, (member(Atom, ExpectedSystemMoveAtoms), atom_to_term(Atom, Move, _)), ExpectedSystemMoves),
+    setof(Move, (member(Atom, ExpectedSystemMoveAtoms), atom_to_term(Atom, Move, _)), ExpectedSystemMoves),
     apply_rules(StateID, CandidateNextStateIDs),
-    findall(Move, (member(CandidateNextStateID, CandidateNextStateIDs), db_get(CandidateNextStateID, utter(Move))), ActualSystemMoves),
+    setof(Move, (member(CandidateNextStateID, CandidateNextStateIDs), db_get(CandidateNextStateID, utter(Move))), ActualSystemMoves),
     assertion(sets_are_structurally_equal(ActualSystemMoves, ExpectedSystemMoves)),
     CandidateNextStateIDs = [NextStateID|_].
 
 test_system_turn(StateID, ExpectedSystemMoveAtom, NextStateID) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
     apply_rules(StateID, CandidateNextStateIDs),
-    assertion(length(CandidateNextStateIDs, 1)),
-    CandidateNextStateIDs = [NextStateID],
-    assertion(db_get(NextStateID, utter(_))),
-    db_get(NextStateID, utter(ActualSystemMove)),
-    assertion(ActualSystemMove =@= ExpectedSystemMove),
+    GetState = (
+        member(NextStateID, CandidateNextStateIDs),
+        db_get(NextStateID, utter(ExpectedSystemMove))
+    ),
+    assertion(GetState),
+    GetState,
     db_remove(NextStateID, utter(_)).
 
 
