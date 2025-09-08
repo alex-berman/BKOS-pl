@@ -73,11 +73,12 @@ test_system_turn(StateID, ExpectedOutputAsDict, NextStateID) :-
     is_dict(ExpectedOutputAsDict),
     !,
     get_dict(one_of, ExpectedOutputAsDict, ExpectedSystemMoveAtoms),
-    setof(Move, (member(Atom, ExpectedSystemMoveAtoms), atom_to_term(Atom, Move, _)), ExpectedSystemMoves),
+    findall(Move, (member(Atom, ExpectedSystemMoveAtoms), atom_to_term(Atom, Move, _)), ExpectedSystemMoves),
     apply_rules(StateID, CandidateNextStateIDs),
-    setof(Move, (member(CandidateNextStateID, CandidateNextStateIDs), db_get(CandidateNextStateID, utter(Move))), ActualSystemMoves),
-    assertion(sets_are_structurally_equal(ActualSystemMoves, ExpectedSystemMoves)),
-    CandidateNextStateIDs = [NextStateID|_].
+    findall(Move, (member(CandidateNextStateID, CandidateNextStateIDs), db_get(CandidateNextStateID, utter(Move))), ActualSystemMoves),
+    assert_sets_structurally_equal(ActualSystemMoves, ExpectedSystemMoves),
+    CandidateNextStateIDs = [NextStateID|_],
+    db_remove(NextStateID, utter(_)).
 
 test_system_turn(StateID, ExpectedSystemMoveAtom, NextStateID) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
@@ -88,19 +89,20 @@ test_system_turn(StateID, ExpectedSystemMoveAtom, NextStateID) :-
     ),
     assertion(GetState),
     GetState,
+    !,
     db_remove(NextStateID, utter(_)).
 
 
-sets_are_structurally_equal(Xs, Ys) :-
-    subset_structural(Xs, Ys),
-    subset_structural(Ys, Xs).
+assert_sets_structurally_equal(Xs, Ys) :-
+    assert_subset_structural(Xs, Ys),
+    assert_subset_structural(Ys, Xs).
 
 
-subset_structural([], _).
+assert_subset_structural([], _).
 
-subset_structural([E|Es], Ys) :-
-    memberchk_structural(E, Ys),
-    subset_structural(Es, Ys).
+assert_subset_structural([E|Es], Ys) :-
+    assertion(memberchk_structural(E, Ys)),
+    assert_subset_structural(Es, Ys).
 
 
 memberchk_structural(E, [Y|_]) :-
@@ -108,6 +110,7 @@ memberchk_structural(E, [Y|_]) :-
 
 memberchk_structural(E, [_|Ys]) :-
     memberchk_structural(E, Ys).
+
 
 
 test_user_turn(StateID, InterpretationAtom) :-
