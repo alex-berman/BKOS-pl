@@ -1,17 +1,24 @@
 :- module(db, [create_empty_state/1, fork_state/2, db_add/2, db_remove/2, db_remove_all/2, db_get/2, '@'/1, set_current_state/1]).
 :- ensure_loaded(isu_syntax).
 
-:- dynamic fact/2, current_state/1.
+:- dynamic fact/2, current_state/1, state/1.
 
 
-create_empty_state(ID) :-
-    gensym(s_, ID).
+create_empty_state(s) :-
+    retractall(state(_)),
+    retractall(fact(_, _)),
+    asserta(state(s)).
 
 
-fork_state(ParentID, ChildID) :-
-    atom_concat(ParentID, '_', Prefix),
-    gensym(Prefix, ChildID),
-    forall(fact(ParentID, Fact), assertz(fact(ChildID, Fact))).
+fork_state(Parent, Child) :-
+    ( state(Parent-N) ->
+        N1 is N + 1,
+        Child = Parent-N1
+    ;
+        Child = Parent-1
+    ),
+    asserta(state(Child)),
+    forall(fact(Parent, Fact), assertz(fact(Child, Fact))).
 
 
 db_add(StateID, Fact) :-

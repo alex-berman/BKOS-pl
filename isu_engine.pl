@@ -44,8 +44,9 @@ apply_rules(State, [user:(RuleName :: Antecedent -* Consequent)|Rules], Result) 
                     print_state(CandidateNextState),
                     apply_rules(CandidateNextState, Rules, SolutionStates)
                 ),
-                Result
-            )
+                Results
+            ),
+            append(Results, Result)
         )
     ;
         apply_rules(State, Rules, Result)

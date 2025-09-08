@@ -72,7 +72,8 @@ answer_move(R, Ps, signal_continuation(M)) :-
 	is_dict(R),
 	get_dict(continuation, R, true),
 	get_dict(q, R, Q),
-	answer_move(Q, Ps, M).
+	answer_move(Q, Ps, M),
+	!.
 
 answer_move(R, Ps, M) :-
 	is_dict(R),
