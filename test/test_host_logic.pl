@@ -65,7 +65,7 @@ test(valid_answer_for_basic_support) :-
     ),
     test_valid_answers(
         [supports(e(X), c(X), m)],
-        [M]>>supports(e(x), c(x), M),
+        [M]>>supports(e(X), c(C), M),
         [supports(e(X), c(X), m)]
     ),
 
