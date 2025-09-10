@@ -99,7 +99,7 @@ answer_move(_, P, assert(P)).
 select_answers(Q, Candidates, Result) :-
 	(@select_answers(Q, Candidates, Selected, Condition) ->
 		Condition,
-		findall(A, (member(A, Selected), member(A, Candidates)), Result)
+		intersection(Candidates, Selected, Result)
 	;
 		Result = Candidates
 	).
