@@ -1,19 +1,19 @@
 selection_policies:
   select_data: &select_data
-    - (select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers) :-
-      findall(A, (member(A, ValidAnswers), A \= supports(_, _, _)), SelectedAnswers))
+    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
+        findall(A, (member(A, ValidAnswers), A \= supports(_, _, _)), SelectedAnswers))
 
   select_warrants: &select_warrants
-    - (select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers) :-
-      findall(A, (member(A, ValidAnswers), A = supports(_, _, _)), SelectedAnswers))
+    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
+        findall(A, (member(A, ValidAnswers), A = supports(_, _, _)), SelectedAnswers))
   
   select_1st_datum: &select_1st_datum
-    - (select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer]) :-
-      call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 1))
+    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
+        call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 1))
   
   select_2nd_datum: &select_2nd_datum
-    - (select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer]) :-
-      call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 2))
+    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
+        call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 2))
 
 
 reusable_facts:
