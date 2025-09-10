@@ -89,6 +89,10 @@ answer_move([]>>P, P, confirm(P)).
 
 answer_move([]>>P, not(P), disconfirm(not(P))).
 
+answer_move([]>>P, relative_prob(P, high), confirm(relative_prob(P, high))).
+
+answer_move([]>>P, relative_prob(P, low), disconfirm(relative_prob(P, low))).
+
 answer_move(_, P, assert(P)).
 
 
