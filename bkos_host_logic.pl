@@ -2,21 +2,16 @@
 :- ensure_loaded(db).
 
 
-valid_answer(Q, A) :-
-	copy_term(Q, Q1),
-	unify_valid_answer(Q1, A).
-
-
-unify_valid_answer([]>>P, P) :-
+valid_answer([]>>P, P) :-
 	@P.
 
-unify_valid_answer([]>>P, not(P)) :-
+valid_answer([]>>P, not(P)) :-
 	@not(P).
 
-unify_valid_answer([]>>P, rel_prob(P, R)) :-
+valid_answer([]>>P, rel_prob(P, R)) :-
 	@rel_prob(P, R).
 
-unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
+valid_answer(Vars>>supports(E, Consequent, _), A) :-
     contains_variable(Vars, E),
 	(
 		supports_directly_or_indirectly(A, Consequent),
@@ -29,15 +24,15 @@ unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
 		unifiable(A, supports(_, Consequent, _), _)
 	).
 
-unify_valid_answer(Vars>>supports(Evidence, C, _), Consequent) :-
+valid_answer(Vars>>supports(Evidence, C, _), Consequent) :-
     contains_variable(Vars, C),
 	supports_directly_or_indirectly(Evidence, Consequent).
 
-unify_valid_answer([M]>>P, P) :-
+valid_answer([M]>>P, P) :-
 	P = supports(_, _, M),
 	@P.
 
-unify_valid_answer([_]>>P, P) :-
+valid_answer([_]>>P, P) :-
 	P \= supports(_, _, _),
 	@P.
 
