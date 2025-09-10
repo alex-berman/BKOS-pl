@@ -13,8 +13,8 @@ unify_valid_answer([]>>P, P) :-
 unify_valid_answer([]>>P, not(P)) :-
 	@not(P).
 
-unify_valid_answer([]>>P, relative_prob(P, R)) :-
-	@relative_prob(P, R).
+unify_valid_answer([]>>P, rel_prob(P, R)) :-
+	@rel_prob(P, R).
 
 unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
     contains_variable(Vars, E),
@@ -56,10 +56,10 @@ supports_directly_or_indirectly(A, C) :-
 	supports_directly_or_indirectly(A, A1).
 
 supports_directly_or_indirectly(A, C) :-
-	C = relative_prob(Event, moderate),
+	C = rel_prob(Event, moderate),
 	@C,
-	findall(E, supports_directly_or_indirectly(E, relative_prob(Event, high)), PosEvidences),
-	findall(E, supports_directly_or_indirectly(E, relative_prob(Event, low)), NegEvidences),
+	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, high)), PosEvidences),
+	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, low)), NegEvidences),
 	PosEvidences \== [],
 	NegEvidences \== [],
 	(member(A, PosEvidences) ; member(A, NegEvidences)).
@@ -89,9 +89,9 @@ answer_move([]>>P, P, confirm(P)).
 
 answer_move([]>>P, not(P), disconfirm(not(P))).
 
-answer_move([]>>P, relative_prob(P, high), confirm(relative_prob(P, high))).
+answer_move([]>>P, rel_prob(P, high), confirm(rel_prob(P, high))).
 
-answer_move([]>>P, relative_prob(P, low), disconfirm(relative_prob(P, low))).
+answer_move([]>>P, rel_prob(P, low), disconfirm(rel_prob(P, low))).
 
 answer_move(_, P, assert(P)).
 
@@ -122,5 +122,5 @@ contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
 	ground(P),
 	contradicts(Q1, Q2).
 
-contradicts(relative_value(Feature, Value1), relative_value(Feature, Value2)) :-
+contradicts(rel_value(Feature, Value1), rel_value(Feature, Value2)) :-
 	Value1 \== Value2.
