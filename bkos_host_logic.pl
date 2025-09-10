@@ -22,10 +22,10 @@ unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
 		supports_directly_or_indirectly(A, Consequent),
 		@A
 	;
-		A = supports(SupportingAntecedent, _, _),
+		A = supports(Antecedent, _, _),
 		@A,
-		copy_term(SupportingAntecedent, SupportingAntecedent1),
-		@SupportingAntecedent1,
+		copy_term(Antecedent, Antecedent1),
+		@Antecedent1,
 		unifiable(A, supports(_, Consequent, _), _)
 	).
 
