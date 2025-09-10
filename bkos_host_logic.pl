@@ -19,15 +19,13 @@ unify_valid_answer([]>>P, rel_prob(P, R)) :-
 unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
     contains_variable(Vars, E),
 	(
-		supports_directly_or_indirectly(Evidence, Consequent),
-		@Evidence,
-		A = Evidence
+		supports_directly_or_indirectly(A, Consequent),
+		@A
 	;
-		SupportsFact = supports(SupportingAntecedent, _, _),
-		@SupportsFact,
+		A = supports(SupportingAntecedent, _, _),
+		@A,
 		matches_fact(SupportingAntecedent),
-		unifiable(SupportsFact, supports(_, Consequent, _), _),
-		A = SupportsFact
+		unifiable(A, supports(_, Consequent, _), _)
 	).
 
 unify_valid_answer(Vars>>supports(Evidence, C, _), Consequent) :-
