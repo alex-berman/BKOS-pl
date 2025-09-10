@@ -24,7 +24,8 @@ unify_valid_answer(Vars>>supports(E, Consequent, _), A) :-
 	;
 		A = supports(SupportingAntecedent, _, _),
 		@A,
-		matches_fact(SupportingAntecedent),
+		copy_term(SupportingAntecedent, SupportingAntecedent1),
+		@SupportingAntecedent1,
 		unifiable(A, supports(_, Consequent, _), _)
 	).
 
@@ -61,11 +62,6 @@ supports_directly_or_indirectly(A, C) :-
 	PosEvidences \== [],
 	NegEvidences \== [],
 	(member(A, PosEvidences) ; member(A, NegEvidences)).
-
-
-matches_fact(P) :-
-	@P1,
-	unifiable(P, P1, _).
 
 
 answer_move(R, Ps, signal_continuation(M)) :-
