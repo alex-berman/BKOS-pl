@@ -1,11 +1,11 @@
 selection_policies:
   select_data: &select_data
     - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
-        findall(A, (member(A, ValidAnswers), A \= supports(_, _, _)), SelectedAnswers))
+        include([A]>>(A \= supports(_, _, _)), ValidAnswers, SelectedAnswers))
 
   select_warrants: &select_warrants
     - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
-        findall(A, (member(A, ValidAnswers), A = supports(_, _, _)), SelectedAnswers))
+        include([A]>>(A = supports(_, _, _)), ValidAnswers, SelectedAnswers))
   
   select_1st_datum: &select_1st_datum
     - select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
