@@ -1,18 +1,18 @@
 selection_policies:
   select_data: &select_data
-    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
+    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
         include([A]>>(A \= supports(_, _, _)), ValidAnswers, SelectedAnswers))
 
   select_warrants: &select_warrants
-    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
+    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
         include([A]>>(A = supports(_, _, _)), ValidAnswers, SelectedAnswers))
   
   select_1st_datum: &select_1st_datum
-    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
+    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
         call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 1))
   
   select_2nd_datum: &select_2nd_datum
-    - select_answers([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
+    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
         call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 2))
 
 

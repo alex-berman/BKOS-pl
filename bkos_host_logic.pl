@@ -91,7 +91,7 @@ answer_move(_, P, assert(P)).
 
 
 select_answers(Q, Candidates, Result) :-
-	(@select_answers(Q, Candidates, Selected, Condition) ->
+	(@answer_selection_policy(Q, Candidates, Selected, Condition) ->
 		Condition,
 		intersection(Candidates, Selected, Result)
 	;
