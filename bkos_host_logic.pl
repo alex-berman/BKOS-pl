@@ -18,9 +18,9 @@ valid_answer(Vars>>supports(E, C, _), D) :-
 
 valid_answer(Vars>>supports(E, C, _), W) :-
     contains_variable(Vars, E),
-	W = supports(WA, _, _),
+	W = supports(WA, WC, _),
 	@W,
-	unifiable(W, supports(_, C, _), _),
+	unifiable(WC, C, _),
 	copy_term(WA, WA1),
 	@WA1.
 
