@@ -43,7 +43,7 @@ integrate_acknowledgement :: [
 respond :: [
 	agenda(respond(R)),
 	$get_dict(q, R, Q),
-	$(get_dict(continuation, R, IsContinuation) -> true ; IsContinuation = false),
+	$get_dict(continuation, R, IsContinuation, false),
 	$findall(P, (
 		valid_answer(Q, P),
 		\+ (IsContinuation == true, has_responded(Q, P))

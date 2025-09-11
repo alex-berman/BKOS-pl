@@ -85,6 +85,15 @@ answer_move([]>>P, rel_prob(P, low), disconfirm(rel_prob(P, low))).
 answer_move(_, P, assert(P)).
 
 
+
+get_dict(Key, Dict, Value, Default) :-
+	( get_dict(Key, Dict, Value) ->
+		true
+	;
+		Value = Default
+	).
+
+
 select_answers(Q, Candidates, Result) :-
 	(@answer_selection_policy(Q, Candidates, Selected, Condition) ->
 		Condition,
