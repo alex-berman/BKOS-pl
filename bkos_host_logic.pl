@@ -13,8 +13,7 @@ valid_answer([]>>P, rel_prob(P, R)) :-
 
 valid_answer(Vars>>supports(E, C, _), D) :-
     contains_variable(Vars, E),
-	supports_directly_or_indirectly(D, C),
-	@D.
+	supports_directly_or_indirectly(D, C).
 
 valid_answer(Vars>>supports(E, C, _), W) :-
     contains_variable(Vars, E),
@@ -43,10 +42,12 @@ contains_variable(Vars, Var) :-
 
 
 supports_directly_or_indirectly(A, C) :-
-	@supports(A, C, _).
+	@supports(A, C, _),
+	@A.
 
 supports_directly_or_indirectly(A, C) :-
 	@supports(A1, C, _),
+	@A1,
 	supports_directly_or_indirectly(A, A1).
 
 supports_directly_or_indirectly(A, C) :-
