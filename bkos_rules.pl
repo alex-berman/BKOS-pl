@@ -35,15 +35,15 @@ integrate_user_question :: [
 integrate_acknowledgement :: [
 	non_integrated_move(icm(acceptance, positive)),
 	^qud(Q)
-	] -* agenda(respond(_{q:Q, continuation:true})).
+	] -* agenda(respond(_{q:Q, resumption:true})).
 
 respond :: [
 	agenda(respond(R)),
 	$get_dict(q, R, Q),
-	$get_dict(continuation, R, IsContinuation, false),
+	$get_dict(resumption, R, IsResumption, false),
 	$findall(P, (
 		valid_answer(Q, P),
-		\+ (IsContinuation == true, has_responded(Q, P))
+		\+ (IsResumption == true, has_responded(Q, P))
 	), ValidAnswers),
 	$select_answers(Q, ValidAnswers, SelectedAnswers),
 	$answer_move(R, SelectedAnswers, Move)

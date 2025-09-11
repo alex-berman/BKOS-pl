@@ -60,9 +60,9 @@ supports_directly_or_indirectly(A, C) :-
 	(member(A, PosEvidences) ; member(A, NegEvidences)).
 
 
-answer_move(R, Ps, signal_continuation(M)) :-
+answer_move(R, Ps, signal_resumption(M)) :-
 	is_dict(R),
-	get_dict(continuation, R, true),
+	get_dict(resumption, R, true),
 	get_dict(q, R, Q),
 	answer_move(Q, Ps, M).
 

@@ -141,7 +141,7 @@ deliver_explanations_incrementally:
     - U ask([E, M]>>supports(E, rel_prob(satisfied(patient), high), M))
     - S assert(rel_value(back_pain(patient), low))
     - U icm(acceptance, positive)
-    - S signal_continuation(assert(rel_value(disability(patient), low)))
+    - S signal_resumption(assert(rel_value(disability(patient), low)))
     - U icm(acceptance, positive)
     - S
 
@@ -160,13 +160,13 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
     - U ask([E, M]>>supports(E, rel_prob(satisfied(patient), high), M))
     - S assert(rel_value(back_pain(patient), low))
     - U icm(acceptance, positive)
-    - S signal_continuation(assert(rel_value(disability(patient), low)))
+    - S signal_resumption(assert(rel_value(disability(patient), low)))
     - U icm(acceptance, positive)
     - S
     - U ask([E, M]>>supports(E, rel_prob(satisfied(patient), high), M))
     - S assert(rel_value(back_pain(patient), low))
     - U icm(acceptance, positive)
-    - S signal_continuation(assert(rel_value(disability(patient), low)))
+    - S signal_resumption(assert(rel_value(disability(patient), low)))
     - U icm(acceptance, positive)
     - S
 
