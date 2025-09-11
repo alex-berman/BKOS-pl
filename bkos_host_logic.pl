@@ -11,22 +11,22 @@ valid_answer([]>>P, not(P)) :-
 valid_answer([]>>P, rel_prob(P, R)) :-
 	@rel_prob(P, R).
 
-valid_answer(Vars>>supports(E, Consequent, _), A) :-
+valid_answer(Vars>>supports(E, C, _), D) :-
     contains_variable(Vars, E),
-	supports_directly_or_indirectly(A, Consequent),
-	@A.
+	supports_directly_or_indirectly(D, C),
+	@D.
 
-valid_answer(Vars>>supports(E, Consequent, _), A) :-
+valid_answer(Vars>>supports(E, C, _), W) :-
     contains_variable(Vars, E),
-	A = supports(Antecedent, _, _),
-	@A,
-	copy_term(Antecedent, Antecedent1),
-	@Antecedent1,
-	unifiable(A, supports(_, Consequent, _), _).
+	W = supports(WA, _, _),
+	@W,
+	unifiable(W, supports(_, C, _), _),
+	copy_term(WA, WA1),
+	@WA1.
 
-valid_answer(Vars>>supports(Evidence, C, _), Consequent) :-
+valid_answer(Vars>>supports(D, C, _), AC) :-
     contains_variable(Vars, C),
-	supports_directly_or_indirectly(Evidence, Consequent).
+	supports_directly_or_indirectly(D, AC).
 
 valid_answer([M]>>P, P) :-
 	P = supports(_, _, M),
