@@ -1,14 +1,9 @@
-:- module(engine, [assert_initial_facts/0, apply_rules_exhaustively/0, '@'/1, clear_facts/0]).
+:- module(engine, [apply_rules_exhaustively/0, '@'/1, clear_facts/0]).
 :- use_module(db).
 - ensure_loaded(isu_syntax).
 
 :- dynamic user:(::)/2.
 :- multifile user:(::)/2.
-
-
-assert_initial_facts :-
-    forall((user:(_ :: Term), Term \= (_ -* _)),
-	   assertz(@Term)).
 
 
 apply_rules_exhaustively :-

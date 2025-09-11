@@ -20,7 +20,6 @@ run_test(TestsPath, Name) :-
 run_test_from_dict(Name:Test) :-
     write('\nRunning test '), write(Name), nl, nl,
     clear_facts,
-    assert_initial_facts,
     ( get_dict(facts, Test, _) ->
         forall(
             member(FactStr, Test.facts),
