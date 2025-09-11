@@ -13,16 +13,16 @@ valid_answer([]>>P, rel_prob(P, R)) :-
 
 valid_answer(Vars>>supports(E, Consequent, _), A) :-
     contains_variable(Vars, E),
-	(
-		supports_directly_or_indirectly(A, Consequent),
-		@A
-	;
-		A = supports(Antecedent, _, _),
-		@A,
-		copy_term(Antecedent, Antecedent1),
-		@Antecedent1,
-		unifiable(A, supports(_, Consequent, _), _)
-	).
+	supports_directly_or_indirectly(A, Consequent),
+	@A.
+
+valid_answer(Vars>>supports(E, Consequent, _), A) :-
+    contains_variable(Vars, E),
+	A = supports(Antecedent, _, _),
+	@A,
+	copy_term(Antecedent, Antecedent1),
+	@Antecedent1,
+	unifiable(A, supports(_, Consequent, _), _).
 
 valid_answer(Vars>>supports(Evidence, C, _), Consequent) :-
     contains_variable(Vars, C),
