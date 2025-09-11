@@ -1,7 +1,5 @@
 :- ensure_loaded(isu_syntax).
 
-_ :: qud([]).
-
 reject_move_with_presupposition_violation :: [
 	heard(Move),
 	$get_dict(presuppositions, Move, Presuppositions),
@@ -27,17 +25,16 @@ reject_unanswerable_question :: [
 	utter(icm(acceptance, negative, lack_knowledge(Q))).
 
 integrate_user_question :: [
-	qud(Qs),
 	non_integrated_move(ask(Q)),
 	*responded(Q, _)
 	] -* [
-		qud([Q|Qs]),
+		qud(Q),
 		agenda(respond(_{q:Q}))
 	].
 
 integrate_acknowledgement :: [
 	non_integrated_move(icm(acceptance, positive)),
-	^qud([Q|_])
+	^qud(Q)
 	] -* agenda(respond(_{q:Q, continuation:true})).
 
 respond :: [
