@@ -1,19 +1,20 @@
 selection_policies:
   select_data: &select_data
-    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
-        include([A]>>(A \= supports(_, _, _)), ValidAnswers, SelectedAnswers))
+    - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
+        include([A]>>(A \= supports(_, _, _)), Valid, Selected))
 
   select_warrants: &select_warrants
-    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, SelectedAnswers,
-        include([A]>>(A = supports(_, _, _)), ValidAnswers, SelectedAnswers))
+    - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
+        include([A]>>(A = supports(_, _, _)), Valid, Selected))
   
   select_1st_datum: &select_1st_datum
-    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
-        call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 1))
+    - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
+        (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
   
-  select_2nd_datum: &select_2nd_datum
-    - answer_selection_policy([E, M]>>supports(E, _, M), ValidAnswers, [SelectedAnswer],
-        call_nth((member(SelectedAnswer, ValidAnswers), SelectedAnswer \= supports(_, _, _)), 2))
+  prefer_non_probabilistic_data: &prefer_non_probabilistic_data
+    - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
+        ((include([A]>>(A = rel_value(_, _)), Valid, Selected), Selected \= []) ;
+         Selected = Valid))
 
 
 reusable_facts:
@@ -170,7 +171,7 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
     - U icm(acceptance, positive)
     - S
 
-explain_chained_inference_with_immediate_datum:
+explain_chained_inference_with_first_valid_datum:
   facts:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
@@ -189,7 +190,7 @@ explain_chained_inference_with_immediate_datum:
     - U ask([E, M]>>supports(E, rel_prob(satisfied(patient), high), M))
     - S assert(rel_value(back_pain(patient), low))
 
-explain_chained_inference_with_ancestor_datum:
+explain_chained_inference_with_non_probabilistic_datum:
   facts:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
@@ -199,7 +200,7 @@ explain_chained_inference_with_ancestor_datum:
     - supports(rel_prob(satisfied(X), moderate), not(surgery_recommended(X)), norm)
     - supports(rel_prob(satisfied(X), low), not(surgery_recommended(X)), norm)
     - *spinal_stenosis_model_facts
-    - *select_2nd_datum
+    - *prefer_non_probabilistic_data
   turns:
     - U ask([]>>surgery_recommended(patient))
     - S confirm(surgery_recommended(patient))
