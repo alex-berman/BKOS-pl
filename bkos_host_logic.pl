@@ -23,9 +23,9 @@ valid_answer(Vars>>supports(E, C, _), W) :-
 	copy_term(WA, WA1),
 	@WA1.
 
-valid_answer(Vars>>supports(D, C, _), AC) :-
-    contains_variable(Vars, C),
-	supports_directly_or_indirectly(D, AC).
+valid_answer(Vars>>supports(D, XC, _), C) :-
+    contains_variable(Vars, XC),
+	supports_directly_or_indirectly(D, C).
 
 valid_answer([M]>>P, P) :-
 	P = supports(_, _, M),
