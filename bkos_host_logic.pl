@@ -11,20 +11,20 @@ valid_answer([]>>P, not(P)) :-
 valid_answer([]>>P, rel_prob(P, R)) :-
 	@rel_prob(P, R).
 
-valid_answer(Vars>>supports(E, C, _), D) :-
-    contains_variable(Vars, E),
+valid_answer(Q, D) :-
+	has_variable_and_body(Q, E, supports(E, C, _)),
 	supports_directly_or_indirectly(D, C).
 
-valid_answer(Vars>>supports(E, C, _), W) :-
-    contains_variable(Vars, E),
+valid_answer(Q, W) :-
+	has_variable_and_body(Q, E, supports(E, C, _)),
 	W = supports(WA, WC, _),
 	@W,
 	unifiable(WC, C, _),
 	copy_term(WA, WA1),
 	@WA1.
 
-valid_answer(Vars>>supports(D, XC, _), C) :-
-    contains_variable(Vars, XC),
+valid_answer(Q, C) :-
+    has_variable_and_body(Q, XC, supports(D, XC, _)),
 	supports_directly_or_indirectly(D, C).
 
 valid_answer([M]>>P, P) :-
@@ -36,7 +36,7 @@ valid_answer([_]>>P, P) :-
 	@P.
 
 
-contains_variable(Vars, Var) :-
+has_variable_and_body(Vars>>Body, Var, Body) :-
 	member(Var1, Vars),
 	Var1 == Var.
 
