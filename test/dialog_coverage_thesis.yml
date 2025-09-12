@@ -170,7 +170,7 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
     - U icm(acceptance, positive)
     - S
 
-explain_chained_inference_with_ancestor_datum:
+explain_chained_inference_with_immediate_datum:
   facts:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
@@ -189,7 +189,7 @@ explain_chained_inference_with_ancestor_datum:
     - U ask([E, M]>>supports(E, rel_prob(satisfied(patient), high), M))
     - S assert(rel_value(back_pain(patient), low))
 
-explain_chained_inference_with_immediate_datum:
+explain_chained_inference_with_ancestor_datum:
   facts:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
