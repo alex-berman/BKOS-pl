@@ -336,8 +336,10 @@ confirm_datum_explanation:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
     - rel_prob(satisfied(patient), high)
+    - agenda(respond([X]>>rel_prob(satisfied(patient), X)))
     - *spinal_stenosis_model_facts
   turns:
+    - S assert(rel_prob(satisfied(patient), high))
     - U ask([]>>supports(rel_value(back_pain(patient), low), rel_prob(satisfied(patient), high), _))
     - S confirm(supports(rel_value(back_pain(patient), low), rel_prob(satisfied(patient), high), association))
 
