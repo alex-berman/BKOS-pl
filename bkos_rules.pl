@@ -29,26 +29,34 @@ integrate_user_question :: [
 	*responded(Q, _)
 	] -* [
 		qud(Q),
-		agenda(respond(_{q:Q}))
+		agenda(respond(Q))
 	].
 
 integrate_acknowledgement :: [
 	non_integrated_move(icm(acceptance, positive)),
 	^qud(Q)
-	] -* agenda(respond(_{q:Q, resumption:true})).
+	] -* agenda(resume(respond(Q))).
 
 respond :: [
-	agenda(respond(R)),
-	$get_dict(q, R, Q),
-	$get_dict(resumption, R, IsResumption, false),
-	$findall(P, (
-		valid_answer(Q, P),
-		\+ (IsResumption == true, has_responded(Q, P))
-	), ValidAnswers),
+	agenda(respond(Q)),
+	$findall(P, valid_answer(Q, P), ValidAnswers),
 	$select_answers(Q, ValidAnswers, SelectedAnswers),
-	$answer_move(R, SelectedAnswers, Move)
+	$answer_move(Q, SelectedAnswers, Move)
 	] -* [
 		utter(Move),
+		responded(Q, SelectedAnswers)
+	].
+
+resume_responding :: [
+	agenda(resume(respond(Q))),
+	$findall(P, (
+		valid_answer(Q, P),
+		\+ has_responded(Q, P)
+	), ValidAnswers),
+	$select_answers(Q, ValidAnswers, SelectedAnswers),
+	$answer_move(Q, SelectedAnswers, Move)
+	] -* [
+		utter(signal_resumption(Move)),
 		responded(Q, SelectedAnswers)
 	].
 

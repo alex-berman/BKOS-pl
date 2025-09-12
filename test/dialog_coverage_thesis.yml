@@ -33,7 +33,7 @@ reusable_facts:
 respond_in_agenda:
   facts:
   - rel_prob(satisfied(patient), high)
-  - agenda(respond(_{q:[X]>>rel_prob(satisfied(patient), X)}))
+  - agenda(respond([X]>>rel_prob(satisfied(patient), X)))
   turns:
   - S assert(rel_prob(satisfied(patient), high))
 
@@ -225,7 +225,7 @@ respond_to_open_request_for_forward_expansion:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
     - rel_prob(satisfied(patient), high)
-    - agenda(respond(_{q:[X]>>rel_value(back_pain(patient), X)}))
+    - agenda(respond([X]>>rel_value(back_pain(patient), X)))
     - *spinal_stenosis_model_facts
     - *select_data
   turns:
@@ -238,7 +238,7 @@ confirm_forward_expansion:
     - value(back_pain(patient), 4)
     - rel_value(back_pain(patient), low)
     - rel_prob(satisfied(patient), high)
-    - agenda(respond(_{q:[X]>>rel_value(back_pain(patient), X)}))
+    - agenda(respond([X]>>rel_value(back_pain(patient), X)))
     - *spinal_stenosis_model_facts
   turns:
     - S assert(rel_value(back_pain(patient), low))

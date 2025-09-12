@@ -60,17 +60,6 @@ supports_directly_or_indirectly(A, C) :-
 	(member(A, PosEvidences) ; member(A, NegEvidences)).
 
 
-answer_move(R, Ps, signal_resumption(M)) :-
-	is_dict(R),
-	get_dict(resumption, R, true),
-	get_dict(q, R, Q),
-	answer_move(Q, Ps, M).
-
-answer_move(R, Ps, M) :-
-	is_dict(R),
-	get_dict(q, R, Q),
-	answer_move(Q, Ps, M).
-
 answer_move(Q, [P], M) :-
 	!,
 	answer_move(Q, P, M).
@@ -85,14 +74,6 @@ answer_move([]>>P, rel_prob(P, low), disconfirm(rel_prob(P, low))).
 
 answer_move(_, P, assert(P)).
 
-
-
-get_dict(Key, Dict, Value, Default) :-
-	( get_dict(Key, Dict, Value) ->
-		true
-	;
-		Value = Default
-	).
 
 
 select_answers(Q, Candidates, Result) :-
