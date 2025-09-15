@@ -59,7 +59,7 @@ answer_polar_question_with_disconfirmation_concerning_probability:
     - U ask([]>>satisfied(patient))
     - S disconfirm(rel_prob(satisfied(patient), low))
 
-elicit_datum_explanation_for_continuous_feature:
+elicit_datum_explanation_for_numerical_feature:
   facts:
     - value(back_pain(patient), 4)
     - rel_prob(satisfied(patient), high)
