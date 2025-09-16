@@ -1,5 +1,10 @@
 :- ensure_loaded(isu_syntax).
 
+provide_negative_understanding_when_no_semantic_interpretation :: [
+	heard(Interpretation),
+	$get_dict(move, Interpretation, none)
+	] -* utter(icm(understanding, negative)).
+
 reject_move_with_presupposition_violation :: [
 	heard(Move),
 	$get_dict(presuppositions, Move, Presuppositions),
@@ -9,24 +14,21 @@ reject_move_with_presupposition_violation :: [
 	] -*
 	utter(icm(acceptance, negative, Presupposition)).
 
-mark_interpreted_move_as_non_integrated :: [
-	heard(Interpretation),
-	$get_dict(move, Interpretation, Move),
-	*agenda(_)
-	] -* non_integrated_move(Move).
-
-provide_negative_understanding_when_no_semantic_interpretation ::
-	non_integrated_move(none) -*
-	utter(icm(understanding, negative)).
-
 reject_unanswerable_question :: [
-	non_integrated_move(ask(Q)),
+	heard(Interpretation),
+	$get_dict(move, Interpretation, ask(Q)),
 	$(\+ valid_answer(Q, _))
 	] -*
 	utter(icm(acceptance, negative, lack_knowledge(Q))).
 
+mark_move_as_accepted :: [
+	heard(Interpretation),
+	$get_dict(move, Interpretation, Move),
+	*agenda(_)
+	] -* accepted(Move).
+
 integrate_user_question :: [
-	non_integrated_move(ask(Q)),
+	accepted(ask(Q)),
 	*responded(Q, _)
 	] -* [
 		qud(Q),
@@ -34,7 +36,7 @@ integrate_user_question :: [
 	].
 
 integrate_acknowledgement :: [
-	non_integrated_move(icm(acceptance, positive)),
+	accepted(icm(acceptance, positive)),
 	^qud(Q)
 	] -* agenda(resume(respond(Q))).
 
