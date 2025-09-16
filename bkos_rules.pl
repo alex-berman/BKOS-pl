@@ -63,7 +63,7 @@ resume_responding :: [
 		responded(Q, SelectedAnswers)
 	].
 
-deliver_claim_and_supporting_evidence_as_inference :: [
+argue :: [
 	agenda(argue(C)),
 	$(Q = [E, M]>>supports(E, C, M)),
 	$findall(P, valid_answer(Q, P), ValidAnswers),
