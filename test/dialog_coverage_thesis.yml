@@ -244,7 +244,7 @@ repeat_exhaustive_answer_for_repeated_question:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - U ask([]>>satisfied(pat_1))
   - S confirm(rel_prob(satisfied(pat_1), high))
@@ -257,7 +257,7 @@ wh_question_concerning_means:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - U ask([]>>satisfied(pat_1))
   - S confirm(rel_prob(satisfied(pat_1), high))
@@ -271,7 +271,7 @@ deliver_prediction_as_inference:
   - agenda(argue(rel_prob(satisfied(pat_1), high)))
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - S infer([rel_value(back_pain(pat_1), low)], rel_prob(satisfied(pat_1), high))
 
@@ -279,7 +279,7 @@ reject_unanswerable_question_concerning_cause_of_specific_datum:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - U ask([]>>satisfied(pat_1))
   - S confirm(rel_prob(satisfied(pat_1), high))
