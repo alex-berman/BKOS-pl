@@ -9,7 +9,7 @@ reject_move_with_presupposition_violation :: [
 	] -*
 	utter(icm(acceptance, negative, Presupposition)).
 
-get_move_and_clear_agenda :: [
+mark_interpreted_move_as_non_integrated :: [
 	heard(Interpretation),
 	$get_dict(move, Interpretation, Move),
 	*agenda(_)
