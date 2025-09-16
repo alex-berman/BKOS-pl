@@ -4,7 +4,8 @@ reject_move_with_presupposition_violation :: [
 	heard(Move),
 	$get_dict(presuppositions, Move, Presuppositions),
 	$member(Presupposition, Presuppositions),
-	$(\+ compatible_with_facts(Presupposition))
+	^Belief,
+	$contradicts(Belief, Presupposition)
 	] -*
 	utter(icm(acceptance, negative, Presupposition)).
 

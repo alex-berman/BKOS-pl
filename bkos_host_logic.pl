@@ -90,10 +90,6 @@ has_responded(Q, P) :-
 	member(P, Ps).
 
 
-compatible_with_facts(P) :-
-	\+ (@Q, contradicts(Q, P)).
-
-
 contradicts(not(P), P).
 
 contradicts(P, not(P)).
