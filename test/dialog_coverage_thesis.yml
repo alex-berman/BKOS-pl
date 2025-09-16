@@ -310,7 +310,15 @@ confirm_datum_explanation:
   - U ask([]>>supports(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high), _))
   - S confirm(supports(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high), association))
 
-reject_move_with_presupposition_violation:
+reject_move_with_presupposition_violation_wrt_rel_prob:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  turns:
+  - U move{ content:ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M)), presuppositions:[rel_prob(satisfied(pat_1), low)] }
+  - S icm(acceptance, negative, rel_prob(satisfied(pat_1), low))
+
+reject_move_with_presupposition_violation_wrt_rel_value:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
