@@ -102,5 +102,6 @@ contradicts(supports(P, Q1, How), supports(P, Q2, How)) :-
 	ground(P),
 	contradicts(Q1, Q2).
 
-contradicts(rel_value(Feature, Value1), rel_value(Feature, Value2)) :-
-	Value1 \== Value2.
+contradicts(rel_value(Property, X), rel_value(Property, Y)) :-
+	X \== Y.
+	  
