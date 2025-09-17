@@ -32,9 +32,9 @@ run_test_from_dict(Name:Test) :-
 test_turns(Turns, N) :-
     length(Turns, NumTurns),
     ( N =< NumTurns ->
-        nth1(N, Turns, TurnStr),
-        format('Turn #~w: ~w\n', [N, TurnStr]),
-        test_turn(TurnStr),
+        nth1(N, Turns, Turn),
+        format('Turn #~w: ~w\n', [N, Turn]),
+        test_turn(Turn),
         NextN is N + 1,
         test_turns(Turns, NextN)
     ;
@@ -52,24 +52,24 @@ assert_fact(Str) :-
     assert(@Fact).
 
 
-test_turn("S") :-
+test_turn(Turn) :-
+    get_dict('S', Turn, Content),
+    !,
+    test_system_turn(Content).
+
+test_turn(Turn) :-
+    get_dict('U', Turn, Content),
+    !,
+    test_user_turn(Content).
+
+test_turn(_, Turn, _) :-
+    throw(unsupported_turn_format(Turn)).
+
+
+test_system_turn(_{}) :-
     !,
     apply_rules_exhaustively,
     assertion(\+ @utter(_)).
-
-test_turn(TurnStr) :-
-    atom_concat("S ", ExpectedSystemMoveAtom, TurnStr),
-    !,
-    test_system_turn(ExpectedSystemMoveAtom).
-
-test_turn(TurnStr) :-
-    atom_concat("U ", InterpretationAtom, TurnStr),
-    !,
-    test_user_turn(InterpretationAtom).
-
-test_turn(TurnStr) :-
-    throw(unsupported_turn_format(TurnStr)).
-
 
 test_system_turn(ExpectedSystemMoveAtom) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
@@ -80,14 +80,23 @@ test_system_turn(ExpectedSystemMoveAtom) :-
     retract(@utter(_)).
 
 
-test_user_turn(InterpretationAtom) :-
-    atom_to_term(InterpretationAtom, Interpretation, _),
-    interpretation_as_dict(Interpretation, InterpretationAsDict),
-    assert(@heard(InterpretationAsDict)).
+test_user_turn(TurnDict) :-
+    is_dict(TurnDict),
+    !,
+    ( get_dict(unparsable_phrase, TurnDict, Phrase) ->
+        asserta(@recognized(unparsable_phrase(Phrase)))
+    ; true ),
+    ( get_dict(move, TurnDict, MoveAtom) ->
+        atom_to_term(MoveAtom, Move, _),
+        asserta(@recognized(move(Move)))
+    ; true ),
+    ( get_dict(presuppositions, TurnDict, PresuppositionAtoms) ->
+        forall(
+            member(PresuppositionAtom, PresuppositionAtoms),
+            ( atom_to_term(PresuppositionAtom, Presupposition, _),
+                asserta(@recognized(presupposition(Presupposition))) ))
+    ; true ).
 
-
-interpretation_as_dict(Dict, Dict) :-
-    is_dict(Dict),
-    !.
-
-interpretation_as_dict(Move, _{move:Move}).
+test_user_turn(MoveAtom) :-
+    atom_to_term(MoveAtom, Move, _),
+    asserta(@recognized(move(Move))).
