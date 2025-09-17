@@ -1,9 +1,9 @@
 :- ensure_loaded(isu_syntax).
 
-provide_negative_understanding_when_no_semantic_interpretation :: [
+signal_negative_understanding :: [
 	heard(Interpretation),
-	$get_dict(move, Interpretation, none)
-	] -* utter(icm(understanding, negative)).
+	$get_dict(unparsable_phrase, Interpretation, Phrase)
+	] -* utter(icm(understanding, negative, unparsable_phrase(Phrase))).
 
 reject_move_with_presupposition_violation :: [
 	heard(Interpretation),
@@ -11,16 +11,14 @@ reject_move_with_presupposition_violation :: [
 	$member(Presupposition, Presuppositions),
 	^Belief,
 	$contradicts(Belief, Presupposition),
-	$get_dict(content, Interpretation, Move)
-	] -*
-	utter(icm(acceptance, negative, Move, false(Presupposition))).
+	$get_dict(move, Interpretation, Move)
+	] -* utter(icm(acceptance, negative, Move, false(Presupposition))).
 
 reject_unanswerable_question :: [
 	heard(Interpretation),
 	$get_dict(move, Interpretation, ask(Q)),
 	$(\+ valid_answer(Q, _))
-	] -*
-	utter(icm(acceptance, negative, ask(Q), lack_knowledge)).
+	] -* utter(icm(acceptance, negative, ask(Q), lack_knowledge)).
 
 mark_move_as_accepted :: [
 	heard(Interpretation),

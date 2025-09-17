@@ -303,10 +303,10 @@ reject_unanswerable_question_concerning_general_causal_relation:
   - U ask([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), _), causation))
   - S icm(acceptance, negative, ask([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), _), causation)), lack_knowledge)
 
-provide_negative_understanding_when_no_semantic_interpretation:
+signal_negative_understanding:
   turns:
-  - U none
-  - S icm(understanding, negative)
+  - U _{ unparsable_phrase:'heart disease' }
+  - S icm(understanding, negative, unparsable_phrase('heart disease'))
 
 confirm_datum_explanans_for_asserted_claim:
   facts:
@@ -333,7 +333,7 @@ reject_move_with_presupposition_violation_wrt_rel_prob:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
   turns:
-  - U move{ content:ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M)), presuppositions:[rel_prob(satisfied(pat_1), low)] }
+  - U _{ move:ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M)), presuppositions:[rel_prob(satisfied(pat_1), low)] }
   - S icm(acceptance, negative, ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M)), false(rel_prob(satisfied(pat_1), low)))
 
 reject_move_with_presupposition_violation_wrt_rel_value:
@@ -341,7 +341,7 @@ reject_move_with_presupposition_violation_wrt_rel_value:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
   turns:
-  - U move{ content:ask([]>>supports(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), high), _)), presuppositions:[rel_value(back_pain(pat_1), high)] }
+  - U _{ move:ask([]>>supports(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), high), _)), presuppositions:[rel_value(back_pain(pat_1), high)] }
   - S icm(acceptance, negative, ask([]>>supports(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), high), _)), false(rel_value(back_pain(pat_1), high)))
 
 explain_moderate_estimated_probability_caused_by_moderate_feature_values:

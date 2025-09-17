@@ -90,4 +90,4 @@ interpretation_as_dict(Dict, Dict) :-
     is_dict(Dict),
     !.
 
-interpretation_as_dict(Move, interpretation{move:Move}).
+interpretation_as_dict(Move, _{move:Move}).
