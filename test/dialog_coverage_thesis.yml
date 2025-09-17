@@ -300,15 +300,27 @@ provide_negative_understanding_when_no_semantic_interpretation:
   - U none
   - S icm(understanding, negative)
 
-confirm_datum_explanation:
+confirm_datum_explanans_for_asserted_claim:
   facts:
-  - agenda(respond([X]>>rel_prob(satisfied(pat_1), X)))
   - *pat_1_facts
   - *spinal_stenosis_model_facts
+  - *select_1st_datum
   turns:
-  - S assert(rel_prob(satisfied(pat_1), high))
+  - U ask([]>>satisfied(pat_1))
+  - S confirm(rel_prob(satisfied(pat_1), high))
   - U ask([]>>supports(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high), _))
   - S confirm(supports(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high), association))
+
+confirm_datum_explanans_against_claim:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_1st_datum
+  turns:
+  - U ask([]>>satisfied(pat_1))
+  - S confirm(rel_prob(satisfied(pat_1), high))
+  - U ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M))
+  - S assert(rel_value(pain_duration(pat_1), high))
 
 reject_move_with_presupposition_violation_wrt_rel_prob:
   facts:
