@@ -280,8 +280,8 @@ reject_unanswerable_question_concerning_unknown_concept:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
   turns:
-  - U ask([X]>>supports(has_other_illness(X), rel_prob(satisfied(pat_1), low), _))
-  - S icm(acceptance, negative, lack_knowledge([X]>>supports(has_other_illness(X), rel_prob(satisfied(pat_1), low), _)))
+  - U ask([X]>>supports(has_other_illness(pat_1, X), rel_prob(satisfied(pat_1), low), _))
+  - S icm(acceptance, negative, lack_knowledge([X]>>supports(has_other_illness(pat_1, X), rel_prob(satisfied(pat_1), low), _)))
 
 reject_unanswerable_question_concerning_cause_of_specific_datum:
   facts:
@@ -300,8 +300,8 @@ reject_unanswerable_question_concerning_general_causal_relation:
   facts:
   - *spinal_stenosis_model_facts
   turns:
-  - U ask([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), high), causation))
-  - S icm(acceptance, negative, lack_knowledge([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), high), causation)))
+  - U ask([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), _), causation))
+  - S icm(acceptance, negative, lack_knowledge([]>>supports(rel_value(back_pain(X), _), rel_prob(satisfied(X), _), causation)))
 
 provide_negative_understanding_when_no_semantic_interpretation:
   turns:
