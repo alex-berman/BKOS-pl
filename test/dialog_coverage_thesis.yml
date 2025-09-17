@@ -275,6 +275,14 @@ deliver_prediction_as_inference:
   turns:
   - S infer([rel_value(back_pain(pat_1), low)], rel_prob(satisfied(pat_1), high))
 
+reject_unanswerable_question_concerning_unknown_concept:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  turns:
+  - U ask([X]>>supports(has_other_illness(X), rel_prob(satisfied(pat_1), low), _))
+  - S icm(acceptance, negative, lack_knowledge([X]>>supports(has_other_illness(X), rel_prob(satisfied(pat_1), low), _)))
+
 reject_unanswerable_question_concerning_cause_of_specific_datum:
   facts:
   - *pat_1_facts
