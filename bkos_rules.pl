@@ -6,20 +6,21 @@ provide_negative_understanding_when_no_semantic_interpretation :: [
 	] -* utter(icm(understanding, negative)).
 
 reject_move_with_presupposition_violation :: [
-	heard(Move),
-	$get_dict(presuppositions, Move, Presuppositions),
+	heard(Interpretation),
+	$get_dict(presuppositions, Interpretation, Presuppositions),
 	$member(Presupposition, Presuppositions),
 	^Belief,
-	$contradicts(Belief, Presupposition)
+	$contradicts(Belief, Presupposition),
+	$get_dict(content, Interpretation, Move)
 	] -*
-	utter(icm(acceptance, negative, Presupposition)).
+	utter(icm(acceptance, negative, Move, false(Presupposition))).
 
 reject_unanswerable_question :: [
 	heard(Interpretation),
 	$get_dict(move, Interpretation, ask(Q)),
 	$(\+ valid_answer(Q, _))
 	] -*
-	utter(icm(acceptance, negative, lack_knowledge(Q))).
+	utter(icm(acceptance, negative, ask(Q), lack_knowledge)).
 
 mark_move_as_accepted :: [
 	heard(Interpretation),
