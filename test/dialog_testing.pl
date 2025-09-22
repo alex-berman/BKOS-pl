@@ -83,8 +83,8 @@ test_system_turn(ExpectedSystemMoveAtom) :-
 test_user_turn(TurnDict) :-
     is_dict(TurnDict),
     !,
-    ( get_dict(unparsable_phrase, TurnDict, Phrase) ->
-        asserta(@recognized(unparsable_phrase(Phrase)))
+    ( get_dict(unresolvable_phrase, TurnDict, Phrase) ->
+        asserta(@recognized(unresolvable_phrase(Phrase)))
     ; true ),
     ( get_dict(move, TurnDict, MoveAtom) ->
         atom_to_term(MoveAtom, Move, _),

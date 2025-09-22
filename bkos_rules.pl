@@ -1,8 +1,8 @@
 :- ensure_loaded(isu_syntax).
 
 signal_negative_understanding ::
-	recognized(contextually_unresolvable_phrase(Phrase)) -*
-	utter(icm(understanding, negative, contextually_unresolvable_phrase(Phrase))).
+	recognized(unresolvable_phrase(Phrase)) -*
+	utter(icm(understanding, negative, unresolvable_phrase(Phrase))).
 
 reject_move_with_presupposition_violation :: [
 	recognized(presupposition(Presupposition)),

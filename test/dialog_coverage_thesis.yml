@@ -306,8 +306,8 @@ reject_unanswerable_question_concerning_general_causal_relation:
 signal_negative_understanding:
   turns:
   - U:
-      contextually_unresolvable_phrase: heart disease
-  - S: icm(understanding, negative, contextually_unresolvable_phrase("heart disease"))
+      unresolvable_phrase: heart disease
+  - S: icm(understanding, negative, unresolvable_phrase("heart disease"))
 
 confirm_datum_explanans_for_asserted_claim:
   facts:
