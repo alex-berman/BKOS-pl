@@ -3,10 +3,6 @@ selection_policies:
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
         include([A]>>(A \= supports(_, _, _)), Valid, Selected))
 
-  select_1st_warrant: &select_1st_warrant
-  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
-        (member(SelectedAnswer, Valid), SelectedAnswer = supports(_, _, _)))
-  
   select_1st_datum: &select_1st_datum
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
         (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
@@ -96,11 +92,12 @@ elaborate_datum_quantitatively:
   - U: ask([V]>>value(back_pain(pat_1), V))
   - S: assert(value(back_pain(pat_1), 4))
 
-elicit_warrant_explanation:
+warrant_based_explanans:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_1st_warrant
+  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
+      (member(SelectedAnswer, Valid), SelectedAnswer = supports(_, _, _)))
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
