@@ -68,12 +68,12 @@ test_turn(_, Turn, _) :-
 
 test_system_turn(_{}) :-
     !,
-    apply_rules_exhaustively,
+    apply_rules,
     assertion(\+ @utter(_)).
 
 test_system_turn(ExpectedSystemMoveAtom) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
-    apply_rules_exhaustively,
+    apply_rules,
     assertion(@utter(_)),
     @utter(ActualSystemMove),
     assertion(ActualSystemMove =@= ExpectedSystemMove),

@@ -1,4 +1,4 @@
-:- module(engine, [apply_rules_exhaustively/0, '@'/1, clear_facts/0]).
+:- module(engine, [apply_rules/0, '@'/1, clear_facts/0]).
 :- use_module(db).
 :- ensure_loaded(isu_syntax).
 
@@ -6,35 +6,18 @@
 :- multifile user:(::)/2.
 
 
-apply_rules_exhaustively :-
-    repeat_apply_until_nothing_applied,
-    !.
-
-
-repeat_apply_until_nothing_applied :-
+apply_rules :-
     print_state,
-    bagof(
+    forall(
         user:(RuleName :: Antecedent -* Consequent),
-        user:(RuleName :: Antecedent -* Consequent),
-        Rules),
-    repeat,
-    apply_and_count(Rules, N),
-    N == 0. % repeat if at least one rule applied
-
-
-apply_and_count([], 0).
-
-apply_and_count([user:(RuleName :: Antecedent -* Consequent)|Rules], N) :-
-    user:(RuleName :: Antecedent -* Consequent),
-    ( antecedent_holds(Antecedent) ->
-      potentially_consume(Antecedent),
-      establish(Consequent),
-      write('Applied: '), write(RuleName), nl,
-      print_state,
-      ThisN = 1
-    ; ThisN = 0),
-    apply_and_count(Rules, RestN),
-    N is ThisN + RestN.
+        ( antecedent_holds(Antecedent) ->
+            potentially_consume(Antecedent),
+            establish(Consequent),
+            write('Applied: '), write(RuleName), nl,
+            print_state
+        ;
+            true
+        )).
 
 
 print_state :-
