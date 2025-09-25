@@ -8,10 +8,13 @@ selection_policies:
         (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
   
   prefer_non_probabilistic_datum: &prefer_non_probabilistic_datum
-  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
-        (member(D, Valid), D = rel_value(_, _), Selected = [D] ;
-         Selected = Valid))
-
+  - answer_selection_policy([E, M]>>supports(E, _, M),
+      Valid,
+      Selected,
+      (member(D, Valid),
+      (D=rel_value(_, _) ; D=value(_,_)) ->
+      Selected = [D]
+      ; Selected = Valid))
 
 reusable_facts:
   pat_1_facts: &pat_1_facts
