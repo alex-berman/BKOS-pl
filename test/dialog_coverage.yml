@@ -352,14 +352,14 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   facts:
   - value(back_pain(pat_1), 5)
   - rel_value(back_pain(pat_1), moderate)
+  - rel_value(disability(pat_1), moderate)
   - rel_prob(satisfied(pat_1), moderate)
   - *spinal_stenosis_model_facts
-  - *select_1st_datum
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), moderate), M))
-  - S: assert(rel_value(back_pain(pat_1), moderate))
+  - S: assert([rel_value(back_pain(pat_1), moderate), rel_value(disability(pat_1), moderate)])
 
 explain_moderate_estimated_probability_caused_by_contrasting_feature_contributions:
   facts:
