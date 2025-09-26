@@ -208,7 +208,7 @@ respond_to_open_request_for_forward_expansion:
   - agenda(respond([X]>>rel_value(back_pain(pat_1), X)))
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - S: assert(rel_value(back_pain(pat_1), low))
   - U: ask([C, M]>>supports(rel_value(back_pain(pat_1), low), C, M))
@@ -354,7 +354,7 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   - rel_value(back_pain(pat_1), moderate)
   - rel_prob(satisfied(pat_1), moderate)
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_1st_datum
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
