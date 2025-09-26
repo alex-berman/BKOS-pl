@@ -29,13 +29,10 @@ reusable_facts:
 
   spinal_stenosis_model_facts: &spinal_stenosis_model_facts
   - supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association)
-  - supports(rel_value(back_pain(X), moderate), rel_prob(satisfied(X), moderate), association)
   - supports(rel_value(back_pain(X), high), rel_prob(satisfied(X), low), association)
   - supports(rel_value(disability(X), low), rel_prob(satisfied(X), high), association)
-  - supports(rel_value(disability(X), moderate), rel_prob(satisfied(X), moderate), association)
   - supports(rel_value(disability(X), high), rel_prob(satisfied(X), low), association)
   - supports(rel_value(pain_duration(X), low), rel_prob(satisfied(X), high), association)
-  - supports(rel_value(pain_duration(X), moderate), rel_prob(satisfied(X), moderate), association)
   - supports(rel_value(pain_duration(X), high), rel_prob(satisfied(X), low), association)
   - not(supports(rel_value(back_pain(X), high), rel_prob(satisfied(X), high), association))
   - not(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), low), association))
