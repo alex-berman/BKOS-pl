@@ -50,11 +50,6 @@ supports_directly_or_indirectly(A, C) :-
 	@A1,
 	supports_directly_or_indirectly(A, A1).
 
-supports_directly_or_indirectly(rel_value(FX, moderate), rel_prob(PX, moderate)) :-
-	@rel_value(FX, moderate),
-	FX =.. [_, X],
-	PX =.. [_, X].
-
 supports_directly_or_indirectly(A, C) :-
 	C = rel_prob(Event, moderate),
 	@C,
