@@ -358,6 +358,7 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   - rel_value(disability(pat_1), moderate)
   - rel_prob(satisfied(pat_1), moderate)
   - *spinal_stenosis_model_facts
+  - *select_data
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
