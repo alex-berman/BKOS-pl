@@ -3,6 +3,10 @@ selection_policies:
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
         include([A]>>(A \= supports(_, _, _)), Valid, Selected))
 
+  select_warrants: &select_warrants
+  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
+        include([A]>>(A = supports(_, _, _)), Valid, Selected))
+
   select_1st_datum: &select_1st_datum
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
         (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
@@ -41,7 +45,6 @@ reusable_facts:
   - not(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), low), association))
   - supports(value(clinic_type(X), private), rel_prob(satisfied(X), high), association)
   - supports(value(clinic_type(X), public), rel_prob(satisfied(X), low), association)
-
 
 respond_in_agenda:
   facts:
@@ -107,7 +110,7 @@ warrant_based_explanans:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association))
 
-elicit_explanation_with_multiple_data_conjunctively:
+deliver_multiple_data_conjunctively:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
@@ -117,6 +120,21 @@ elicit_explanation_with_multiple_data_conjunctively:
   - S: confirm(rel_prob(satisfied(pat_1), high))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
+
+deliver_multiple_warrants_conjunctively:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_warrants
+  turns:
+  - U: ask([]>>satisfied(pat_1))
+  - S: confirm(rel_prob(satisfied(pat_1), high))
+  - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
+  - S: assert([
+        supports(rel_value(back_pain(X1), low), rel_prob(satisfied(X1), high), association),
+        supports(rel_value(disability(X2), low), rel_prob(satisfied(X2), high), association),
+        supports(value(clinic_type(X3), private), rel_prob(satisfied(X3), high), association)
+       ])
 
 deliver_explanations_incrementally:
   facts:
