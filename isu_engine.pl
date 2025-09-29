@@ -38,22 +38,9 @@ antecedent_holds([Head|Tail]) :-
     antecedent_holds(Head),
     antecedent_holds(Tail).
 
-antecedent_holds(^Proposition) :- % premise is to be reproduced (corresponds to -* in ProLin)
+antecedent_holds(^Proposition) :- % premise is to be reproduced
     !,
     @Proposition.
-
-antecedent_holds(?Proposition) :- % check if proposition is non-unique (roughly corresponds to ?-* in ProLin)
-    !,
-    setof(Proposition, @Proposition, Solutions),
-    length(Solutions, N),
-    N >= 2.
-
-antecedent_holds(!Proposition) :- % check if proposition is unique (roughly corresponds to !-* in ProLin)
-    !,
-    setof(Proposition, @Proposition, Solutions),
-    length(Solutions, N),
-    N == 1,
-    Solutions = [Proposition]. % unify with the unique solution
 
 antecedent_holds(\+P) :- % check if proposition does NOT hold
     !,
@@ -77,10 +64,6 @@ potentially_consume([Head|Tail]) :-
     potentially_consume(Tail).
 
 potentially_consume(^_) :- !. % don't consume premises that are reproduced
-
-potentially_consume(?_) :- !. % don't consume content of non-uniqueness test
-
-potentially_consume(!_) :- !. % don't consume content of uniqueness test
 
 potentially_consume($_) :- !. % don't consume Prolog-native conditions
 
