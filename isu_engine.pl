@@ -42,10 +42,6 @@ antecedent_holds(^Proposition) :- % premise is to be reproduced
     !,
     @Proposition.
 
-antecedent_holds(\+P) :- % check if proposition does NOT hold
-    !,
-    \+ @P.
-
 antecedent_holds(*_). % consume all matching premises (antecedent always true)
 
 antecedent_holds($Condition) :-
@@ -66,8 +62,6 @@ potentially_consume([Head|Tail]) :-
 potentially_consume(^_) :- !. % don't consume premises that are reproduced
 
 potentially_consume($_) :- !. % don't consume Prolog-native conditions
-
-potentially_consume(\+_) :- !. % don't consume negation test
 
 potentially_consume(*Pattern) :- % consume all matching premises
     retractall(@Pattern).
