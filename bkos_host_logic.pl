@@ -57,12 +57,11 @@ supports_directly_or_indirectly(A, C) :-
 supports_directly_or_indirectly(A, C) :-
 	C = rel_prob(Event, moderate),
 	@C,
-	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, high)), PosEvidence),
-	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, low)), NegEvidence),
-	PosEvidence \== [],
-	NegEvidence \== [],
-	(member(A, PosEvidence) ; member(A, NegEvidence)).
-
+	findall(E, (
+		member(R, [high, low]),
+		supports_directly_or_indirectly(E, rel_prob(Event, R))
+		), Evidence),
+	member(A, Evidence).
 
 answer_move(Vars>>supports(E, C, M), As, Move) :-
 	member(C, [rel_prob(P, moderate), prob(P, _)]),
