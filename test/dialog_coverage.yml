@@ -147,9 +147,9 @@ deliver_explanations_incrementally:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert(rel_value(back_pain(pat_1), low))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(rel_value(disability(pat_1), low)))
+  - S: resumption(assert(rel_value(disability(pat_1), low)))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(value(clinic_type(pat_1), private)))
+  - S: resumption(assert(value(clinic_type(pat_1), private)))
   - U: icm(acceptance, positive)
   - S: {}
 
@@ -164,17 +164,17 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert(rel_value(back_pain(pat_1), low))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(rel_value(disability(pat_1), low)))
+  - S: resumption(assert(rel_value(disability(pat_1), low)))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(value(clinic_type(pat_1), private)))
+  - S: resumption(assert(value(clinic_type(pat_1), private)))
   - U: icm(acceptance, positive)
   - S: {}
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert(rel_value(back_pain(pat_1), low))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(rel_value(disability(pat_1), low)))
+  - S: resumption(assert(rel_value(disability(pat_1), low)))
   - U: icm(acceptance, positive)
-  - S: signal_resumption(assert(value(clinic_type(pat_1), private)))
+  - S: resumption(assert(value(clinic_type(pat_1), private)))
   - U: icm(acceptance, positive)
   - S: {}
 

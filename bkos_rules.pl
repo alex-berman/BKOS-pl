@@ -53,7 +53,7 @@ resume_responding :: [
 	$select_answers(Q, ValidAnswers, SelectedAnswers),
 	$answer_move(Q, SelectedAnswers, Move)
 	] -* [
-		utter(signal_resumption(Move)),
+		utter(resumption(Move)),
 		responded(Q, SelectedAnswers)
 	].
 
