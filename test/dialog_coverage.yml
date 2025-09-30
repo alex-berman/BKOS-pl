@@ -26,8 +26,10 @@ reusable_facts:
   - rel_value(back_pain(pat_1), low)
   - value(disability(pat_1), 26)
   - rel_value(disability(pat_1), low)
-  - value(pain_duration(pat_1), 4)
-  - rel_value(pain_duration(pat_1), high)
+  - value(back_pain_duration(pat_1), 4)
+  - rel_value(back_pain_duration(pat_1), high)
+  - value(leg_pain_duration(pat_1), 4)
+  - rel_value(leg_pain_duration(pat_1), high)
   - value(clinic_type(pat_1), private)
   - rel_prob(satisfied(pat_1), high)
 
@@ -38,9 +40,12 @@ reusable_facts:
   - supports(rel_value(disability(X), low), rel_prob(satisfied(X), high), association)
   - supports(rel_value(disability(X), moderate), rel_prob(satisfied(X), moderate), association)
   - supports(rel_value(disability(X), high), rel_prob(satisfied(X), low), association)
-  - supports(rel_value(pain_duration(X), low), rel_prob(satisfied(X), high), association)
-  - supports(rel_value(pain_duration(X), moderate), rel_prob(satisfied(X), moderate), association)
-  - supports(rel_value(pain_duration(X), high), rel_prob(satisfied(X), low), association)
+  - supports(rel_value(back_pain_duration(X), low), rel_prob(satisfied(X), high), association)
+  - supports(rel_value(back_pain_duration(X), moderate), rel_prob(satisfied(X), moderate), association)
+  - supports(rel_value(back_pain_duration(X), high), rel_prob(satisfied(X), low), association)
+  - supports(rel_value(leg_pain_duration(X), low), rel_prob(satisfied(X), high), association)
+  - supports(rel_value(leg_pain_duration(X), moderate), rel_prob(satisfied(X), moderate), association)
+  - supports(rel_value(leg_pain_duration(X), high), rel_prob(satisfied(X), low), association)
   - not(supports(rel_value(back_pain(X), high), rel_prob(satisfied(X), high), association))
   - not(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), low), association))
   - supports(value(clinic_type(X), private), rel_prob(satisfied(X), high), association)
@@ -256,7 +261,7 @@ provide_evidence_against_claim:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
   - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M))
-  - S: assert(rel_value(pain_duration(pat_1), high))
+  - S: assert([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)])
 
 repeat_exhaustive_answer_for_repeated_question:
   facts:
@@ -344,8 +349,8 @@ confirm_datum_explanans_against_claim:
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
-  - U: ask([]>>supports(rel_value(pain_duration(pat_1), high), rel_prob(satisfied(pat_1), low), _))
-  - S: confirm(supports(rel_value(pain_duration(pat_1), high), rel_prob(satisfied(pat_1), low), association))
+  - U: ask([]>>supports(rel_value(back_pain_duration(pat_1), high), rel_prob(satisfied(pat_1), low), _))
+  - S: confirm(supports(rel_value(back_pain_duration(pat_1), high), rel_prob(satisfied(pat_1), low), association))
 
 reject_move_with_presupposition_violation_wrt_rel_prob:
   facts:
