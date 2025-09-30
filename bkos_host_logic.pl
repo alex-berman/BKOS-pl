@@ -67,21 +67,18 @@ supports_directly_or_indirectly(A, C) :-
 answer_move(Vars>>supports(E, C, M), As, Move) :-
 	member(C, [rel_prob(P, moderate), prob(P, _)]),
 	findall(
-		implies(Evidence, rel_prob(P, R)),
+		implies(NormalizedEvidence, rel_prob(P, R)),
 		(
 			member(R, [high, low]),
 			findall(A,
 				(member(A, As), valid_answer(Vars>>supports(E, rel_prob(P, R), M), A)),
 				Evidence),
-			Evidence \== []
+			Evidence \== [],
+			normalize(Evidence, NormalizedEvidence)
 		),
 		Implications),
 	Implications \== [],
-	( Implications = [Implication] ->
-		Move = Implication
-	;
-		Move = Implications
-	).
+	normalize(Implications, Move).
 
 answer_move(Q, [P], M) :-
 	!,
@@ -97,6 +94,10 @@ answer_move([]>>P, rel_prob(P, low), disconfirm(rel_prob(P, low))).
 
 answer_move(_, P, assert(P)).
 
+
+normalize([X], X) :- !.
+
+normalize(X, X).
 
 
 select_answers(Q, Candidates, Result) :-
