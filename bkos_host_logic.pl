@@ -27,6 +27,10 @@ valid_answer(Q, C) :-
     has_variable_and_body(Q, XC, supports(D, XC, _)),
 	supports_directly_or_indirectly(D, C).
 
+valid_answer(Vars>>supports(E, prob(Event, _), M), A) :-
+	@rel_prob(Event, R),
+	valid_answer(Vars>>supports(E, rel_prob(Event, R), M), A).
+
 valid_answer([M]>>P, P) :-
 	P = supports(_, _, M),
 	@P.

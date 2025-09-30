@@ -11,6 +11,10 @@ selection_policies:
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
         (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
   
+  select_1st_warrant: &select_1st_warrant
+  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
+      (member(SelectedAnswer, Valid), SelectedAnswer = supports(_, _, _)))
+
   prefer_non_probabilistic_datum: &prefer_non_probabilistic_datum
   - answer_selection_policy([E, M]>>supports(E, _, M),
       Valid,
@@ -31,6 +35,7 @@ reusable_facts:
   - value(leg_pain_duration(pat_1), 4)
   - rel_value(leg_pain_duration(pat_1), high)
   - value(clinic_type(pat_1), private)
+  - prob(satisfied(pat_1), 0.75)
   - rel_prob(satisfied(pat_1), high)
 
   spinal_stenosis_model_facts: &spinal_stenosis_model_facts
@@ -107,8 +112,7 @@ warrant_based_explanans:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
-      (member(SelectedAnswer, Valid), SelectedAnswer = supports(_, _, _)))
+  - *select_1st_warrant
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
@@ -402,3 +406,25 @@ explain_moderate_estimated_probability_caused_by_contrasting_feature_contributio
   - S: assert(rel_prob(satisfied(pat_1), moderate))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), moderate), M))
   - S: assert([rel_value(disability(pat_1), low), rel_value(back_pain(pat_1), high)])
+
+explain_numerical_claim_with_data:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_data
+  turns:
+  - U: ask([X]>>prob(satisfied(pat_1), X))
+  - S: assert(prob(satisfied(pat_1), 0.75))
+  - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
+  - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
+
+explain_numerical_claim_with_1st_warrant:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_1st_warrant
+  turns:
+  - U: ask([X]>>prob(satisfied(pat_1), X))
+  - S: assert(prob(satisfied(pat_1), 0.75))
+  - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
+  - S: assert(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association))
