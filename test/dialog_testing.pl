@@ -71,8 +71,19 @@ test_system_turn(_{}) :-
     apply_rules,
     assertion(\+ @utter(_)).
 
+test_system_turn(TurnDict) :-
+    is_dict(TurnDict),
+    get_dict(move, TurnDict, ExpectedSystemMoveAtoms),
+    is_list(ExpectedSystemMoveAtoms),
+    !,
+    maplist({}/[A,T]>>atom_to_term(A,T,_), ExpectedSystemMoveAtoms, ExpectedSystemMove),
+    expect_system_move(ExpectedSystemMove).
+    
 test_system_turn(ExpectedSystemMoveAtom) :-
     atom_to_term(ExpectedSystemMoveAtom, ExpectedSystemMove, _),
+    expect_system_move(ExpectedSystemMove).
+
+expect_system_move(ExpectedSystemMove) :-
     apply_rules,
     assertion(@utter(_)),
     @utter(ActualSystemMove),

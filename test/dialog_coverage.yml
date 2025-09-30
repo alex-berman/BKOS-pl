@@ -392,7 +392,7 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), moderate), M))
   - S: assert([rel_value(back_pain(pat_1), moderate), rel_value(disability(pat_1), moderate)])
 
-explain_moderate_estimated_probability_caused_by_contrasting_feature_contributions:
+explain_moderate_estimated_probability_with_contrasting_implications:
   facts:
   - value(back_pain(pat_1), 7)
   - rel_value(disability(pat_1), low)
@@ -405,9 +405,12 @@ explain_moderate_estimated_probability_caused_by_contrasting_feature_contributio
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), moderate), M))
-  - S: assert([rel_value(disability(pat_1), low), rel_value(back_pain(pat_1), high)])
+  - S:
+      move:
+      - implies([rel_value(disability(pat_1), low)], rel_prob(satisfied(pat_1), high))
+      - implies([rel_value(back_pain(pat_1), high)], rel_prob(satisfied(pat_1), low))
 
-explain_numerical_claim_with_data:
+explain_numerical_claim_with_contrasting_implications:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
@@ -416,7 +419,10 @@ explain_numerical_claim_with_data:
   - U: ask([X]>>prob(satisfied(pat_1), X))
   - S: assert(prob(satisfied(pat_1), 0.75))
   - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
-  - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
+  - S:
+      move:
+      - implies([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1),low), value(clinic_type(pat_1),private)], rel_prob(satisfied(pat_1), high))
+      - implies([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)], rel_prob(satisfied(pat_1), low))
 
 explain_numerical_claim_with_1st_warrant:
   facts:
@@ -427,4 +433,4 @@ explain_numerical_claim_with_1st_warrant:
   - U: ask([X]>>prob(satisfied(pat_1), X))
   - S: assert(prob(satisfied(pat_1), 0.75))
   - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
-  - S: assert(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association))
+  - S: implies([supports(rel_value(back_pain_duration(X), high), rel_prob(satisfied(X), low), association)], rel_prob(satisfied(pat_1), low))

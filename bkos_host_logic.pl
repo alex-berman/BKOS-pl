@@ -28,7 +28,7 @@ valid_answer(Q, C) :-
 	supports_directly_or_indirectly(D, C).
 
 valid_answer(Vars>>supports(E, prob(Event, _), M), A) :-
-	@rel_prob(Event, R),
+	( R = low ; R = high ),
 	valid_answer(Vars>>supports(E, rel_prob(Event, R), M), A).
 
 valid_answer([M]>>P, P) :-
@@ -57,12 +57,31 @@ supports_directly_or_indirectly(A, C) :-
 supports_directly_or_indirectly(A, C) :-
 	C = rel_prob(Event, moderate),
 	@C,
-	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, high)), PosEvidences),
-	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, low)), NegEvidences),
-	PosEvidences \== [],
-	NegEvidences \== [],
-	(member(A, PosEvidences) ; member(A, NegEvidences)).
+	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, high)), PosEvidence),
+	findall(E, supports_directly_or_indirectly(E, rel_prob(Event, low)), NegEvidence),
+	PosEvidence \== [],
+	NegEvidence \== [],
+	(member(A, PosEvidence) ; member(A, NegEvidence)).
 
+
+answer_move(Vars>>supports(E, C, M), As, Move) :-
+	member(C, [rel_prob(P, moderate), prob(P, _)]),
+	findall(
+		implies(Evidence, rel_prob(P, R)),
+		(
+			member(R, [high, low]),
+			findall(A,
+				(member(A, As), valid_answer(Vars>>supports(E, rel_prob(P, R), M), A)),
+				Evidence),
+			Evidence \== []
+		),
+		Implications),
+	Implications \== [],
+	( Implications = [Implication] ->
+		Move = Implication
+	;
+		Move = Implications
+	).
 
 answer_move(Q, [P], M) :-
 	!,
