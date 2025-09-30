@@ -28,7 +28,7 @@ valid_answer(Q, C) :-
 	supports_directly_or_indirectly(D, C).
 
 valid_answer(Vars>>supports(E, prob(Event, _), M), A) :-
-	( R = low ; R = high ),
+	member(R, [low, high]),
 	valid_answer(Vars>>supports(E, rel_prob(Event, R), M), A).
 
 valid_answer([M]>>P, P) :-
