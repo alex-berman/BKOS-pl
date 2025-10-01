@@ -45,9 +45,16 @@ has_variable_and_body(Vars>>Body, Var, Body) :-
 	Var1 == Var.
 
 
-supports_directly_or_indirectly(A, C) :-
+supports_directly_or_indirectly(D, C) :-
 	@supports(A, C, _),
-	@A.
+	@A,
+	(
+		D = A
+	;
+		A = rel_value(P, _),
+		D = value(P, _),
+		@D
+	).
 
 supports_directly_or_indirectly(A, C) :-
 	@supports(A1, C, _),
@@ -62,6 +69,7 @@ supports_directly_or_indirectly(A, C) :-
 		supports_directly_or_indirectly(E, rel_prob(Event, R))
 		), Evidence),
 	member(A, Evidence).
+
 
 answer_move(Vars>>supports(E, C, M), As, Move) :-
 	member(C, [rel_prob(P, moderate), prob(P, _)]),

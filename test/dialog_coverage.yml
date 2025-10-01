@@ -1,15 +1,35 @@
 selection_policies:
-  select_data: &select_data
+  select_data_both_relatively_and_exactly: &select_data_both_relatively_and_exactly
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
         include([A]>>(A \= supports(_, _, _)), Valid, Selected))
+
+  select_warrant_triggering_data: &select_warrant_triggering_data
+  - answer_selection_policy(
+      [E, M]>>supports(E, _, M), Valid, Selected,
+      findall(A, (
+        member(A, Valid),
+        (A=rel_value(_,_);
+         A=value(P,_), \+ member(rel_value(P,_), Valid))
+      ), Selected)
+    )
+
+  select_exact_data: &select_exact_data
+  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
+        include([A]>>(A = value(_, _)), Valid, Selected))
 
   select_warrants: &select_warrants
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, Selected,
         include([A]>>(A = supports(_, _, _)), Valid, Selected))
 
   select_1st_datum: &select_1st_datum
-  - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
-        (member(SelectedAnswer, Valid), SelectedAnswer \= supports(_, _, _)))
+  - answer_selection_policy(
+      [E, M]>>supports(E, C, M), Valid, [A],
+      (
+        member(A, Valid),
+        A \= supports(_,_,_),
+        \+ (A = value(P,_), has_responded([E, M]>>supports(E, C, M), rel_value(P, _)))
+      )
+    )
   
   select_1st_warrant: &select_1st_warrant
   - answer_selection_policy([E, M]>>supports(E, _, M), Valid, [SelectedAnswer],
@@ -84,7 +104,37 @@ answer_polar_question_with_disconfirmation_concerning_probability:
   - U: ask([]>>satisfied(pat_2))
   - S: disconfirm(rel_prob(satisfied(pat_2), low))
 
-elicit_datum_explanation_for_numerical_feature:
+explain_claim_with_exact_data:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_exact_data
+  turns:
+  - U: ask([]>>satisfied(pat_1))
+  - S: confirm(rel_prob(satisfied(pat_1), high))
+  - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
+  - S: assert([
+        value(back_pain(pat_1), 4),
+        value(disability(pat_1), 26),
+        value(clinic_type(pat_1), private)
+       ])
+
+convey_data_both_relatively_and_exactly:
+  facts:
+  - *pat_1_facts
+  - *spinal_stenosis_model_facts
+  - *select_data_both_relatively_and_exactly
+  turns:
+  - U: ask([]>>satisfied(pat_1))
+  - S: confirm(rel_prob(satisfied(pat_1), high))
+  - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
+  - S: assert([
+        rel_value(back_pain(pat_1), low), value(back_pain(pat_1), 4),
+        rel_value(disability(pat_1),low), value(disability(pat_1), 26),
+        value(clinic_type(pat_1),private)
+       ])
+
+explain_claim_with_relative_datum:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
@@ -123,12 +173,16 @@ deliver_multiple_data_conjunctively:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_warrant_triggering_data
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
-  - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
+  - S: assert([
+        rel_value(back_pain(pat_1), low),
+        rel_value(disability(pat_1), low),
+        value(clinic_type(pat_1), private)
+       ])
 
 deliver_multiple_warrants_conjunctively:
   facts:
@@ -258,7 +312,7 @@ provide_evidence_against_claim:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_warrant_triggering_data
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
@@ -385,7 +439,7 @@ explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   - rel_value(disability(pat_1), moderate)
   - rel_prob(satisfied(pat_1), moderate)
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_warrant_triggering_data
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
@@ -400,7 +454,7 @@ explain_moderate_estimated_probability_with_contrasting_implications:
   - rel_value(back_pain(pat_1), high)
   - rel_prob(satisfied(pat_1), moderate)
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_warrant_triggering_data
   turns:
   - U: ask([]>>satisfied(pat_1))
   - S: assert(rel_prob(satisfied(pat_1), moderate))
@@ -414,7 +468,7 @@ explain_numerical_claim_with_contrasting_implications:
   facts:
   - *pat_1_facts
   - *spinal_stenosis_model_facts
-  - *select_data
+  - *select_warrant_triggering_data
   turns:
   - U: ask([X]>>prob(satisfied(pat_1), X))
   - S: assert(prob(satisfied(pat_1), 0.75))
