@@ -87,19 +87,16 @@ answer_move(Vars>>supports(E, C, M), As, Move) :-
 	Implications \== [],
 	normalize(Implications, Move).
 
-answer_move(Q, [P], M) :-
-	!,
-	answer_move(Q, P, M).
+answer_move([]>>P, [P], confirm(P)).
 
-answer_move([]>>P, P, confirm(P)).
+answer_move([]>>P, [not(P)], disconfirm(not(P))).
 
-answer_move([]>>P, not(P), disconfirm(not(P))).
+answer_move([]>>P, [rel_prob(P, high)], confirm(rel_prob(P, high))).
 
-answer_move([]>>P, rel_prob(P, high), confirm(rel_prob(P, high))).
+answer_move([]>>P, [rel_prob(P, low)], disconfirm(rel_prob(P, low))).
 
-answer_move([]>>P, rel_prob(P, low), disconfirm(rel_prob(P, low))).
-
-answer_move(_, P, assert(P)).
+answer_move(_, Ps, assert(P)) :-
+	normalize(Ps, P).
 
 
 normalize([X], X) :- !.

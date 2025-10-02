@@ -354,7 +354,7 @@ deliver_prediction_as_inference:
   - *spinal_stenosis_model_facts
   - *select_1st_datum
   turns:
-  - S: infer([rel_value(back_pain(pat_1), low)], rel_prob(satisfied(pat_1), high))
+  - S: infer(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high))
 
 reject_unanswerable_question_concerning_unknown_concept:
   facts:

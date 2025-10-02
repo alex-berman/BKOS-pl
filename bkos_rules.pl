@@ -61,5 +61,6 @@ argue :: [
 	agenda(argue(C)),
 	$(Q = [E, M]>>supports(E, C, M)),
 	$findall(P, valid_answer(Q, P), ValidAnswers),
-	$select_answers(Q, ValidAnswers, SelectedAnswers)
-	] -* utter(infer(SelectedAnswers, C)).
+	$select_answers(Q, ValidAnswers, SelectedAnswers),
+	$normalize(SelectedAnswers, A)
+	] -* utter(infer(A, C)).
