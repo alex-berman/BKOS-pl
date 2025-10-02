@@ -465,8 +465,8 @@ explain_moderate_estimated_probability_with_contrasting_implications:
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), moderate), M))
   - S:
       move:
-      - implies(rel_value(disability(pat_1), low), rel_prob(satisfied(pat_1), high))
-      - implies(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), low))
+      - infer(rel_value(disability(pat_1), low), rel_prob(satisfied(pat_1), high))
+      - infer(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), low))
 
 explain_numerical_claim_with_contrasting_implications:
   facts:
@@ -479,8 +479,8 @@ explain_numerical_claim_with_contrasting_implications:
   - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
   - S:
       move:
-      - implies([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1),low), value(clinic_type(pat_1),private)], rel_prob(satisfied(pat_1), high))
-      - implies([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)], rel_prob(satisfied(pat_1), low))
+      - infer([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1),low), value(clinic_type(pat_1),private)], rel_prob(satisfied(pat_1), high))
+      - infer([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)], rel_prob(satisfied(pat_1), low))
 
 explain_numerical_claim_with_1st_warrant:
   facts:
@@ -491,4 +491,4 @@ explain_numerical_claim_with_1st_warrant:
   - U: ask([X]>>prob(satisfied(pat_1), X))
   - S: assert(prob(satisfied(pat_1), 0.75))
   - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
-  - S: implies(supports(rel_value(back_pain_duration(X), high), rel_prob(satisfied(X), low), association), rel_prob(satisfied(pat_1), low))
+  - S: infer(supports(rel_value(back_pain_duration(X), high), rel_prob(satisfied(X), low), association), rel_prob(satisfied(pat_1), low))
