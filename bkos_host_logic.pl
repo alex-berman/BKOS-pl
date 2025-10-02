@@ -113,11 +113,6 @@ select_answers(Q, Candidates, Result) :-
 	).
 
 
-has_responded(Q, P) :-
-	@responded(Q, Ps),
-	member(P, Ps).
-
-
 contradicts(rel_prob(Event, X), rel_prob(Event, Y)) :-
 	X \== Y.
 

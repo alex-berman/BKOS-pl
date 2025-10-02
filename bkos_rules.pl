@@ -48,7 +48,7 @@ resume_responding :: [
 	agenda(resume(respond(Q))),
 	$findall(P, (
 		valid_answer(Q, P),
-		\+ has_responded(Q, P)
+		\+ (@responded(Q, Ps), member(P, Ps))
 	), ValidAnswers),
 	$select_answers(Q, ValidAnswers, SelectedAnswers),
 	$answer_move(Q, SelectedAnswers, Move)

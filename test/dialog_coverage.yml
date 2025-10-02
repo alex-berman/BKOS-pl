@@ -26,8 +26,12 @@ selection_policies:
       [E, M]>>supports(E, C, M), Valid, [A],
       (
         member(A, Valid),
-        A \= supports(_,_,_),
-        \+ (A = value(P,_), has_responded([E, M]>>supports(E, C, M), rel_value(P, _)))
+        A \= supports(_, _, _),
+        \+ (
+          A = value(P,_),
+          @responded([E, M]>>supports(E, C, M), Rs),
+          member(rel_value(P, _), Rs)
+        )
       )
     )
   
