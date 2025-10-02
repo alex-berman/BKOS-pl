@@ -21,7 +21,7 @@ mark_move_as_accepted :: [
 	*agenda(_)
 	] -* accepted(Move).
 
-integrate_user_question :: [
+integrate_question :: [
 	accepted(ask(Q)),
 	*responded(Q, _)
 	] -* [
