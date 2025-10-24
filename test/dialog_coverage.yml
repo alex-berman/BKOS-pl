@@ -58,7 +58,7 @@ reusable_facts:
   - rel_value(back_pain_duration(pat_1), high)
   - value(leg_pain_duration(pat_1), 4)
   - rel_value(leg_pain_duration(pat_1), high)
-  - value(clinic_type(pat_1), private)
+  - value(has_other_illness(pat_1), false)
   - prob(satisfied(pat_1), 0.75)
   - rel_prob(satisfied(pat_1), high)
 
@@ -77,8 +77,8 @@ reusable_facts:
   - supports(rel_value(leg_pain_duration(X), high), rel_prob(satisfied(X), low), association)
   - not(supports(rel_value(back_pain(X), high), rel_prob(satisfied(X), high), association))
   - not(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), low), association))
-  - supports(value(clinic_type(X), private), rel_prob(satisfied(X), high), association)
-  - supports(value(clinic_type(X), public), rel_prob(satisfied(X), low), association)
+  - supports(value(has_other_illness(X), false), rel_prob(satisfied(X), high), association)
+  - supports(value(has_other_illness(X), true), rel_prob(satisfied(X), low), association)
 
 respond_in_agenda:
   facts:
@@ -120,7 +120,7 @@ explain_claim_with_exact_data:
   - S: assert([
         value(back_pain(pat_1), 4),
         value(disability(pat_1), 26),
-        value(clinic_type(pat_1), private)
+        value(has_other_illness(pat_1), false)
        ])
 
 convey_data_both_relatively_and_exactly:
@@ -135,7 +135,7 @@ convey_data_both_relatively_and_exactly:
   - S: assert([
         rel_value(back_pain(pat_1), low), value(back_pain(pat_1), 4),
         rel_value(disability(pat_1),low), value(disability(pat_1), 26),
-        value(clinic_type(pat_1),private)
+        value(has_other_illness(pat_1), false)
        ])
 
 explain_claim_with_relative_datum:
@@ -185,7 +185,7 @@ deliver_multiple_data_conjunctively:
   - S: assert([
         rel_value(back_pain(pat_1), low),
         rel_value(disability(pat_1), low),
-        value(clinic_type(pat_1), private)
+        value(has_other_illness(pat_1), false)
        ])
 
 deliver_multiple_warrants_conjunctively:
@@ -200,7 +200,7 @@ deliver_multiple_warrants_conjunctively:
   - S: assert([
         supports(rel_value(back_pain(X1), low), rel_prob(satisfied(X1), high), association),
         supports(rel_value(disability(X2), low), rel_prob(satisfied(X2), high), association),
-        supports(value(clinic_type(X3), private), rel_prob(satisfied(X3), high), association)
+        supports(value(has_other_illness(X3), false), rel_prob(satisfied(X3), high), association)
        ])
 
 deliver_explanations_incrementally:
@@ -222,7 +222,7 @@ deliver_explanations_incrementally:
   - S:
       move:
       - signal_resumption
-      - assert(value(clinic_type(pat_1), private))
+      - assert(value(has_other_illness(pat_1), false))
   - U: icm(acceptance, positive)
   - S: {}
 
@@ -245,7 +245,7 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
   - S:
       move:
       - signal_resumption
-      - assert(value(clinic_type(pat_1), private))
+      - assert(value(has_other_illness(pat_1), false))
   - U: icm(acceptance, positive)
   - S: {}
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
@@ -259,7 +259,7 @@ repeat_incremental_explanation_delivery_when_quested_repeated:
   - S:
       move:
       - signal_resumption
-      - assert(value(clinic_type(pat_1), private))
+      - assert(value(has_other_illness(pat_1), false))
   - U: icm(acceptance, positive)
   - S: {}
 
@@ -339,7 +339,7 @@ provide_evidence_against_claim:
   - U: ask([]>>satisfied(pat_1))
   - S: confirm(rel_prob(satisfied(pat_1), high))
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), high), M))
-  - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(clinic_type(pat_1), private)])
+  - S: assert([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(has_other_illness(pat_1), false)])
   - U: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M))
   - S: assert([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)])
 
@@ -497,7 +497,7 @@ explain_numerical_claim_with_contrasting_implications:
   - U: ask([E, M]>>supports(E, prob(satisfied(pat_1), 0.75), M))
   - S:
       move:
-      - infer([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1),low), value(clinic_type(pat_1),private)], rel_prob(satisfied(pat_1), high))
+      - infer([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(has_other_illness(pat_1), false)], rel_prob(satisfied(pat_1), high))
       - infer([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)], rel_prob(satisfied(pat_1), low))
 
 explain_numerical_claim_with_1st_warrant:
