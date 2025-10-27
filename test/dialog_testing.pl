@@ -18,7 +18,7 @@ run_test(TestsPath, Name) :-
 
 
 run_test_from_dict(Name:Test) :-
-    write('\nRunning test '), write(Name), nl, nl,
+    format(user_error, '\nRunning test ~w\n\n', [Name]),
     clear_facts,
     ( get_dict(facts, Test, _) ->
         forall(

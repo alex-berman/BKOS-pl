@@ -13,7 +13,7 @@ apply_rules :-
         ( antecedent_holds(Antecedent) ->
             potentially_consume(Antecedent),
             establish(Consequent),
-            write('Applied: '), write(RuleName), nl,
+            format(user_error, 'Applied: ~w\n', [RuleName]),
             print_state
         ;
             true
@@ -21,14 +21,12 @@ apply_rules :-
 
 
 print_state :-
-    write('State:\n'),
+    write_term(user_error, 'State:\n', []),
     forall(@Fact, (
-        write('  '),
         numbervars(Fact),
-        write(Fact),
-        nl
+        format(user_error, '  ~w\n', [Fact])
     )),
-    nl.
+    nl(user_error).
 
 
 antecedent_holds([]) :- !.
