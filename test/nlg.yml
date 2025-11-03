@@ -1,0 +1,6 @@
+-
+  move: assert(rel_prob(satisfied(pat_1), high))
+  form: There is a high probability that the patient will be satisfied with surgery.
+-
+  move: assert(rel_prob(satisfied(pat_1), low))
+  form: There is a low probability that the patient will be satisfied with surgery.
