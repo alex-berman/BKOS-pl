@@ -29,3 +29,6 @@ facts:
 - not(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), low), association))
 - supports(value(has_other_illness(X), false), rel_prob(satisfied(X), high), association)
 - supports(value(has_other_illness(X), true), rel_prob(satisfied(X), low), association)
+
+# agenda
+- agenda(respond([X]>>rel_prob(satisfied(pat_1), X)))

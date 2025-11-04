@@ -3,6 +3,15 @@ Example:
 
 curl -X POST http://localhost:8080/interact \
      -H "Content-Type: application/json" \
+     -d '_{start_session:{}}'
+
+returns
+
+{"response":"assert(rel_prob(satisfied(pat_1),high))"}
+
+
+curl -X POST http://localhost:8080/interact \
+     -H "Content-Type: application/json" \
      -d '_{move:ask([]>>satisfied(pat_1))}'
 
 returns
@@ -25,7 +34,6 @@ returns
 :- initialization(main, main).
 
 main :-
-    load_initial_state,
     http_server(http_dispatch, [port(8080)]),
     thread_get_message(stop).
 
@@ -51,6 +59,9 @@ handle_interact(Request) :-
     write(Output).
 
 process_input(Input, Response) :-
+    ( get_dict(start_session, Input, _) ->
+        load_initial_state
+    ; true ),
     ( get_dict(unresolvable_phrase, Input, Phrase) ->
         asserta(@recognized(unresolvable_phrase(Phrase)))
     ; true ),
