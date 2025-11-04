@@ -3,7 +3,7 @@ Example:
 
 curl -X POST http://localhost:8080/interact \
      -H "Content-Type: application/json" \
-     -d '_{start_session:{}}'
+     -d '{"start_session":{}}'
 
 returns
 
@@ -12,7 +12,7 @@ returns
 
 curl -X POST http://localhost:8080/interact \
      -H "Content-Type: application/json" \
-     -d '_{move:ask([]>>satisfied(pat_1))}'
+     -d '{"move":"ask([]>>satisfied(pat_1))"}'
 
 returns
 
@@ -48,12 +48,8 @@ assert_fact(Str) :-
     assert(@Fact).
 
 handle_interact(Request) :-
-    http_read_data(Request, Data, [to(string)]),
-    catch(read_term_from_atom(Data, Input, []), E,
-          ( print_message(error, E),
-            fail )),
-    with_output_to(string(Output),
-        process_input(Input, ResponseTerm)),
+    http_read_json_dict(Request, Input),
+    with_output_to(string(Output), process_input(Input, ResponseTerm)),
     term_string(ResponseTerm, Response),
     reply_json_dict(_{response:Response}),
     write(Output).
@@ -65,13 +61,16 @@ process_input(Input, Response) :-
     ( get_dict(unresolvable_phrase, Input, Phrase) ->
         asserta(@recognized(unresolvable_phrase(Phrase)))
     ; true ),
-    ( get_dict(move, Input, Move) ->
+    ( get_dict(move, Input, MoveString) ->
+        term_string(Move, MoveString),
         asserta(@recognized(move(Move)))
     ; true ),
     ( get_dict(presuppositions, Input, Presuppositions) ->
-        forall(
-            member(Presupposition, Presuppositions),
-            asserta(@recognized(presupposition(Presupposition))))
+        forall(member(PresuppositionString, Presuppositions),
+            (
+                term_string(Presupposition, PresuppositionString),
+                asserta(@recognized(presupposition(Presupposition)))
+            ))
     ; true ),
     apply_rules,
     ( retract(@utter(Response)) -> true ; Response = none ).
