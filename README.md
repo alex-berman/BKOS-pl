@@ -22,7 +22,7 @@ swipl -g run_tests -t halt test/test_bkos.pl
 SWI Prolog's support for debugging and tracing can be useful when troubleshooting test failures. If we assume that the test named `confirmation_of_prediction` is failing and we want to understand why, we can, e.g. insert a `trace` invocation somethere in the code, and then run the test as follows:
 
 ```
-swipl -g "run_test('test/dialog_coverage_various.yml', confirmation_response_to_polar_question)" test/test_bkos.pl
+swipl -g "run_test('test/dialog_coverage.yml', confirmation_response_to_polar_question)" test/test_bkos.pl
 ```
 
 This will execute the selected test until the trace point is encountered.

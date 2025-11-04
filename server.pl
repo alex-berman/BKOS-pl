@@ -3,7 +3,7 @@ Example:
 
 curl -X POST http://localhost:8080/interact \
      -H "Content-Type: application/json" \
-     -d '{"start_session":{}}'
+     -d '{"state_id": 1, "start_session":{}}'
 
 returns
 
@@ -12,7 +12,7 @@ returns
 
 curl -X POST http://localhost:8080/interact \
      -H "Content-Type: application/json" \
-     -d '{"move":"ask([]>>satisfied(pat_1))"}'
+     -d '{"state_id": 1, "move":"ask([]>>satisfied(pat_1))"}'
 
 returns
 
@@ -37,15 +37,19 @@ main :-
     http_server(http_dispatch, [port(8080)]),
     thread_get_message(stop).
 
-load_initial_state :-
+initialize_state(StateID) :-
     yaml_read('initial_state.yml', InitialStateDict),
-    forall(
-        member(FactStr, InitialStateDict.facts),
-        assert_fact(FactStr)).
+    assert_fact(StateID, InitialStateDict.facts).
 
-assert_fact(Str) :-
+assert_fact(StateID, Strs) :-
+    is_list(Strs),
+    !,
+    reverse(Strs, StrsReversed),
+    forall(member(Str, StrsReversed), assert_fact(StateID, Str)).
+
+assert_fact(StateID, Str) :-
     term_string(Fact, Str),
-    assert(@Fact).
+    db_add(StateID, Fact).
 
 handle_interact(Request) :-
     http_read_json_dict(Request, Input),
@@ -55,22 +59,23 @@ handle_interact(Request) :-
     write(Output).
 
 process_input(Input, Response) :-
+    get_dict(state_id, Input, StateID),
     ( get_dict(start_session, Input, _) ->
-        load_initial_state
+        initialize_state(StateID)
     ; true ),
     ( get_dict(unresolvable_phrase, Input, Phrase) ->
-        asserta(@recognized(unresolvable_phrase(Phrase)))
+        db_add(StateID, recognized(unresolvable_phrase(Phrase)))
     ; true ),
     ( get_dict(move, Input, MoveString) ->
         term_string(Move, MoveString),
-        asserta(@recognized(move(Move)))
+        db_add(StateID, recognized(move(Move)))
     ; true ),
     ( get_dict(presuppositions, Input, Presuppositions) ->
         forall(member(PresuppositionString, Presuppositions),
             (
                 term_string(Presupposition, PresuppositionString),
-                asserta(@recognized(presupposition(Presupposition)))
+                db_add(StateID, recognized(presupposition(Presupposition)))
             ))
     ; true ),
-    apply_rules,
-    ( retract(@utter(Response)) -> true ; Response = none ).
+    apply_rules(StateID),
+    ( db_remove(StateID, utter(Response)) -> true ; Response = none ).

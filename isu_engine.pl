@@ -1,4 +1,4 @@
-:- module(engine, [apply_rules/0, '@'/1, clear_facts/0]).
+:- module(engine, [apply_rules/1, '@'/1]).
 :- use_module(db).
 :- ensure_loaded(isu_syntax).
 
@@ -6,78 +6,75 @@
 :- multifile user:(::)/2.
 
 
-apply_rules :-
-    print_state,
+apply_rules(StateID) :-
+    print_state(StateID),
+    set_current_state(StateID),
     forall(
         user:(RuleName :: Antecedent -* Consequent),
-        ( antecedent_holds(Antecedent) ->
-            potentially_consume(Antecedent),
-            establish(Consequent),
+        ( antecedent_holds(StateID, Antecedent) ->
+            potentially_consume(StateID, Antecedent),
+            establish(StateID, Consequent),
             format(user_error, 'Applied: ~w\n', [RuleName]),
-            print_state
+            print_state(StateID)
         ;
             true
         )).
 
 
-print_state :-
+print_state(StateID) :-
     write_term(user_error, 'State:\n', []),
-    forall(@Fact, (
+    forall(db_get(StateID, Fact), (
         numbervars(Fact),
         format(user_error, '  ~w\n', [Fact])
     )),
     nl(user_error).
 
 
-antecedent_holds([]) :- !.
+antecedent_holds(_, []) :- !.
 
-antecedent_holds([Head|Tail]) :-
+antecedent_holds(StateID, [Head|Tail]) :-
     !,
-    antecedent_holds(Head),
-    antecedent_holds(Tail).
+    antecedent_holds(StateID, Head),
+    antecedent_holds(StateID, Tail).
 
-antecedent_holds(^Proposition) :- % premise is to be reproduced
+antecedent_holds(StateID, ^Proposition) :- % premise is to be reproduced
     !,
-    @Proposition.
+    db_get(StateID, Proposition).
 
-antecedent_holds(*_). % consume all matching premises (antecedent always true)
+antecedent_holds(_, *_). % consume all matching premises (antecedent always true)
 
-antecedent_holds($Condition) :-
+antecedent_holds(_, $Condition) :-
     !,
     Condition.
 
-antecedent_holds(Proposition) :-
-    @Proposition.
+antecedent_holds(StateID, Proposition) :-
+    db_get(StateID, Proposition).
 
 
-potentially_consume([]) :- !.
+potentially_consume(_, []) :- !.
 
-potentially_consume([Head|Tail]) :-
+potentially_consume(StateID, [Head|Tail]) :-
     !,
-    potentially_consume(Head),
-    potentially_consume(Tail).
+    potentially_consume(StateID, Head),
+    potentially_consume(StateID, Tail).
 
-potentially_consume(^_) :- !. % don't consume premises that are reproduced
+potentially_consume(_, ^_) :- !. % don't consume premises that are reproduced
 
-potentially_consume($_) :- !. % don't consume Prolog-native conditions
+potentially_consume(_, $_) :- !. % don't consume Prolog-native conditions
 
-potentially_consume(*Pattern) :- % consume all matching premises
-    retractall(@Pattern).
+potentially_consume(StateID, *Pattern) :- % consume all matching premises
+    db_remove_all(StateID, Pattern).
 
-potentially_consume(Proposition) :-
-    retract(@Proposition).
+potentially_consume(StateID, Proposition) :-
+    db_remove(StateID, Proposition).
 
 
-establish([]) :- !.
+establish(_, []) :- !.
 
-establish([Head|Tail]) :-
+establish(StateID, [Head|Tail]) :-
     !,
-    establish(Head),
-    establish(Tail).
+    establish(StateID, Head),
+    establish(StateID, Tail).
 
-establish(Proposition) :-
-    asserta(@Proposition).
-
-
-clear_facts :-
-    retractall(@_).
+establish(StateID, Proposition) :-
+    db_add(StateID, Proposition).
