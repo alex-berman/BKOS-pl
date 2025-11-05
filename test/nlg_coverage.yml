@@ -8,6 +8,9 @@
   move: assert(rel_prob(satisfied(pat_1), moderate))
   form: There is a moderate probability that the patient will be satisfied with surgery.
 -
+  move: assert(prob(satisfied(pat_1), 0.75))
+  form: There is a 75% probability that the patient will be satisfied with surgery.
+-
   move: confirm(rel_prob(satisfied(pat_1), high))
   form: Yes, there is a high probability that the patient will be satisfied with surgery.
 -
@@ -76,6 +79,11 @@
 -
   move: infer(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high))
   form: Since the patient has relatively mild back pain, there is a high probability that the patient will be satisfied with surgery.
+-
+  move:
+    - infer(rel_value(disability(pat_1), low), rel_prob(satisfied(pat_1), high))
+    - infer(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), low))
+  form: The fact that the patient has relatively low disability indicates that there is a high probability that the patient will be satisfied with surgery, while the fact that the patient has relatively severe back pain indicates that there is a low probability that the patient will be satisfied with surgery.
 -
   move: icm(acceptance, negative, lack_knowledge)
   form: I don't have any information about that.

@@ -5,6 +5,7 @@ assert(P) --> proposition(P), glue('.').
 
 proposition(rel_prob(Event, R)) --> [there, is, a, R, probability, that], event(Event).
 proposition(not(rel_prob(Event, R))) --> [the, probability, that], event(Event), [is, not, R].
+proposition(prob(Event, P)) --> [there, is, a], percentage(P), [probability, that], event(Event).
 proposition(value(P, V)) --> property(P), [is, V].
 proposition(not(value(P, V))) --> property(P), [is, not, V].
 proposition(value(has_other_illness(pat_1), true)) --> [the, patient, has, other, illnesses].
@@ -19,6 +20,8 @@ proposition(supports(A, C, association)) --> ['I', associate], concept(A), [with
 proposition(surgery_recommended(pat_1)) --> [surgery, is, recommended, for, the, patient].
 proposition(not(surgery_recommended(pat_1))) --> [surgery, is, not, recommended, for, the, patient].
 proposition(not(P)) --> ['it\'s', not, the, case, that], proposition(P).
+
+percentage(N) --> {Percentage is round(N * 100)}, [Percentage], glue('%').
 
 confirm(P) --> ['yes,'], proposition(P), glue('.').
 disconfirm(P) --> ['no,'], proposition(P), glue('.').
@@ -48,6 +51,10 @@ signal_resumption --> [also], glue(',').
 
 infer(A, C) --> [since], proposition(A), glue(','), proposition(C), glue('.').
 
+contrast(infer(A1, C1), infer(A2, C2)) -->
+    [the, fact, that], proposition(A1), [indicates, that], proposition(C1),
+    glue(','), [while, the, fact, that], proposition(A2), [indicates, that], proposition(C2), glue('.').
+
 icm(acceptance, negative, lack_knowledge) --> ['I', 'don\'t', have, any, information, about, that], glue('.').
 icm(acceptance, negative, P) --> proposition(P), glue('.').
 icm(understanding, negative, unresolvable_phrase(P)) -->
@@ -58,19 +65,23 @@ glue(Token) --> ['_glue_', Token].
 
 
 generate(Move, Sentence) :-
-    ( is_list(Move) ->
-        dcg_sequence(Move, Sequence),
-        phrase(Sequence, Tokens)
-    ;
-        phrase(Move, Tokens)
-    ),
+    plan(Move, Term),
+    phrase(Term, Tokens),
     !,
     concat(Tokens, Raw),
     capitalize_first(Raw, Sentence).
 
-dcg_sequence([X], X).
-dcg_sequence([X|Xs], (X, Rest)) :-
-    dcg_sequence(Xs, Rest).
+plan([infer(A1, rel_prob(P, high)), infer(A2, rel_prob(P, low))],
+    contrast(infer(A1, rel_prob(P, high)), infer(A2, rel_prob(P, low)))) :- !.
+plan(List, Term) :-
+    is_list(List),
+    !,
+    list_to_tuple(List, Term).
+plan(X, X).
+
+list_to_tuple([X], X).
+list_to_tuple([X|Xs], (X, Rest)) :-
+    list_to_tuple(Xs, Rest).
 
 concat([], '').
 concat([X], X) :- !.
