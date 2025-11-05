@@ -10,7 +10,7 @@ proposition(not(value(P, V))) --> property(P), [is, not, V].
 proposition(value(has_other_illness(pat_1), true)) --> [the, patient, has, other, illnesses].
 proposition(value(has_other_illness(pat_1), false)) --> [the, patient, has, no, other, illnesses].
 proposition(rel_value(back_pain(pat_1), V)) -->
-    [the, patient, has, relatively], back_pain_level(V), [back, pain].
+    [the, patient, has], relative_back_pain_level(V), [back, pain].
 proposition(rel_value(disability(pat_1), V)) --> [the, patient, has, relatively, V, disability].
 proposition([X]) --> proposition(X).
 proposition([X,Y]) --> proposition(X), [and], proposition(Y).
@@ -18,6 +18,7 @@ proposition([X,Y|Rest]) --> proposition(X), glue(','), proposition(Y), [and], pr
 proposition(supports(A, C, association)) --> ['I', associate], concept(A), [with], concept(C).
 proposition(surgery_recommended(pat_1)) --> [surgery, is, recommended, for, the, patient].
 proposition(not(surgery_recommended(pat_1))) --> [surgery, is, not, recommended, for, the, patient].
+proposition(not(P)) --> ['it\'s', not, the, case, that], proposition(P).
 
 confirm(P) --> ['yes,'], proposition(P), glue('.').
 disconfirm(P) --> ['no,'], proposition(P), glue('.').
@@ -32,8 +33,14 @@ concept(rel_value(disability(_), V)) --> [V, disability].
 concept(value(has_other_illness(_), V)) --> presence_or_absense(V), [of, other, illnesses].
 concept(rel_prob(satisfied(_), R)) --> [a, R, probability, of, being, satisfied, with, surgery].
 
+relative_back_pain_level(low) --> [relatively, mild].
+relative_back_pain_level(high) --> [relatively, severe].
+relative_back_pain_level(moderate) --> [moderate].
+
 back_pain_level(low) --> [mild].
 back_pain_level(high) --> [severe].
+back_pain_level(moderate) --> [moderate].
+
 presence_or_absense(false) --> [absense].
 presence_or_absense(true) --> [presence].
 
