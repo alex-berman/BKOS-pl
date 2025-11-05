@@ -85,6 +85,14 @@
     - infer(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), low))
   form: The fact that the patient has relatively low disability indicates that there is a high probability that the patient will be satisfied with surgery, while the fact that the patient has relatively severe back pain indicates that there is a low probability that the patient will be satisfied with surgery.
 -
+  move:
+    - infer([rel_value(back_pain(pat_1), low), rel_value(disability(pat_1), low), value(has_other_illness(pat_1), false)], rel_prob(satisfied(pat_1), high))
+    - infer([rel_value(back_pain_duration(pat_1), high), rel_value(leg_pain_duration(pat_1), high)], rel_prob(satisfied(pat_1), low))
+  form: The fact that the patient has relatively mild back pain, the patient has relatively low disability and the patient has no other illnesses indicates that there is a high probability that the patient will be satisfied with surgery, while the fact that the patient has had pack pain for a relatively long time and the patient has had leg pain for a relatively long time indicates that there is a low probability that the patient will be satisfied with surgery.
+-
+  move: infer(supports(rel_value(back_pain_duration(X), high), rel_prob(satisfied(X), low), association), rel_prob(satisfied(pat_1), low))
+  form: Since I associate long duration of back pain with a low probability of being satisfied with surgery, there is a low probability that the patient will be satisfied with surgery.
+-
   move: icm(acceptance, negative, lack_knowledge)
   form: I don't have any information about that.
 -

@@ -12,6 +12,10 @@ proposition(value(has_other_illness(pat_1), true)) --> [the, patient, has, other
 proposition(value(has_other_illness(pat_1), false)) --> [the, patient, has, no, other, illnesses].
 proposition(rel_value(back_pain(pat_1), V)) -->
     [the, patient, has], relative_back_pain_level(V), [back, pain].
+proposition(rel_value(back_pain_duration(pat_1), V)) -->
+    [the, patient, has, had, pack, pain, for, a], relative_duration(V), [time].
+proposition(rel_value(leg_pain_duration(pat_1), V)) -->
+    [the, patient, has, had, leg, pain, for, a], relative_duration(V), [time].
 proposition(rel_value(disability(pat_1), V)) --> [the, patient, has, relatively, V, disability].
 proposition([X]) --> proposition(X).
 proposition([X,Y]) --> proposition(X), [and], proposition(Y).
@@ -33,6 +37,8 @@ property(disability(pat_1)) --> [the, 'patient\'s', disability].
 
 concept(rel_value(back_pain(_), V)) --> back_pain_level(V), [back, pain].
 concept(rel_value(disability(_), V)) --> [V, disability].
+concept(rel_value(back_pain_duration(_), V)) --> duration(V), [duration, of, back, pain].
+concept(rel_value(leg_pain_duration(_), V)) --> duration(V), [duration, of, leg, pain].
 concept(value(has_other_illness(_), V)) --> presence_or_absense(V), [of, other, illnesses].
 concept(rel_prob(satisfied(_), R)) --> [a, R, probability, of, being, satisfied, with, surgery].
 
@@ -43,6 +49,14 @@ relative_back_pain_level(moderate) --> [moderate].
 back_pain_level(low) --> [mild].
 back_pain_level(high) --> [severe].
 back_pain_level(moderate) --> [moderate].
+
+relative_duration(low) --> [relatively, short].
+relative_duration(high) --> [relatively, long].
+relative_duration(moderate) --> [moderate, amount, of].
+
+duration(low) --> [short].
+duration(high) --> [long].
+duration(moderate) --> [moderate].
 
 presence_or_absense(false) --> [absense].
 presence_or_absense(true) --> [presence].
