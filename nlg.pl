@@ -1,8 +1,18 @@
 :- module(nlg, [generate/2]).
 
+
 assert(rel_prob(Event, R)) --> [there, is, a, R, probability, that], event(Event).
 
+assert(value(P, V)) --> property(P), [is, V].
+
+confirm(rel_prob(Event, R)) --> ['yes,', there, is, a, R, probability, that], event(Event).
+
+disconfirm(rel_prob(Event, R)) --> ['no,', there, is, a, R, probability, that], event(Event).
+
 event(satisfied(pat_1)) --> [the, patient, will, be, satisfied, with, surgery].
+
+property(back_pain(pat_1)) --> [the, 'patient\'s', back, pain, level].
+
 
 generate(Move, Sentence) :-
     phrase(Move, Words),

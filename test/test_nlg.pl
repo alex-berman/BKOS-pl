@@ -12,7 +12,7 @@ run_test(Test) :-
 
 :- begin_tests(nlg).
 
-test(nlg, [forall(nlg_test(Test, 'test/nlg.yml'))]) :-
+test(nlg, [forall(nlg_test(Test, 'test/nlg_coverage.yml'))]) :-
     run_test(Test).
 
 :- end_tests(nlg).
