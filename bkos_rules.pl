@@ -9,7 +9,7 @@ reject_move_with_presupposition_violation :: [
 	^Belief,
 	$contradicts(Belief, Presupposition),
 	recognized(move(_))
-	] -* utter(icm(acceptance, negative, false(Presupposition))).
+	] -* utter(icm(acceptance, negative, not(Presupposition))).
 
 reject_unanswerable_question :: [
 	recognized(move(ask(Q))),
