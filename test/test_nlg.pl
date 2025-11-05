@@ -5,7 +5,11 @@ nlg_test(Test, TestsPath) :-
     member(Test, Tests).
 
 run_test(Test) :-
-    atom_to_term(Test.move, Move, _),
+    ( is_list(Test.move) ->
+        maplist({}/[A,T]>>atom_to_term(A,T,_), Test.move, Move)
+    ;
+        atom_to_term(Test.move, Move, _)
+    ),
     generate(Move, ActualForm),
     atom_chars(ExpectedForm, Test.form),
     assertion(ExpectedForm == ActualForm).

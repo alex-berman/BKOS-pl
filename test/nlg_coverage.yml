@@ -23,6 +23,12 @@
   move: assert(value(has_other_illness(pat_1), false))
   form: The patient has no other illnesses.
 -
+  move: assert(rel_value(back_pain(pat_1), low))
+  form: The patient has relatively mild back pain.
+-
+  move: assert(rel_value(disability(pat_1), low))
+  form: The patient has relatively low disability.
+-
   move: assert([
           value(back_pain(pat_1), 4),
           value(disability(pat_1), 26)
@@ -35,3 +41,35 @@
           value(has_other_illness(pat_1), false)
         ])
   form: The patient's back pain level is 4, the patient's disability is 26 and the patient has no other illnesses.
+-
+  move: assert(supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association))
+  form: I associate mild back pain with a high probability of being satisfied with surgery.
+-
+  move: assert(supports(rel_value(disability(X), low), rel_prob(satisfied(X), high), association))
+  form: I associate low disability with a high probability of being satisfied with surgery.
+-
+  move: assert(supports(value(has_other_illness(X), false), rel_prob(satisfied(X), high), association))
+  form: I associate absense of other illnesses with a high probability of being satisfied with surgery.
+-
+  move: assert(supports(value(has_other_illness(X), true), rel_prob(satisfied(X), low), association))
+  form: I associate presence of other illnesses with a low probability of being satisfied with surgery.
+-
+  move:
+    - signal_resumption
+    - assert(rel_value(disability(pat_1), low))
+  form: Also, the patient has relatively low disability.
+-
+  move: confirm(surgery_recommended(pat_1))
+  form: Yes, surgery is recommended for the patient.
+-
+  move: disconfirm(not(surgery_recommended(pat_1)))
+  form: No, surgery is not recommended for the patient.
+-
+  move: confirm(supports(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high), association))
+  form: Yes, I associate mild back pain with a high probability of being satisfied with surgery.
+-
+  move: infer(rel_value(back_pain(pat_1), low), rel_prob(satisfied(pat_1), high))
+  form: Since the patient has relatively mild back pain, there is a high probability that the patient will be satisfied with surgery.
+-
+  move: icm(acceptance, negative, lack_knowledge)
+  form: I don't have any information about that.
