@@ -7,7 +7,7 @@ curl -X POST http://localhost:8080/interact \
 
 returns
 
-{"response":"assert(rel_prob(satisfied(pat_1),high))"}
+{"response":"There is a high probability that the patient will be satisfied with surgery."}
 
 
 curl -X POST http://localhost:8080/interact \
@@ -16,7 +16,7 @@ curl -X POST http://localhost:8080/interact \
 
 returns
 
-{"response":"confirm(rel_prob(satisfied(pat_1),high))"}
+{"response":"Yes, there is a high probability that the patient will be satisfied with surgery."}
 */
 
 :- use_module(library(http/thread_httpd)).
@@ -27,6 +27,7 @@ returns
 :- use_module(library(http/json)).
 :- use_module(library(yaml)).
 :- use_module(isu_engine).
+:- use_module(nlg).
 :- ensure_loaded(bkos).
 
 :- http_handler(root(interact), handle_interact, []).
@@ -53,8 +54,7 @@ assert_fact(StateID, Str) :-
 
 handle_interact(Request) :-
     http_read_json_dict(Request, Input),
-    with_output_to(string(Output), process_input(Input, ResponseTerm)),
-    term_string(ResponseTerm, Response),
+    with_output_to(string(Output), process_input(Input, Response)),
     reply_json_dict(_{response:Response}),
     write(Output).
 
@@ -78,4 +78,6 @@ process_input(Input, Response) :-
             ))
     ; true ),
     apply_rules(StateID),
-    ( db_remove(StateID, utter(Response)) -> true ; Response = none ).
+    ( db_remove(StateID, utter(SystemMove)) ->
+        generate(SystemMove, Response)
+    ; Response = none ).
