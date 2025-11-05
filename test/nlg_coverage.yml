@@ -73,3 +73,6 @@
 -
   move: icm(acceptance, negative, lack_knowledge)
   form: I don't have any information about that.
+-
+  move: icm(understanding, negative, unresolvable_phrase("heart disease"))
+  form: Sorry, I don't understand what "heart disease" means in this context.
