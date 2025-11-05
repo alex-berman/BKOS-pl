@@ -4,7 +4,9 @@
 assert(P) --> proposition(P), glue('.').
 
 proposition(rel_prob(Event, R)) --> [there, is, a, R, probability, that], event(Event).
+proposition(not(rel_prob(Event, R))) --> [the, probability, that], event(Event), [is, not, R].
 proposition(value(P, V)) --> property(P), [is, V].
+proposition(not(value(P, V))) --> property(P), [is, not, V].
 proposition(value(has_other_illness(pat_1), true)) --> [the, patient, has, other, illnesses].
 proposition(value(has_other_illness(pat_1), false)) --> [the, patient, has, no, other, illnesses].
 proposition(rel_value(back_pain(pat_1), V)) -->
@@ -40,6 +42,7 @@ signal_resumption --> [also], glue(',').
 infer(A, C) --> [since], proposition(A), glue(','), proposition(C), glue('.').
 
 icm(acceptance, negative, lack_knowledge) --> ['I', 'don\'t', have, any, information, about, that], glue('.').
+icm(acceptance, negative, P) --> proposition(P), glue('.').
 icm(understanding, negative, unresolvable_phrase(P)) -->
     [sorry], glue(','), ['I', 'don\'t', understand, what,
     '"'], glue(P), glue('"'), [means, in, this, context], glue('.').

@@ -441,7 +441,7 @@ reject_move_with_presupposition_violation_wrt_rel_prob:
       move: ask([E, M]>>supports(E, rel_prob(satisfied(pat_1), low), M))
       presuppositions:
       - rel_prob(satisfied(pat_1), low)
-  - S: icm(acceptance, negative, false(rel_prob(satisfied(pat_1), low)))
+  - S: icm(acceptance, negative, not(rel_prob(satisfied(pat_1), low)))
 
 reject_move_with_presupposition_violation_wrt_rel_value:
   facts:
@@ -452,7 +452,7 @@ reject_move_with_presupposition_violation_wrt_rel_value:
       move: ask([]>>supports(rel_value(back_pain(pat_1), high), rel_prob(satisfied(pat_1), high), _))
       presuppositions:
       - rel_value(back_pain(pat_1), high)
-  - S: icm(acceptance, negative, false(rel_value(back_pain(pat_1), high)))
+  - S: icm(acceptance, negative, not(rel_value(back_pain(pat_1), high)))
 
 explain_moderate_estimated_probability_caused_by_moderate_feature_values:
   facts:

@@ -76,3 +76,6 @@
 -
   move: icm(understanding, negative, unresolvable_phrase("heart disease"))
   form: Sorry, I don't understand what "heart disease" means in this context.
+-
+  move: icm(acceptance, negative, not(rel_prob(satisfied(pat_1), low)))
+  form: The probability that the patient will be satisfied with surgery is not low.
