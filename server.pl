@@ -54,11 +54,16 @@ assert_fact(StateID, Str) :-
 
 handle_interact(Request) :-
     http_read_json_dict(Request, Input),
-    with_output_to(string(Output), process_input(Input, Response)),
-    reply_json_dict(_{response:Response}),
-    write(Output).
+    ( with_output_to(string(Output), process_input(Input, SystemMove)) ->
+        generate(SystemMove, Utterance),
+        term_string(SystemMove, SystemMoveString),
+        reply_json_dict(_{move:SystemMoveString, utterance:Utterance}),
+        write(Output)
+    ;
+        reply_json_dict(_{move:none})
+    ).
 
-process_input(Input, Response) :-
+process_input(Input, SystemMove) :-
     get_dict(state_id, Input, StateID),
     ( get_dict(start_session, Input, _) ->
         initialize_state(StateID)
@@ -78,6 +83,4 @@ process_input(Input, Response) :-
             ))
     ; true ),
     apply_rules(StateID),
-    ( db_remove(StateID, utter(SystemMove)) ->
-        generate(SystemMove, Response)
-    ; Response = none ).
+    db_remove(StateID, utter(SystemMove)).
