@@ -30,5 +30,19 @@ facts:
 - supports(value(has_other_illness(X), false), rel_prob(satisfied(X), high), association)
 - supports(value(has_other_illness(X), true), rel_prob(satisfied(X), low), association)
 
+# answer selection policies
+- answer_selection_policy(
+    [E, M]>>supports(E, C, M), Valid, [A],
+    (
+      member(A, Valid),
+      A \= supports(_, _, _),
+      \+ (
+        A = value(P,_),
+        @responded([E, M]>>supports(E, C, M), Rs),
+        member(rel_value(P, _), Rs)
+      )
+    )
+  )
+
 # agenda
 - agenda(respond([X]>>rel_prob(satisfied(pat_1), X)))
