@@ -1,5 +1,5 @@
 facts:
-# patient
+# patient information
 - value(back_pain(pat_1), 4)
 - rel_value(back_pain(pat_1), low)
 - value(disability(pat_1), 26)
@@ -9,8 +9,11 @@ facts:
 - value(leg_pain_duration(pat_1), 4)
 - rel_value(leg_pain_duration(pat_1), high)
 - value(has_other_illness(pat_1), false)
+
+# prediction/recommendation
 - prob(satisfied(pat_1), 0.75)
 - rel_prob(satisfied(pat_1), high)
+- surgery_recommended(pat_1)
 
 # model (spinal stenosis)
 - supports(rel_value(back_pain(X), low), rel_prob(satisfied(X), high), association)
@@ -30,6 +33,11 @@ facts:
 - supports(value(has_other_illness(X), false), rel_prob(satisfied(X), high), association)
 - supports(value(has_other_illness(X), true), rel_prob(satisfied(X), low), association)
 
+# surgery recommendation criteria
+- supports(rel_prob(satisfied(X), high), surgery_recommended(X), norm)
+- supports(rel_prob(satisfied(X), moderate), not(surgery_recommended(X)), norm)
+- supports(rel_prob(satisfied(X), low), not(surgery_recommended(X)), norm)
+
 # answer selection policies
 - answer_selection_policy(
     [E, M]>>supports(E, C, M), Valid, [A],
@@ -43,6 +51,3 @@ facts:
       )
     )
   )
-
-# agenda
-- agenda(respond([X]>>rel_prob(satisfied(pat_1), X)))
