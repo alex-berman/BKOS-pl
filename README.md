@@ -1,6 +1,6 @@
 This repo contains a SWI-Prolog implementation and extension of BKOS (pronounced _because_), a dialogue manager for conversationally explainable AI (XAI) interfaces. For more information about BKOS, see the repo for the [Python implementation](https://github.com/alex-berman/BKOS).
 
-# Key differences with Python implementation
+ Key differences with Python implementation
 
 * Prolog's flexible way of representing relations and propositions makes it **easier to represent and operate with richer semantics**. For example, one can easily distinguish between instance-level propositions (e.g. `extraverted(person_1)`, i.e. a particular person is extraverted) and general propositions (e.g. `supports(rel_value(energy, X, high), extraverted(X))`, i.e. that if someone likes high-energy music supports, then that person is likely to be extraverted).
 
@@ -12,17 +12,17 @@ This repo contains a SWI-Prolog implementation and extension of BKOS (pronounced
 
 # Running the system
 
-There is currently no interactive version of the system. However, [dialogue coverage tests](test/dialog_coverage.yml) can be validated by running
+There is currently no interactive version of the system. However, [dialogue coverage tests](test/dialog_coverage_spinal_stenosis.yml) can be validated by running
 
 ```
 swipl -g run_tests -t halt test/test_bkos.pl
 ```
 
 # Debugging and tracing with coverage testing
-SWI Prolog's support for debugging and tracing can be useful when troubleshooting test failures. If we assume that the test named `confirmation_of_prediction` is failing and we want to understand why, we can, e.g. insert a `trace` invocation somethere in the code, and then run the test as follows:
+SWI Prolog's support for debugging and tracing can be useful when troubleshooting test failures. If we assume that the test named `explain_claim_with_exact_data` is failing and we want to understand why, we can, e.g. insert a `trace` invocation somethere in the code, and then run the test as follows:
 
 ```
-swipl -g "run_test('test/dialog_coverage.yml', confirmation_response_to_polar_question)" test/test_bkos.pl
+swipl -g "run_test('test/dialog_coverage_spinal_stenosis.yml', explain_claim_with_exact_data)" test/test_bkos.pl
 ```
 
 This will execute the selected test until the trace point is encountered.

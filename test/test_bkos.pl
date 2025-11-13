@@ -3,7 +3,7 @@
 
 :- begin_tests(dialog_coverage).
 
-test(coverage, [forall(get_test(TestAsDict, 'test/dialog_coverage.yml'))]) :-
+test(coverage, [forall(get_test(TestAsDict, 'test/dialog_coverage_spinal_stenosis.yml'))]) :-
     run_test_from_dict(TestAsDict).
 
 :- end_tests(dialog_coverage).
